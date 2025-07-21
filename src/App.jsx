@@ -71,8 +71,11 @@ function App() {
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
+    const header = document.querySelector('.header');
+    const headerHeight = header ? header.offsetHeight : 0;
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const y = element.getBoundingClientRect().top + window.scrollY - headerHeight;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
     setIsMenuOpen(false);
   };
@@ -143,13 +146,17 @@ function App() {
         <div
           className="scroll-indicator"
           style={{ left: '50%', transform: 'translateX(-50%)', position: 'absolute', bottom: '2rem' }}
+          role="button"
+          tabIndex={0}
+          onClick={() => scrollToSection('about')}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') scrollToSection('about'); }}
         >
           <motion.div
             initial={{ y: 0 }}
             animate={{ y: [0, 18, 0] }}
             transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
           >
-            <ChevronDown size={48} />
+            <ChevronDown size={72} />
           </motion.div>
         </div>
       </section>
