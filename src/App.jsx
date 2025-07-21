@@ -45,7 +45,7 @@ function App() {
       image: onoffImg,
       description: "동해의 아름다운 풍경과 함께하는 단기 체류",
       url: "https://forest100.herokuapp.com/on-off",
-      priceRange: "350,000원/1주 (임대료)"
+      priceRange: "350,000원/1주"
     },
     {
       id: 4,
