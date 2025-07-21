@@ -172,9 +172,9 @@ function App() {
             className="about-content"
           >
             <h2>나믄자리에 대하여</h2>
-            <p style={{ fontWeight: 'bold', fontSize: '1.15em', marginBottom: '1.2em' }}>당신을 위해 남은 공간, 나믄자리</p>
+            <p style={{ fontWeight: 'bold', fontSize: '1.15em', marginBottom: '1.2em' }}>" 당신을 위해 남은 자리 "</p>
             <p>
-              나믄자리는 단순한 숙소 그룹이 아닌, 공간 운영에 특화된 호스트가 직접 관리하는 다양한 공간들의 집합입니다.
+              나믄자리는 공간 운영에 특화된 호스트가 직접 관리하는 다양한 공간들의 집합입니다.
               전통 한옥, 숲속 휴식공간, 단기임대, 공간대여 등
               각 공간마다 고유한 이야기와 정성이 담겨 있어
               단순한 이용을 넘어선 특별한 경험을 선사합니다.
@@ -310,7 +310,7 @@ function App() {
           <div className="footer-content">
             <div className="footer-section">
               <h3>나믄자리</h3>
-              <p>당신을 위해 남은 공간</p>
+              <p>당신을 위해 남은 자리</p>
             </div>
             <div className="footer-section">
               <h4>바로가기</h4>
