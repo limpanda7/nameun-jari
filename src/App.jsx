@@ -282,7 +282,7 @@ function App() {
               </div>
               <div className="host-signature">
                 <p className="host-name">나믄자리 호스트 '판다부부'</p>
-                <p className="host-title">공간 운영 전문가</p>
+                <p className="host-title">공간 디렉터</p>
               </div>
             </div>
             <div className="host-message-image">
