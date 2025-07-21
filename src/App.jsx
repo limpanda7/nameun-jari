@@ -9,6 +9,8 @@ import forestImg from './assets/forest.webp';
 import blonImg from './assets/blon.png';
 import onoffImg from './assets/onoff.png';
 import spaceImg from './assets/space.png';
+import eunjinImg from './assets/eunjin.jpeg';
+import jebokImg from './assets/jebok.jpeg';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -228,7 +230,7 @@ function App() {
               >
                 <div className="space-image">
                   <img src={space.image} alt={space.name} />
-                  {space.type.includes("오픈예정") && (
+                  {space.priceRange === "오픈예정" && (
                     <div className="coming-soon-badge">오픈예정</div>
                   )}
                 </div>
@@ -279,7 +281,7 @@ function App() {
                 </p>
               </div>
               <div className="host-signature">
-                <p className="host-name">나믄자리 호스트</p>
+                <p className="host-name">나믄자리 호스트 '판다부부'</p>
                 <p className="host-title">공간 운영 전문가</p>
               </div>
             </div>
@@ -292,11 +294,11 @@ function App() {
             <h3 className="together-title">함께하는 사람들</h3>
             <div className="together-images">
               <div className="together-person">
-                <img src={blonImg} alt="은진이네" className="together-img" />
+                <img src={eunjinImg} alt="은진이네" className="together-img" />
                 <div className="together-label">은진이네</div>
               </div>
               <div className="together-person">
-                <img src={onoffImg} alt="제복이네" className="together-img" />
+                <img src={jebokImg} alt="제복이네" className="together-img" />
                 <div className="together-label">제복이네</div>
               </div>
             </div>
