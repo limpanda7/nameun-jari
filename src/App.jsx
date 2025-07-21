@@ -4,6 +4,11 @@ import { ChevronDown, MapPin, Star, Calendar, Users, ArrowRight } from 'lucide-r
 import hostImage from './assets/host.jpeg';
 import { analytics } from './firebase';
 import './App.css';
+import logoImg from './assets/logo.png';
+import forestImg from './assets/forest.webp';
+import blonImg from './assets/blon.png';
+import onoffImg from './assets/onoff.png';
+import spaceImg from './assets/space.png';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,8 +22,8 @@ function App() {
       name: "백년한옥별채",
       location: "동해",
       type: "숙소",
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
-      description: "백년의 역사를 담은 전통 한옥에서 느끼는 특별한 시간",
+      image: forestImg,
+      description: "백년의 역사를 품은 전통 한옥에서의 특별한 시간",
       url: "https://forest100.herokuapp.com/forest",
       priceRange: "200,000원 ~ 300,000원"
     },
@@ -27,8 +32,8 @@ function App() {
       name: "블로뉴숲",
       location: "포천",
       type: "숙소",
-      image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
-      description: "깊은 숲속에서 느끼는 평화로운 휴식",
+      image: blonImg,
+      description: "깊은 숲속에서 누리는 평화로운 휴식",
       url: "https://forest100.herokuapp.com/boulogne",
       priceRange: "160,000원 ~ 300,000원"
     },
@@ -37,18 +42,18 @@ function App() {
       name: "온오프스테이",
       location: "동해",
       type: "단기임대",
-      image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
-      description: "동해의 아름다운 풍경을 감상하며 즐기는 단기 체류",
+      image: onoffImg,
+      description: "동해의 아름다운 풍경과 함께하는 단기 체류",
       url: "https://forest100.herokuapp.com/on-off",
-      priceRange: "350,000원/1주"
+      priceRange: "350,000원/1주 (임대료)"
     },
     {
       id: 4,
       name: "온오프스페이스",
       location: "서울",
       type: "공간대여",
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
-      description: "서울 중심가의 편리한 위치에서 즐기는 공간 대여",
+      image: spaceImg,
+      description: "서울 중심에서 누리는 편리한 공간 대여",
       url: "https://forest100.herokuapp.com/on-off-space",
       priceRange: "4,000원 ~ 6,000원/시간"
     },
@@ -56,9 +61,9 @@ function App() {
       id: 5,
       name: "묵호쉴래",
       location: "동해",
-      type: "숙소 (오픈예정)",
-      image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80",
-      description: "동해 묵호의 아름다운 풍경을 감상할 수 있는 새로운 공간",
+      type: "숙소",
+      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+      description: "동해 묵호의 아름다움을 담은 새로운 공간",
       url: null,
       priceRange: "오픈예정"
     }
@@ -112,42 +117,44 @@ function App() {
           <div className="hero-overlay"></div>
         </div>
         <div className="hero-content">
-          <motion.h1
+          <motion.img
+            src={logoImg}
+            alt="나믄자리 로고"
+            className="hero-logo"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="hero-title"
-          >
-            나믄자리
-          </motion.h1>
+            transition={{ duration: 1, delay: 0.1 }}
+          />
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
             className="hero-subtitle"
           >
-            남아있는 것에서 가치있는 것으로 바뀌는 순간
+            <span className="hero-subtitle-mobile">
+              남아있는 것에서<br className="mobile-br" />
+              가치있는 것으로 바뀌는 순간
+            </span>
+            <span className="hero-subtitle-pc">
+              남아있는 것에서 가치있는 것으로 바뀌는 순간
+            </span>
           </motion.p>
-          <motion.button
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
-            className="cta-button"
-            onClick={() => scrollToSection('spaces')}
-          >
-            공간 둘러보기
-          </motion.button>
-      </div>
-        <motion.div
+        </div>
+        <div
           className="scroll-indicator"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          style={{ left: '50%', transform: 'translateX(-50%)', position: 'absolute', bottom: '2rem' }}
         >
-          <ChevronDown size={24} />
-        </motion.div>
+          <motion.div
+            initial={{ y: 0 }}
+            animate={{ y: [0, 18, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ChevronDown size={48} />
+          </motion.div>
+        </div>
       </section>
 
-            {/* About Section */}
+      {/* About Section */}
       <section id="about" className="about">
         <div className="container">
           <motion.div
@@ -159,7 +166,7 @@ function App() {
           >
             <h2>나믄자리에 대하여</h2>
             <p>
-              나믄자리는 단순한 숙소 그룹이 아닌, 공간운영에 특화된 호스트가
+              나믄자리는 공간운영에 특화된 호스트가
               직접 관리하는 다양한 공간들의 집합입니다.
               전통 한옥부터 숲속 휴식공간, 단기임대, 공간대여까지
               각각의 공간마다 고유한 이야기와 정성이 담겨있어
@@ -200,24 +207,20 @@ function App() {
           </motion.h2>
           <div className="spaces-grid">
             {spaces.map((space, index) => (
-              <motion.div
+              <div
                 key={space.id}
-                className="space-card"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -10 }}
+                className="space-card clickable"
+                tabIndex={0}
+                aria-disabled={space.url ? undefined : true}
+                onClick={() => {
+                  if (space.url) {
+                    window.open(space.url, '_blank', 'noopener noreferrer');
+                  }
+                }}
+                style={{ cursor: space.url ? 'pointer' : 'default' }}
               >
                 <div className="space-image">
                   <img src={space.image} alt={space.name} />
-                  <div className="space-overlay">
-                    {space.url ? (
-                      <a className="view-details" href={space.url} target="_blank" rel="noopener noreferrer">자세히 보기</a>
-                    ) : (
-                      <button className="view-details" disabled style={{opacity:0.5, cursor:'not-allowed'}}>오픈예정</button>
-                    )}
-                  </div>
                   {space.type.includes("오픈예정") && (
                     <div className="coming-soon-badge">오픈예정</div>
                   )}
@@ -234,7 +237,7 @@ function App() {
                     <div className="price">{space.priceRange}</div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -270,13 +273,27 @@ function App() {
               </div>
               <div className="host-signature">
                 <p className="host-name">나믄자리 호스트</p>
-                <p className="host-title">공간운영 전문가</p>
+                <p className="host-title">공간 운영 전문가</p>
               </div>
             </div>
             <div className="host-message-image">
               <img src={hostImage} alt="나믄자리 호스트" className="host-image" />
             </div>
           </motion.div>
+          {/* 함께하는 사람들 섹션을 container 안, host-message-content 바깥에 위치 */}
+          <div className="together-section">
+            <h3 className="together-title">함께하는 사람들</h3>
+            <div className="together-images">
+              <div className="together-person">
+                <img src={blonImg} alt="은진이네" className="together-img" />
+                <div className="together-label">은진이네</div>
+              </div>
+              <div className="together-person">
+                <img src={onoffImg} alt="제복이네" className="together-img" />
+                <div className="together-label">제복이네</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -286,7 +303,7 @@ function App() {
           <div className="footer-content">
             <div className="footer-section">
               <h3>나믄자리</h3>
-              <p>감성적인 숙소들이 모여 만드는 특별한 여행 경험</p>
+              <p>감성적인 공간들이 모여 만드는 특별한 여행 경험</p>
             </div>
             <div className="footer-section">
               <h4>바로가기</h4>
@@ -298,8 +315,8 @@ function App() {
             </div>
             <div className="footer-section">
               <h4>연락처</h4>
-              <p>📞 010-1234-5678</p>
-              <p>📧 info@nameunjari.com</p>
+              <p>📞 010-6533-7496</p>
+              <p>📧 limpanda7@naver.com</p>
             </div>
           </div>
         </div>
