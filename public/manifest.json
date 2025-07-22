@@ -1,5 +1,5 @@
 {
-  "name": "나믄자리 - 당신을 위해 남은 공간",
+  "name": "나믄자리 - 당신을 위해 남은 자리",
   "short_name": "나믄자리",
   "description": "감성숙소, 펜션, 오두막, 한옥을 제공하는 특별한 여행 공간",
   "start_url": "/",
@@ -37,4 +37,4 @@
   "categories": ["travel", "lifestyle", "business"],
   "lang": "ko",
   "dir": "ltr"
-} 
+}
