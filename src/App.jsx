@@ -281,7 +281,7 @@ function App() {
                 </p>
               </div>
               <div className="host-signature">
-                <p className="host-name">나믄자리 호스트 '판다부부'</p>
+                <p className="host-name">판다부부</p>
                 <p className="host-title">공간 디렉터</p>
               </div>
             </div>
@@ -294,8 +294,8 @@ function App() {
             <h3 className="together-title">함께하는 사람들</h3>
             <div className="together-images">
               <div className="together-person">
-                <img src={eunjinImg} alt="은진이네" className="together-img" />
-                <div className="together-label">은진이네</div>
+                <img src={eunjinImg} alt="채믄진네" className="together-img" />
+                <div className="together-label">채믄진네</div>
               </div>
               <div className="together-person">
                 <img src={jebokImg} alt="제복이네" className="together-img" />
