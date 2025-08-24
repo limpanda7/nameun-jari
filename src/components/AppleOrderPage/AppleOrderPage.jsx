@@ -127,7 +127,7 @@ function AppleOrderPage() {
         <div className="success-message">
           <CheckCircle size={80} color="#4CAF50" />
           <h2>주문이 완료되었습니다!</h2>
-          <p>확인 후 연락드리겠습니다.</p>
+          <p>확인 후 연락 드리겠습니다.</p>
           <button onClick={goBack} className="back-btn">
             <ArrowLeft size={20} /> 메인으로
           </button>
