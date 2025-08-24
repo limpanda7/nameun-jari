@@ -84,7 +84,6 @@ function AppleOrderPage() {
         orderDate: new Date().toISOString(), // 현재 시간을 ISO 문자열로
         createdAt: new Date().toISOString()
       };
-      };
 
       const docRef = await addDoc(collection(db, 'apple-orders'), orderData);
       console.log('주문이 성공적으로 저장되었습니다. 문서 ID:', docRef.id);
@@ -180,7 +179,7 @@ function AppleOrderPage() {
               <div className="price-info">
                 <span className="discount-badge">특가 할인</span>
                 <span className="original-price">정상가: 120,000원</span>
-                <span className="special-price">8월 특가: 100,000원</span>
+                <span className="special-price">8월 특가: 100,000원<br/>(1박스 10kg)</span>
               </div>
               <p className="limited-notice">⚠️ 한정판매 - 수량이 제한되어 있습니다</p>
             </div>
@@ -370,11 +369,11 @@ function AppleOrderPage() {
                       value={formData.quantity}
                       onChange={handleInputChange}
                     >
-                      <option value="1">1박스</option>
-                      <option value="2">2박스</option>
-                      <option value="3">3박스</option>
-                      <option value="4">4박스</option>
-                      <option value="5">5박스</option>
+                      <option value="1">1박스 (10kg)</option>
+                      <option value="2">2박스 (20kg)</option>
+                      <option value="3">3박스 (30kg)</option>
+                      <option value="4">4박스 (40kg)</option>
+                      <option value="5">5박스 (50kg)</option>
                     </select>
                   </div>
                 </div>

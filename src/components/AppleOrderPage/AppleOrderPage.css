@@ -187,6 +187,29 @@
     font-weight: 700;
   }
 
+  .box-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.8rem;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+  }
+
+  .box-weight {
+    color: #2e7d32;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .price-per-kg {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
   .discount-badge {
     background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
     color: white;
@@ -638,6 +661,19 @@
 
   .special-price {
     font-size: 1.2rem;
+  }
+
+  .box-info {
+    padding: 0.6rem;
+    margin-top: 0.3rem;
+  }
+
+  .box-weight {
+    font-size: 1rem;
+  }
+
+  .price-per-kg {
+    font-size: 0.8rem;
   }
 
   .apple-varieties {
