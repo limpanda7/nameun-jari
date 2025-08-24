@@ -78,6 +78,14 @@ function AppleOrderPage() {
         createdAt: serverTimestamp()
       };
 
+      // 텔레그램용 주문 데이터 (Firestore 타임스탬프 제외)
+      const telegramOrderData = {
+        ...orderData,
+        orderDate: new Date().toISOString(), // 현재 시간을 ISO 문자열로
+        createdAt: new Date().toISOString()
+      };
+      };
+
       const docRef = await addDoc(collection(db, 'apple-orders'), orderData);
       console.log('주문이 성공적으로 저장되었습니다. 문서 ID:', docRef.id);
 
@@ -94,7 +102,7 @@ function AppleOrderPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ orderData })
+          body: JSON.stringify({ orderData: telegramOrderData })
         });
 
         const result = await response.json();

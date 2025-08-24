@@ -90,7 +90,25 @@ function createAppleOrderMessage(orderData) {
     orderDate
   } = orderData;
 
-  const orderDateStr = orderDate ? new Date(orderDate).toLocaleString('ko-KR') : new Date().toLocaleString('ko-KR');
+  // orderDate가 ISO 문자열인지 확인하고 적절히 처리
+  let orderDateStr;
+  if (orderDate) {
+    try {
+      if (typeof orderDate === 'string') {
+        orderDateStr = new Date(orderDate).toLocaleString('ko-KR');
+      } else if (orderDate.toDate) {
+        // Firestore 타임스탬프인 경우
+        orderDateStr = orderDate.toDate().toLocaleString('ko-KR');
+      } else {
+        orderDateStr = new Date(orderDate).toLocaleString('ko-KR');
+      }
+    } catch (error) {
+      console.error('날짜 파싱 오류:', error);
+      orderDateStr = new Date().toLocaleString('ko-KR');
+    }
+  } else {
+    orderDateStr = new Date().toLocaleString('ko-KR');
+  }
 
   return `🍎 <b>새로운 사과 주문이 들어왔습니다!</b> 🍎
 
