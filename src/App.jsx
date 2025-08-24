@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown, MapPin, Star, Calendar, Users, ArrowRight } from 'lucide-react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import hostImage from './assets/host.jpeg';
 import { analytics } from './firebase';
 import './App.css';
@@ -11,9 +12,12 @@ import onoffImg from './assets/onoff.png';
 import spaceImg from './assets/space.png';
 import eunjinImg from './assets/eunjin.jpeg';
 import jebokImg from './assets/jebok.jpeg';
+import appleBackgroundImg from './assets/apple/background.jpg';
+import AppleOrderPage from './components/AppleOrderPage/AppleOrderPage.jsx';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 100], [1, 0.9]);
   const headerBackground = useTransform(scrollY, [0, 100], ['rgba(255,255,255,0)', 'rgba(255,255,255,0.95)']);
@@ -83,254 +87,342 @@ function App() {
   };
 
   return (
-    <div className="app">
-      {/* Header */}
-      <motion.header
-        className="header"
-        style={{ opacity: headerOpacity, backgroundColor: headerBackground }}
-      >
-        <div className="header-content">
-          <motion.div
-            className="logo"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+    <Routes>
+      <Route path="/" element={
+        <div className="app">
+          {/* Header */}
+          <motion.header
+            className="header"
+            style={{ opacity: headerOpacity, backgroundColor: headerBackground }}
           >
-            나믄자리
-          </motion.div>
+            <div className="header-content">
+              <motion.div
+                className="logo"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                나믄자리
+              </motion.div>
 
-          <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-            <button onClick={() => scrollToSection('about')}>소개</button>
-            <button onClick={() => scrollToSection('spaces')}>공간</button>
-            <button onClick={() => scrollToSection('host-message')}>호스트</button>
-          </nav>
+              <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
+                <button onClick={() => scrollToSection('about')}>소개</button>
+                <button onClick={() => scrollToSection('spaces')}>공간</button>
+                <button onClick={() => scrollToSection('apple-sales')}>동해사과</button>
+                <button onClick={() => scrollToSection('host-message')}>호스트</button>
+              </nav>
 
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-        </div>
-      </motion.header>
+              <button
+                className="mobile-menu-btn"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+            </div>
+          </motion.header>
 
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-background">
-          <div className="hero-overlay"></div>
-        </div>
-        <div className="hero-content">
-          <motion.img
-            src={logoImg}
-            alt="나믄자리 로고"
-            className="hero-logo"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.1 }}
-          />
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4 }}
-            className="hero-subtitle"
-          >
-            <span className="hero-subtitle-mobile">
-              남아있는 것에서<br className="mobile-br" />
-              가치있는 것으로 바뀌는 순간
-            </span>
-            <span className="hero-subtitle-pc">
-              남아있는 것에서 가치있는 것으로 바뀌는 순간
-            </span>
-          </motion.p>
-        </div>
-        <div
-          className="scroll-indicator"
-          style={{ left: '50%', transform: 'translateX(-50%)', position: 'absolute', bottom: '2rem' }}
-          role="button"
-          tabIndex={0}
-          onClick={() => scrollToSection('about')}
-          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') scrollToSection('about'); }}
-        >
-          <motion.div
-            initial={{ y: 0 }}
-            animate={{ y: [0, 18, 0] }}
-            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ChevronDown size={72} />
-          </motion.div>
-        </div>
-      </section>
+          {/* Hero Section */}
+          <section className="hero">
+            <div className="hero-background">
+              <div className="hero-overlay"></div>
+            </div>
+            <div className="hero-content">
+              <motion.img
+                src={logoImg}
+                alt="나믄자리 로고"
+                className="hero-logo"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.1 }}
+              />
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.4 }}
+                className="hero-subtitle"
+              >
+                <span className="hero-subtitle-mobile">
+                  남아있는 것에서<br className="mobile-br" />
+                  가치있는 것으로 바뀌는 순간
+                </span>
+                <span className="hero-subtitle-pc">
+                  남아있는 것에서 가치있는 것으로 바뀌는 순간
+                </span>
+              </motion.p>
+            </div>
+            <div
+              className="scroll-indicator"
+              style={{ left: '50%', transform: 'translateX(-50%)', position: 'absolute', bottom: '2rem' }}
+              role="button"
+              tabIndex={0}
+              onClick={() => scrollToSection('about')}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') scrollToSection('about'); }}
+            >
+              <motion.div
+                initial={{ y: 0 }}
+                animate={{ y: [0, 18, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <ChevronDown size={72} />
+              </motion.div>
+            </div>
+          </section>
 
-      {/* About Section */}
-      <section id="about" className="about">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="about-content"
-          >
-            <h2>나믄자리에 대하여</h2>
-            <p style={{ fontWeight: 'bold', fontSize: '1.15em', marginBottom: '1.2em' }}>" 당신을 위해 남은 자리 "</p>
-            <p>
-              나믄자리는 공간 운영에 특화된 호스트가 직접 관리하는 다양한 공간들의 집합입니다.
-              전통 한옥, 숲속 휴식공간, 단기임대, 공간대여 등
-              각 공간마다 고유한 이야기와 정성이 담겨 있어
-              단순한 이용을 넘어선 특별한 경험을 선사합니다.
-            </p>
-            <div className="features">
-              <div className="feature">
-                <MapPin size={32} />
-                <h3>다양한 공간</h3>
-                <p>숙소, 단기임대, 공간대여까지</p>
-              </div>
-              <div className="feature">
-                <Star size={32} />
-                <h3>직접 관리</h3>
-                <p>공간운영 전문가의 정성</p>
-              </div>
-              <div className="feature">
-                <Calendar size={32} />
-                <h3>특별한 경험</h3>
-                <p>단순한 이용을 넘어선 가치</p>
+          {/* About Section */}
+          <section id="about" className="about">
+            <div className="container">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="about-content"
+              >
+                <h2>나믄자리에 대하여</h2>
+                <p style={{ fontWeight: 'bold', fontSize: '1.15em', marginBottom: '1.2em' }}>" 당신을 위해 남은 자리 "</p>
+                <p>
+                  나믄자리는 공간 운영에 특화된 호스트가 직접 관리하는 다양한 공간들의 집합입니다.
+                  전통 한옥, 숲속 휴식공간, 단기임대, 공간대여 등
+                  각 공간마다 고유한 이야기와 정성이 담겨 있어
+                  단순한 이용을 넘어선 특별한 경험을 선사합니다.
+                </p>
+                <div className="features">
+                  <div className="feature">
+                    <MapPin size={32} />
+                    <h3>다양한 공간</h3>
+                    <p>숙소, 단기임대, 공간대여까지</p>
+                  </div>
+                  <div className="feature">
+                    <Star size={32} />
+                    <h3>직접 관리</h3>
+                    <p>공간운영 전문가의 정성</p>
+                  </div>
+                  <div className="feature">
+                    <Calendar size={32} />
+                    <h3>특별한 경험</h3>
+                    <p>단순한 이용을 넘어선 가치</p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* Spaces Section */}
+          <section id="spaces" className="spaces">
+            <div className="container">
+              <motion.h2
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="section-title"
+              >
+                나믄자리 공간들
+              </motion.h2>
+              <div className="spaces-grid">
+                {spaces.map((space, index) => (
+                  <div
+                    key={space.id}
+                    className="space-card clickable"
+                    tabIndex={0}
+                    aria-disabled={space.url ? undefined : true}
+                    onClick={() => {
+                      if (space.url) {
+                        window.open(space.url, '_blank', 'noopener noreferrer');
+                      }
+                    }}
+                    style={{ cursor: space.url ? 'pointer' : 'default' }}
+                  >
+                    <div className="space-image">
+                      <img src={space.image} alt={space.name} />
+                      {space.priceRange === "오픈예정" && (
+                        <div className="coming-soon-badge">오픈예정</div>
+                      )}
+                    </div>
+                    <div className="space-info">
+                      <h3>{space.name}</h3>
+                      <p className="location">
+                        <MapPin size={16} />
+                        {space.location}
+                      </p>
+                      <p className="space-type">{space.type}</p>
+                      <p className="description">{space.description}</p>
+                      <div className="space-meta">
+                        <div className="price">{space.priceRange}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </section>
 
-      {/* Spaces Section */}
-      <section id="spaces" className="spaces">
-        <div className="container">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="section-title"
-          >
-            나믄자리 공간들
-          </motion.h2>
-          <div className="spaces-grid">
-            {spaces.map((space, index) => (
-              <div
-                key={space.id}
-                className="space-card clickable"
-                tabIndex={0}
-                aria-disabled={space.url ? undefined : true}
-                onClick={() => {
-                  if (space.url) {
-                    window.open(space.url, '_blank', 'noopener noreferrer');
-                  }
-                }}
-                style={{ cursor: space.url ? 'pointer' : 'default' }}
+          {/* Apple Sales Section */}
+          <section id="apple-sales" className="apple-sales">
+            <div className="apple-background-image" style={{ backgroundImage: `url(${appleBackgroundImg})` }}></div>
+            <div className="container">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="apple-sales-content"
               >
-                <div className="space-image">
-                  <img src={space.image} alt={space.name} />
-                  {space.priceRange === "오픈예정" && (
-                    <div className="coming-soon-badge">오픈예정</div>
-                  )}
+                <motion.h2
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  viewport={{ once: true }}
+                  className="section-title apple-title"
+                >
+                  🍎 백년한옥사과
+                </motion.h2>
+                <motion.p
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  viewport={{ once: true }}
+                  className="apple-subtitle"
+                >
+                  껍질째 먹는 프리미엄 사과
+                </motion.p>
+
+                <div className="apple-features">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.6 }}
+                    viewport={{ once: true }}
+                    className="apple-feature"
+                  >
+                    <div className="apple-feature-icon">🏔️</div>
+                    <h3>동해 특산</h3>
+                    <p>동해의 맑은 공기와 깨끗한 물로 키워진<br/> 특별한 맛</p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.8 }}
+                    viewport={{ once: true }}
+                    className="apple-feature"
+                  >
+                    <div className="apple-feature-icon">📦</div>
+                    <h3>직배송</h3>
+                    <p>농장에서 직접 수확하여 신선하게 배송</p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.0 }}
+                    viewport={{ once: true }}
+                    className="apple-feature"
+                  >
+                    <div className="apple-feature-icon">🛒</div>
+                    <h3>지금 주문하세요!</h3>
+                    <p>신선한 백년한옥사과를 집에서 만나보세요</p>
+                    <button
+                      className="apple-order-btn"
+                      onClick={() => {
+                        navigate('/apple-order');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      주문하기 <ArrowRight size={20} />
+                    </button>
+                  </motion.div>
                 </div>
-                <div className="space-info">
-                  <h3>{space.name}</h3>
-                  <p className="location">
-                    <MapPin size={16} />
-                    {space.location}
-                  </p>
-                  <p className="space-type">{space.type}</p>
-                  <p className="description">{space.description}</p>
-                  <div className="space-meta">
-                    <div className="price">{space.priceRange}</div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* Host Message Section */}
+          <section id="host-message" className="host-message">
+            <div className="container">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="host-message-content"
+              >
+                <div className="host-message-text">
+                  <h2>호스트 인삿말</h2>
+                  <div className="message-quote">
+                    <p className="quote-text">
+                      저희는 기존의 공간을 새로운 가치로 재해석하여
+                      여러분에게 특별한 경험을 선물합니다.
+                      단순한 숙박이나 이용을 넘어서,
+                      각 공간에서 휴식하거나 생산적인 활동을 하면서
+                      그 공간만의 고유한 가치를 발견할 수 있도록 돕고 싶습니다.
+                    </p>
+                    <p className="quote-text">
+                      백년 한옥에서의 평화로운 휴식, 숲속에서의 창작 활동,
+                      도시 한가운데서의 집중된 작업 시간까지.
+                      각 공간마다 고유한 이야기와 정성이 담겨있어
+                      여러분이 그 공간의 진정한 가치를 찾아낼 수 있도록 합니다.
+                      당신을 위해 남은 자리에서, 특별한 순간을 만들어가세요.
+                    </p>
+                  </div>
+                  <div className="host-signature">
+                    <p className="host-name">판다부부</p>
+                    <p className="host-title">공간 디렉터</p>
+                  </div>
+                </div>
+                <div className="host-message-image">
+                  <img src={hostImage} alt="나믄자리 호스트" className="host-image" />
+                </div>
+              </motion.div>
+              {/* 함께하는 사람들 섹션을 container 안, host-message-content 바깥에 위치 */}
+              <div className="together-section">
+                <h3 className="together-title">함께하는 사람들</h3>
+                <div className="together-images">
+                  <div className="together-person">
+                    <img src={eunjinImg} alt="채믄진네" className="together-img" />
+                    <div className="together-label">채믄진네</div>
+                  </div>
+                  <div className="together-person">
+                    <img src={jebokImg} alt="제복이네" className="together-img" />
+                    <div className="together-label">제복이네</div>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+          </section>
 
-      {/* Host Message Section */}
-      <section id="host-message" className="host-message">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="host-message-content"
-          >
-            <div className="host-message-text">
-              <h2>호스트 인삿말</h2>
-              <div className="message-quote">
-                <p className="quote-text">
-                  저희는 기존의 공간을 새로운 가치로 재해석하여
-                  여러분에게 특별한 경험을 선물합니다.
-                  단순한 숙박이나 이용을 넘어서,
-                  각 공간에서 휴식하거나 생산적인 활동을 하면서
-                  그 공간만의 고유한 가치를 발견할 수 있도록 돕고 싶습니다.
-                </p>
-                <p className="quote-text">
-                  백년 한옥에서의 평화로운 휴식, 숲속에서의 창작 활동,
-                  도시 한가운데서의 집중된 작업 시간까지.
-                  각 공간마다 고유한 이야기와 정성이 담겨있어
-                  여러분이 그 공간의 진정한 가치를 찾아낼 수 있도록 합니다.
-                  당신을 위해 남은 자리에서, 특별한 순간을 만들어가세요.
-                </p>
-              </div>
-              <div className="host-signature">
-                <p className="host-name">판다부부</p>
-                <p className="host-title">공간 디렉터</p>
+          {/* Footer */}
+          <footer className="footer">
+            <div className="container">
+              <div className="footer-content">
+                <div className="footer-section">
+                  <h3>나믄자리</h3>
+                  <p>당신을 위해 남은 자리</p>
+                </div>
+                <div className="footer-section">
+                  <h4>바로가기</h4>
+                  <ul>
+                    <li><button onClick={() => scrollToSection('about')}>소개</button></li>
+                    <li><button onClick={() => scrollToSection('spaces')}>공간</button></li>
+                    <li><button onClick={() => scrollToSection('apple-sales')}>동해사과</button></li>
+                    <li><button onClick={() => scrollToSection('host-message')}>호스트</button></li>
+                  </ul>
+                </div>
+                <div className="footer-section">
+                  <h4>연락처</h4>
+                  <p>📞 010-6533-7496</p>
+                  <p>📧 limpanda7@naver.com</p>
+                </div>
               </div>
             </div>
-            <div className="host-message-image">
-              <img src={hostImage} alt="나믄자리 호스트" className="host-image" />
-            </div>
-          </motion.div>
-          {/* 함께하는 사람들 섹션을 container 안, host-message-content 바깥에 위치 */}
-          <div className="together-section">
-            <h3 className="together-title">함께하는 사람들</h3>
-            <div className="together-images">
-              <div className="together-person">
-                <img src={eunjinImg} alt="채믄진네" className="together-img" />
-                <div className="together-label">채믄진네</div>
-              </div>
-              <div className="together-person">
-                <img src={jebokImg} alt="제복이네" className="together-img" />
-                <div className="together-label">제복이네</div>
-              </div>
-            </div>
-          </div>
+          </footer>
         </div>
-      </section>
+      } />
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-section">
-              <h3>나믄자리</h3>
-              <p>당신을 위해 남은 자리</p>
-            </div>
-            <div className="footer-section">
-              <h4>바로가기</h4>
-              <ul>
-                <li><button onClick={() => scrollToSection('about')}>소개</button></li>
-                <li><button onClick={() => scrollToSection('spaces')}>공간</button></li>
-                <li><button onClick={() => scrollToSection('host-message')}>호스트</button></li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h4>연락처</h4>
-              <p>📞 010-6533-7496</p>
-              <p>📧 limpanda7@naver.com</p>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <Route path="/apple-order" element={<AppleOrderPage />} />
+    </Routes>
   );
 }
 

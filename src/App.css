@@ -1192,3 +1192,191 @@ body {
   }
 }
 
+/* Apple Sales Section */
+.apple-sales {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+  padding: 5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.apple-background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.25;
+  z-index: 0;
+}
+
+
+
+.apple-sales-content {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.apple-title {
+  color: #d32f2f;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(211, 47, 47, 0.1);
+}
+
+.apple-subtitle {
+  font-size: 1.2rem;
+  color: #b71c1c;
+  margin-bottom: 3rem;
+  font-weight: 500;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.apple-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.apple-feature {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(211, 47, 47, 0.1);
+  border: 1px solid rgba(211, 47, 47, 0.1);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 400px;
+  justify-self: center;
+}
+
+.apple-feature:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(211, 47, 47, 0.15);
+  border-color: rgba(211, 47, 47, 0.2);
+}
+
+.apple-feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.apple-feature h3 {
+  color: #d32f2f;
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.apple-feature p {
+  color: #666;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.apple-cta {
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+  color: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(211, 47, 47, 0.3);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.apple-cta h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+}
+
+.apple-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.apple-order-btn {
+  background: white;
+  color: #d32f2f;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.apple-order-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: #f5f5f5;
+}
+
+.apple-order-btn:active {
+  transform: translateY(0);
+}
+
+/* Mobile Responsive for Apple Sales */
+@media (max-width: 768px) {
+  .apple-sales {
+    padding: 3rem 0;
+  }
+
+  .apple-title {
+    font-size: 2rem;
+  }
+
+  .apple-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .apple-features {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .apple-feature {
+    padding: 1.5rem;
+    max-width: 350px;
+  }
+
+  .apple-feature-icon {
+    font-size: 2.5rem;
+  }
+
+  .apple-cta {
+    padding: 2rem;
+    margin: 0 1rem;
+  }
+
+  .apple-cta h3 {
+    font-size: 1.5rem;
+  }
+
+  .apple-order-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .apple-feature {
+    max-width: 320px;
+  }
+}
+
