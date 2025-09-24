@@ -368,7 +368,21 @@ body {
 /* Spaces Section */
 .spaces {
   padding: 6rem 0;
-  background: white;
+  background: #faf8f5;
+}
+
+.spaces-intro {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.spaces-intro p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 1rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section-title {
@@ -803,7 +817,8 @@ body {
 
   .about-content > p,
   .experience-content > p,
-  .contact-content > p {
+  .contact-content > p,
+  .spaces-intro p {
     font-size: 1rem;
     line-height: 1.6;
   }
@@ -961,7 +976,8 @@ body {
 
   .about-content > p,
   .experience-content > p,
-  .contact-content > p {
+  .contact-content > p,
+  .spaces-intro p {
     font-size: 0.95rem;
     line-height: 1.5;
     margin-bottom: 2rem;

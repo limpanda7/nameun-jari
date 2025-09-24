@@ -29,7 +29,7 @@ function App() {
       location: "동해",
       type: "숙소",
       image: forestImg,
-      description: "백년의 역사를 품은 전통 한옥에서의 특별한 시간",
+      description: "백년의 역사를 품은 전통 한옥의 별채",
       url: "https://forest100.herokuapp.com/forest",
       priceRange: "200,000원 ~ 300,000원"
     },
@@ -106,9 +106,8 @@ function App() {
               </motion.div>
 
               <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-                <button onClick={() => scrollToSection('about')}>소개</button>
                 <button onClick={() => scrollToSection('spaces')}>공간</button>
-                <button onClick={() => scrollToSection('apple-sales')}>동해사과</button>
+                {/*<button onClick={() => scrollToSection('apple-sales')}>동해사과</button>*/}
                 <button onClick={() => scrollToSection('host-message')}>호스트</button>
               </nav>
 
@@ -170,45 +169,6 @@ function App() {
             </div>
           </section>
 
-          {/* About Section */}
-          <section id="about" className="about">
-            <div className="container">
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-                className="about-content"
-              >
-                <h2>나믄자리에 대하여</h2>
-                <p style={{ fontWeight: 'bold', fontSize: '1.15em', marginBottom: '1.2em' }}>" 당신을 위해 남은 자리 "</p>
-                <p>
-                  나믄자리는 공간 운영에 특화된 호스트가 직접 관리하는 다양한 공간들의 집합입니다.
-                  전통 한옥, 숲속 휴식공간, 단기임대, 공간대여 등
-                  각 공간마다 고유한 이야기와 정성이 담겨 있어
-                  단순한 이용을 넘어선 특별한 경험을 선사합니다.
-                </p>
-                <div className="features">
-                  <div className="feature">
-                    <MapPin size={32} />
-                    <h3>다양한 공간</h3>
-                    <p>숙소, 단기임대, 공간대여까지</p>
-                  </div>
-                  <div className="feature">
-                    <Star size={32} />
-                    <h3>직접 관리</h3>
-                    <p>공간운영 전문가의 정성</p>
-                  </div>
-                  <div className="feature">
-                    <Calendar size={32} />
-                    <h3>특별한 경험</h3>
-                    <p>단순한 이용을 넘어선 가치</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </section>
-
           {/* Spaces Section */}
           <section id="spaces" className="spaces">
             <div className="container">
@@ -221,6 +181,19 @@ function App() {
               >
                 나믄자리 공간들
               </motion.h2>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="spaces-intro"
+              >
+                <p style={{ fontWeight: 'bold', fontSize: '1.15em', marginBottom: '1.2em' }}>" 당신을 위해 남은 자리 "</p>
+                <p>
+                  나믄자리는 공간 운영에 특화된 호스트가 직접 관리하는 다양한 공간들의 집합입니다.<br/>
+                  각 공간마다 고유한 이야기와 정성이 담겨 있어, 단순한 이용을 넘어선 특별한 경험을 선사합니다.
+                </p>
+              </motion.div>
               <div className="spaces-grid">
                 {spaces.map((space, index) => (
                   <div
@@ -259,85 +232,85 @@ function App() {
             </div>
           </section>
 
-          {/* Apple Sales Section */}
-          <section id="apple-sales" className="apple-sales">
-            <div className="apple-background-image" style={{ backgroundImage: `url(${appleBackgroundImg})` }}></div>
-            <div className="container">
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-                className="apple-sales-content"
-              >
-                <motion.h2
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  viewport={{ once: true }}
-                  className="section-title apple-title"
-                >
-                  🍎 백년한옥사과
-                </motion.h2>
-                <motion.p
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  viewport={{ once: true }}
-                  className="apple-subtitle"
-                >
-                  껍질째 먹는 프리미엄 사과
-                </motion.p>
+          {/*/!* Apple Sales Section *!/*/}
+          {/*<section id="apple-sales" className="apple-sales">*/}
+          {/*  <div className="apple-background-image" style={{ backgroundImage: `url(${appleBackgroundImg})` }}></div>*/}
+          {/*  <div className="container">*/}
+          {/*    <motion.div*/}
+          {/*      initial={{ opacity: 0, y: 50 }}*/}
+          {/*      whileInView={{ opacity: 1, y: 0 }}*/}
+          {/*      transition={{ duration: 0.8 }}*/}
+          {/*      viewport={{ once: true }}*/}
+          {/*      className="apple-sales-content"*/}
+          {/*    >*/}
+          {/*      <motion.h2*/}
+          {/*        initial={{ opacity: 0, y: 30 }}*/}
+          {/*        whileInView={{ opacity: 1, y: 0 }}*/}
+          {/*        transition={{ duration: 0.8, delay: 0.2 }}*/}
+          {/*        viewport={{ once: true }}*/}
+          {/*        className="section-title apple-title"*/}
+          {/*      >*/}
+          {/*        🍎 백년한옥사과*/}
+          {/*      </motion.h2>*/}
+          {/*      <motion.p*/}
+          {/*        initial={{ opacity: 0, y: 30 }}*/}
+          {/*        whileInView={{ opacity: 1, y: 0 }}*/}
+          {/*        transition={{ duration: 0.8, delay: 0.4 }}*/}
+          {/*        viewport={{ once: true }}*/}
+          {/*        className="apple-subtitle"*/}
+          {/*      >*/}
+          {/*        껍질째 먹는 프리미엄 사과*/}
+          {/*      </motion.p>*/}
 
-                <div className="apple-features">
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.6 }}
-                    viewport={{ once: true }}
-                    className="apple-feature"
-                  >
-                    <div className="apple-feature-icon">🏔️</div>
-                    <h3>동해 특산</h3>
-                    <p>동해의 맑은 공기와 깨끗한 물로 키워진<br/> 특별한 맛</p>
-                  </motion.div>
+          {/*      <div className="apple-features">*/}
+          {/*        <motion.div*/}
+          {/*          initial={{ opacity: 0, y: 30 }}*/}
+          {/*          whileInView={{ opacity: 1, y: 0 }}*/}
+          {/*          transition={{ duration: 0.8, delay: 0.6 }}*/}
+          {/*          viewport={{ once: true }}*/}
+          {/*          className="apple-feature"*/}
+          {/*        >*/}
+          {/*          <div className="apple-feature-icon">🏔️</div>*/}
+          {/*          <h3>동해 특산</h3>*/}
+          {/*          <p>동해의 맑은 공기와 깨끗한 물로 키워진<br/> 특별한 맛</p>*/}
+          {/*        </motion.div>*/}
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.8 }}
-                    viewport={{ once: true }}
-                    className="apple-feature"
-                  >
-                    <div className="apple-feature-icon">📦</div>
-                    <h3>직배송</h3>
-                    <p>농장에서 직접 수확하여 신선하게 배송</p>
-                  </motion.div>
+          {/*        <motion.div*/}
+          {/*          initial={{ opacity: 0, y: 30 }}*/}
+          {/*          whileInView={{ opacity: 1, y: 0 }}*/}
+          {/*          transition={{ duration: 0.8, delay: 0.8 }}*/}
+          {/*          viewport={{ once: true }}*/}
+          {/*          className="apple-feature"*/}
+          {/*        >*/}
+          {/*          <div className="apple-feature-icon">📦</div>*/}
+          {/*          <h3>직배송</h3>*/}
+          {/*          <p>농장에서 직접 수확하여 신선하게 배송</p>*/}
+          {/*        </motion.div>*/}
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 1.0 }}
-                    viewport={{ once: true }}
-                    className="apple-feature"
-                  >
-                    <div className="apple-feature-icon">🛒</div>
-                    <h3>지금 주문하세요!</h3>
-                    <p>신선한 백년한옥사과를 집에서 만나보세요</p>
-                    <button
-                      className="apple-order-btn"
-                      onClick={() => {
-                        navigate('/apple-order');
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                    >
-                      주문하기 <ArrowRight size={20} />
-                    </button>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </div>
-          </section>
+          {/*        <motion.div*/}
+          {/*          initial={{ opacity: 0, y: 30 }}*/}
+          {/*          whileInView={{ opacity: 1, y: 0 }}*/}
+          {/*          transition={{ duration: 0.8, delay: 1.0 }}*/}
+          {/*          viewport={{ once: true }}*/}
+          {/*          className="apple-feature"*/}
+          {/*        >*/}
+          {/*          <div className="apple-feature-icon">🛒</div>*/}
+          {/*          <h3>지금 주문하세요!</h3>*/}
+          {/*          <p>신선한 백년한옥사과를 집에서 만나보세요</p>*/}
+          {/*          <button*/}
+          {/*            className="apple-order-btn"*/}
+          {/*            onClick={() => {*/}
+          {/*              navigate('/apple-order');*/}
+          {/*              window.scrollTo({ top: 0, behavior: 'smooth' });*/}
+          {/*            }}*/}
+          {/*          >*/}
+          {/*            주문하기 <ArrowRight size={20} />*/}
+          {/*          </button>*/}
+          {/*        </motion.div>*/}
+          {/*      </div>*/}
+          {/*    </motion.div>*/}
+          {/*  </div>*/}
+          {/*</section>*/}
 
           {/* Host Message Section */}
           <section id="host-message" className="host-message">
@@ -404,9 +377,8 @@ function App() {
                 <div className="footer-section">
                   <h4>바로가기</h4>
                   <ul>
-                    <li><button onClick={() => scrollToSection('about')}>소개</button></li>
                     <li><button onClick={() => scrollToSection('spaces')}>공간</button></li>
-                    <li><button onClick={() => scrollToSection('apple-sales')}>동해사과</button></li>
+                    {/*<li><button onClick={() => scrollToSection('apple-sales')}>동해사과</button></li>*/}
                     <li><button onClick={() => scrollToSection('host-message')}>호스트</button></li>
                   </ul>
                 </div>
