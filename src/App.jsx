@@ -1,26 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown, MapPin, Star, Calendar, Users, ArrowRight } from 'lucide-react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import hostImage from './assets/host.jpeg';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import hostImage from './assets/landing/host.jpeg';
 import { analytics } from './firebase';
 import './App.css';
-import logoImg from './assets/logo.png';
-import forestImg from './assets/forest.webp';
-import blonImg from './assets/blon.png';
-import onoffImg from './assets/onoff.png';
-import spaceImg from './assets/space.png';
-import eunjinImg from './assets/eunjin.jpeg';
-import jebokImg from './assets/jebok.jpeg';
+import logoImg from './assets/landing/logo.png';
+import forestImg from './assets/landing/forest.webp';
+import blonImg from './assets/landing/blon.png';
+import onoffImg from './assets/landing/onoff.png';
+import spaceImg from './assets/landing/space.png';
+import eunjinImg from './assets/landing/eunjin.jpeg';
+import jebokImg from './assets/landing/jebok.jpeg';
 import appleBackgroundImg from './assets/apple/background.jpg';
 import AppleOrderPage from './components/AppleOrderPage/AppleOrderPage.jsx';
+import ForestPage from './components/ForestPage/ForestPage.jsx';
+import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { scrollY } = useScroll();
   const headerOpacity = useTransform(scrollY, [0, 100], [1, 0.9]);
   const headerBackground = useTransform(scrollY, [0, 100], ['rgba(255,255,255,0)', 'rgba(255,255,255,0.95)']);
+
+  // 페이지 이동 시 최상단으로 스크롤 또는 해시 섹션으로 스크롤
+  useEffect(() => {
+    if (location.hash) {
+      // 해시가 있으면 해당 섹션으로 스크롤 (헤더 높이 고려)
+      const element = document.querySelector(location.hash);
+      if (element) {
+        setTimeout(() => {
+          const header = document.querySelector('.header');
+          const headerHeight = header ? header.offsetHeight : 0;
+          const elementTop = element.getBoundingClientRect().top + window.scrollY;
+          const offsetPosition = elementTop - headerHeight - 20; // 20px 추가 여백
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    } else {
+      // 해시가 없으면 최상단으로 스크롤
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [location.pathname, location.hash]);
 
   const spaces = [
     {
@@ -86,6 +113,7 @@ function App() {
     setIsMenuOpen(false);
   };
 
+
   return (
     <Routes>
       <Route path="/" element={
@@ -106,7 +134,7 @@ function App() {
               </motion.div>
 
               <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-                <button onClick={() => scrollToSection('spaces')}>공간</button>
+                <button onClick={() => scrollToSection('spaces')}>공간들</button>
                 {/*<button onClick={() => scrollToSection('apple-sales')}>동해사과</button>*/}
                 <button onClick={() => scrollToSection('host-message')}>호스트</button>
               </nav>
@@ -202,7 +230,9 @@ function App() {
                     tabIndex={0}
                     aria-disabled={space.url ? undefined : true}
                     onClick={() => {
-                      if (space.url) {
+                      if (space.id === 1) {
+                        navigate('/forest');
+                      } else if (space.url) {
                         window.open(space.url, '_blank', 'noopener noreferrer');
                       }
                     }}
@@ -366,34 +396,13 @@ function App() {
             </div>
           </section>
 
-          {/* Footer */}
-          <footer className="footer">
-            <div className="container">
-              <div className="footer-content">
-                <div className="footer-section">
-                  <h3>나믄자리</h3>
-                  <p>당신을 위해 남은 자리</p>
-                </div>
-                <div className="footer-section">
-                  <h4>바로가기</h4>
-                  <ul>
-                    <li><button onClick={() => scrollToSection('spaces')}>공간</button></li>
-                    {/*<li><button onClick={() => scrollToSection('apple-sales')}>동해사과</button></li>*/}
-                    <li><button onClick={() => scrollToSection('host-message')}>호스트</button></li>
-                  </ul>
-                </div>
-                <div className="footer-section">
-                  <h4>연락처</h4>
-                  <p>📞 010-6533-7496</p>
-                  <p>📧 limpanda7@naver.com</p>
-                </div>
-              </div>
-            </div>
-          </footer>
+          {/* Common Footer */}
+          <CommonFooter />
         </div>
       } />
 
       <Route path="/apple-order" element={<AppleOrderPage />} />
+      <Route path="/forest" element={<ForestPage />} />
     </Routes>
   );
 }
