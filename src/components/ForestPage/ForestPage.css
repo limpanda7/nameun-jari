@@ -472,6 +472,7 @@
   overflow: hidden;
   border: 1px solid #e0e0e0;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  table-layout: fixed;
 }
 
 .pricing-table th,
@@ -890,6 +891,34 @@
     gap: 1rem;
   }
 
+  /* Pricing Table Mobile Optimization */
+  .pricing-table {
+    max-width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .pricing-table th,
+  .pricing-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .pricing-table th {
+    font-size: 0.9rem;
+  }
+
+  .pricing-table td {
+    font-size: 0.9rem;
+  }
+
+  .current-season-badge {
+    font-size: 0.6rem;
+    padding: 1px 6px;
+    margin-left: 4px;
+  }
+
   .contact-info {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -985,5 +1014,32 @@
 
   .amenity-item {
     font-size: 0.9rem;
+  }
+
+  /* Pricing Table Extra Small Mobile Optimization */
+  .pricing-table {
+    font-size: 0.8rem;
+  }
+
+  .pricing-table th,
+  .pricing-table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .pricing-table th {
+    font-size: 0.8rem;
+  }
+
+  .pricing-table td {
+    font-size: 0.8rem;
+  }
+
+  .current-season-badge {
+    font-size: 0.55rem;
+    padding: 1px 4px;
+    margin-left: 2px;
   }
 }

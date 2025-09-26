@@ -393,7 +393,7 @@ const BlonPage = () => {
                 <tbody>
                   <tr className={isPeakSeason ? "current-season" : ""}>
                     <td>
-                      성수기(7/20-8/20)
+                      성수기<br/>(7/20-8/20)
                       {isPeakSeason && <span className="current-season-badge">현재 시즌</span>}
                     </td>
                     <td>250,000원</td>

@@ -247,7 +247,7 @@ const ForestPage = () => {
             viewport={{ once: true }}
             className="section-subtitle"
           >
-            '소시탐탐' 촬영을 위해 소녀시대가 백년한옥별채를 방문했습니다.
+            '소시탐탐' 촬영을 위해 소녀시대가 백년한옥별채를 방문했습니다
           </motion.p>
           <div className="gallery-grid">
             {getDisplayImages().map((image, index) => (
