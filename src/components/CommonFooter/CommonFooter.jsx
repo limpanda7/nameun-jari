@@ -47,6 +47,14 @@ const CommonFooter = () => {
                   백년한옥별채
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => navigate('/blon')}
+                  className="footer-link-button"
+                >
+                  블로뉴숲
+                </button>
+              </li>
           </ul>
         </div>
       </div>

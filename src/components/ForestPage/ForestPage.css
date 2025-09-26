@@ -86,6 +86,79 @@
   z-index: 0;
 }
 
+/* BlonPage 전용 배경 이미지 */
+.blon-hero::before {
+  background: url('../../assets/blon/1.jpg') center/cover;
+}
+
+/* BlonPage 블랙 톤 테마 */
+.blon-hero {
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+  color: white;
+}
+
+.blon-hero .forest-title {
+  color: #fff;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.blon-hero .forest-subtitle {
+  color: #e8e8e8;
+  font-weight: 500;
+}
+
+.blon-hero .forest-location {
+  color: #d0d0d0;
+}
+
+.blon-hero .forest-location svg {
+  color: #d0d0d0;
+}
+
+/* BlonPage 섹션 제목 */
+.blon-page .section-title {
+  color: #2c2c2c;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.blon-page .section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #000 0%, #333 100%);
+  border-radius: 2px;
+}
+
+/* BlonPage contact 스타일 - ForestPage와 동일하게 */
+.blon-page .contact-label {
+  font-weight: 600;
+  color: #666;
+}
+
+.blon-page .contact-value {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.blon-page .contact-link {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #d4a574;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.blon-page .contact-link:hover {
+  color: #b8945f;
+  text-decoration: underline;
+}
+
 .hero-content {
   position: relative;
   z-index: 1;
@@ -459,9 +532,9 @@
 
 .charges-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -514,7 +587,7 @@
   gap: 2rem;
   flex-wrap: wrap;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 3rem auto 0;
 }
 
 .info-item {
@@ -584,10 +657,6 @@
 
 .booking-content {
   text-align: center;
-}
-
-.booking-content .section-title {
-  color: #8b6f47;
 }
 
 /* Contact Section */
@@ -764,6 +833,13 @@
 
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .charges-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 600px;
+  }
+}
+
 @media (max-width: 768px) {
   .forest-hero {
     padding: 9rem 1.5rem 3rem;
@@ -798,7 +874,7 @@
     gap: 1.5rem;
     width: 100% !important;
   }
-  
+
   .space-card {
     width: 100% !important;
     max-width: none !important;
@@ -834,7 +910,7 @@
     width: 50px;
     height: 50px;
   }
-  
+
   .modal-nav-left {
     left: 10px;
   }
@@ -891,22 +967,22 @@
     gap: 1rem;
     width: 100% !important;
   }
-  
+
   .space-card {
     padding: 1.5rem;
     width: 100% !important;
     max-width: none !important;
     min-width: 0 !important;
   }
-  
+
   .space-card h3 {
     font-size: 1.2rem;
   }
-  
+
   .amenity-list {
     gap: 0.5rem;
   }
-  
+
   .amenity-item {
     font-size: 0.9rem;
   }

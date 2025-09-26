@@ -15,6 +15,7 @@ import jebokImg from './assets/landing/jebok.jpeg';
 import appleBackgroundImg from './assets/apple/background.jpg';
 import AppleOrderPage from './components/AppleOrderPage/AppleOrderPage.jsx';
 import ForestPage from './components/ForestPage/ForestPage.jsx';
+import BlonPage from './components/BlonPage/BlonPage.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 
 function App() {
@@ -115,8 +116,9 @@ function App() {
 
 
   return (
-    <Routes>
-      <Route path="/" element={
+      <Routes>
+        <Route path="/blon" element={<BlonPage />} />
+        <Route path="/" element={
         <div className="app">
           {/* Header */}
           <motion.header
@@ -232,6 +234,8 @@ function App() {
                     onClick={() => {
                       if (space.id === 1) {
                         navigate('/forest');
+                      } else if (space.id === 2) {
+                        navigate('/blon');
                       } else if (space.url) {
                         window.open(space.url, '_blank', 'noopener noreferrer');
                       }

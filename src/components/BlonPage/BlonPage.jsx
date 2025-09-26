@@ -3,55 +3,48 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
-import './ForestPage.css';
+import '../ForestPage/ForestPage.css';
 
-// Import forest images
-import forest1 from '../../assets/forest/1.webp';
-import forest2 from '../../assets/forest/2.jpg';
-import forest3 from '../../assets/forest/3.jpg';
-import forest4 from '../../assets/forest/4.jpg';
-import forest5 from '../../assets/forest/5.jpg';
-import forest6 from '../../assets/forest/6.jpg';
-import forest7 from '../../assets/forest/7.jpg';
-import forest11 from '../../assets/forest/11.jpg';
-import forest12 from '../../assets/forest/12.webp';
+// Import blon images
+import blon1 from '../../assets/blon/1.jpg';
+import blon2 from '../../assets/blon/2.jpg';
+import blon3 from '../../assets/blon/3.jpg';
+import blon4 from '../../assets/blon/4.jpg';
+import blon5 from '../../assets/blon/5.jpg';
+import blon6 from '../../assets/blon/6.jpg';
+import blon7 from '../../assets/blon/7.jpg';
+import blon8 from '../../assets/blon/8.jpg';
+import blon9 from '../../assets/blon/9.jpg';
+import blon10 from '../../assets/blon/10.jpg';
+import blon11 from '../../assets/blon/11.jpg';
+import blon12 from '../../assets/blon/12.jpg';
+import blon13 from '../../assets/blon/13.jpg';
+import blon15 from '../../assets/blon/15.jpg';
 
-// Import 소녀시대 방문 사진들
-import ss2 from '../../assets/forest/ss2.png';
-import ss3 from '../../assets/forest/ss3.png';
-import ss6 from '../../assets/forest/ss6.png';
-import ss7 from '../../assets/forest/ss7.png';
-import ss8 from '../../assets/forest/ss8.png';
-import ss10 from '../../assets/forest/ss10.png';
-
-const ForestPage = () => {
+const BlonPage = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentImageArray, setCurrentImageArray] = useState(null);
-  const [showAllGirlsGeneration, setShowAllGirlsGeneration] = useState(false);
+  const [showAllImages, setShowAllImages] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isPeakSeason, setIsPeakSeason] = useState(false);
 
   const images = [
-    forest1,
-    forest2,
-    forest3,
-    forest4,
-    forest5,
-    forest6,
-    forest7,
-    forest11,
-    forest12
-  ];
-
-  const girlsGenerationImages = [
-    ss2,
-    ss3,
-    ss6,
-    ss7,
-    ss10,
-    ss8
+    blon1,
+    blon2,
+    blon3,
+    blon4,
+    blon5,
+    blon6,
+    blon7,
+    blon8,
+    blon9,
+    blon10,
+    blon11,
+    blon12,
+    blon13,
+    blon15
   ];
 
   // 모바일 감지
@@ -66,37 +59,35 @@ const ForestPage = () => {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
-  // 성수기 감지 (7-8월)
+  // 성수기 감지 (7월 20일 - 8월 20일)
   useEffect(() => {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1; // 1-12
-    setIsPeakSeason(currentMonth === 7 || currentMonth === 8);
+    const currentDay = currentDate.getDate();
+
+    // 7월 20일 - 8월 20일이 성수기
+    const isPeak = (currentMonth === 7 && currentDay >= 20) ||
+                   (currentMonth === 8 && currentDay <= 20);
+    setIsPeakSeason(isPeak);
   }, []);
 
   // 화면 크기에 따라 표시할 이미지 수 결정
   const getDisplayImages = () => {
-    if (isMobile) {
-      return showAllGirlsGeneration ? girlsGenerationImages : girlsGenerationImages.slice(0, 3);
-    }
-    return girlsGenerationImages; // PC에서는 모든 이미지 표시
+    return showAllImages ? images : images.slice(0, 9);
   };
 
   const shouldShowMoreButton = () => {
-    if (isMobile) {
-      return girlsGenerationImages.length > 3;
-    }
-    return false; // PC에서는 더보기 버튼 숨김
+    return images.length > 9;
   };
 
   const features = [
-    { icon: <Home size={24} />, title: "100년 한옥", description: "100년 된 전통 한옥의 별채에서 특별한 경험" },
-    { icon: <TreePine size={24} />, title: "피톤치드 산책로", description: "주변에 피톤치드 가득한 산책로와 다양한 꽃과 나무" },
-    { icon: <Mountain size={24} />, title: "텃밭 체험", description: "텃밭에서 나는 채소들을 직접 재배하여 요리 가능" },
-    { icon: <Car size={24} />, title: "넓은 마당", description: "차량 3대 이상 주차 가능한 넓은 마당" },
-    { icon: <Coffee size={24} />, title: "바베큐 시설", description: "야외 바베큐 시설 (화로, 토치, 숯, 집게 제공)" },
-    { icon: <Users size={24} />, title: "반려견 동반", description: "털날림이 적은 견종만 가능 (최대 2마리)" }
+    { icon: <Home size={24} />, title: "독립적인 숙소", description: "완전히 독립된 공간으로 프라이버시 보장" },
+    { icon: <TreePine size={24} />, title: "자연 속 휴식", description: "산정호수 근처 자연 속에서의 특별한 경험" },
+    { icon: <Mountain size={24} />, title: "넓은 마당", description: "바베큐와 야외 활동이 가능한 넓은 마당" },
+    { icon: <Car size={24} />, title: "주차 가능", description: "편리한 주차 시설 제공" },
+    { icon: <Coffee size={24} />, title: "바베큐 시설", description: "야외 바베큐 시설 (화로, 토치, 집게, 숯 제공)" },
+    { icon: <Users size={24} />, title: "반려견 동반", description: "반려견과 함께하는 여행 (최대 2마리)" }
   ];
-
 
   const openModal = (image, index, imageArray) => {
     setSelectedImage(image);
@@ -133,9 +124,8 @@ const ForestPage = () => {
     }
   };
 
-
   return (
-    <div className="forest-page">
+    <div className="forest-page blon-page">
       {/* Header */}
       <motion.header
         className="forest-header"
@@ -152,7 +142,7 @@ const ForestPage = () => {
             돌아가기
           </button>
           <a
-            href="https://forest100.herokuapp.com/forest?page=calendar"
+            href="https://forest100.herokuapp.com/boulogne?page=calendar"
             target="_blank"
             rel="noopener noreferrer"
             className="header-booking-button"
@@ -163,33 +153,22 @@ const ForestPage = () => {
       </motion.header>
 
       {/* Hero Section */}
-      <section className="forest-hero">
-        <div className="hero-content">
-          <motion.h1
+      <section className="forest-hero blon-hero">
+        <div className="container">
+          <motion.div
+            className="hero-content"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="forest-title"
           >
-            백년한옥별채
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="forest-subtitle"
-          >
-            100년 된 한옥의 별채에서<br />
-            피톤치드 가득한 자연 속 휴식을 경험해보세요
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="forest-location"
-          >
-            <MapPin size={20} />
-            <span>강원도 동해시 구미실길 96-1</span>
+            <h1 className="forest-title">블로뉴숲</h1>
+            <p className="forest-subtitle">
+              산정호수 근처 자연 속에서의 특별한 휴식
+            </p>
+            <div className="forest-location">
+              <MapPin size={20} />
+              <span>경기 포천시 영북면 산정호수로322번길 38</span>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -207,7 +186,7 @@ const ForestPage = () => {
             공간 둘러보기
           </motion.h2>
           <div className="gallery-grid">
-            {images.map((image, index) => (
+            {getDisplayImages().map((image, index) => (
               <motion.div
                 key={index}
                 className="gallery-item"
@@ -218,50 +197,7 @@ const ForestPage = () => {
                 onClick={() => openModal(image, index, images)}
                 style={{ cursor: 'pointer' }}
               >
-                <img src={image} alt={`백년한옥별채 ${index + 1}`} />
-                <div className="gallery-overlay">
-                  <span>클릭하여 확대보기</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 소녀시대 방문 사진 섹션 */}
-      <section className="girls-generation-section">
-        <div className="container">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="section-title"
-          >
-            소녀시대 방문 사진
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="section-subtitle"
-          >
-            K-POP의 레전드 소녀시대가 백년한옥별채를 방문했습니다
-          </motion.p>
-          <div className="gallery-grid">
-            {getDisplayImages().map((image, index) => (
-              <motion.div
-                key={index}
-                className="gallery-item"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                onClick={() => openModal(image, index, girlsGenerationImages)}
-                style={{ cursor: 'pointer' }}
-              >
-                <img src={image} alt={`소녀시대 방문 사진 ${index + 1}`} />
+                <img src={image} alt={`블로뉴숲 ${index + 1}`} />
                 <div className="gallery-overlay">
                   <span>클릭하여 확대보기</span>
                 </div>
@@ -279,9 +215,9 @@ const ForestPage = () => {
             >
               <button
                 className="show-more-button"
-                onClick={() => setShowAllGirlsGeneration(!showAllGirlsGeneration)}
+                onClick={() => setShowAllImages(!showAllImages)}
               >
-                {showAllGirlsGeneration ? '접기' : `더 보기`}
+                {showAllImages ? '접기' : `더 보기`}
               </button>
             </motion.div>
           )}
@@ -305,7 +241,7 @@ const ForestPage = () => {
               <motion.div
                 key={index}
                 className="feature-card"
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
@@ -329,101 +265,103 @@ const ForestPage = () => {
             viewport={{ once: true }}
             className="section-title"
           >
-            공간 & 어메니티
+            공간 구성 & 어메니티
           </motion.h2>
-
           <div className="space-amenities-grid">
             <motion.div
               className="space-card"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h3>🍳 Kitchen & Living Room</h3>
-              <div className="amenity-list">
-                <span className="amenity-item">냉장고/인덕션/전자레인지</span>
-                <span className="amenity-item">에어프라이기/토스트기/에어컨</span>
-                <span className="amenity-item">4인테이블/식기/컵/냄비/프라이팬</span>
-                <span className="amenity-item">수저/가위/칼/집게/와인잔/와인오프너</span>
-                <span className="amenity-item">전기포트/드립백</span>
-              </div>
+              <h3>침실 1</h3>
+              <ul className="amenity-list">
+                <li className="amenity-item">퀸사이즈 침대/침구/에어컨</li>
+                <li className="amenity-item">원목화장대</li>
+                <li className="amenity-item">리클라이너쇼파</li>
+                <li className="amenity-item">행거</li>
+              </ul>
             </motion.div>
 
             <motion.div
               className="space-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-            >
-              <h3>🛏️ Bedroom 1</h3>
-              <div className="amenity-list">
-                <span className="amenity-item">퀸사이즈 침대/침구</span>
-                <span className="amenity-item">테이블/의자</span>
-                <span className="amenity-item">TV/에어컨</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="space-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <h3>🛏️ Bedroom 2</h3>
-              <div className="amenity-list">
-                <span className="amenity-item">더블사이즈 침대/침구</span>
-                <span className="amenity-item">화장대/의자</span>
-                <span className="amenity-item">미니책장/서적</span>
-                <span className="amenity-item">헤어드라이기/빗/고데기</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="space-card"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <h3>🏠 Bathroom</h3>
-              <div className="amenity-list">
-                <span className="amenity-item">샴푸/컨디셔너/바디워시</span>
-                <span className="amenity-item">칫솔/치약/핸드워시</span>
-                <span className="amenity-item">종량제봉투/수건/비데</span>
-              </div>
+              <h3>침실 2</h3>
+              <ul className="amenity-list">
+                <li className="amenity-item">퀸사이즈 침대/침구</li>
+                <li className="amenity-item">거울/드라이기</li>
+                <li className="amenity-item">행거</li>
+              </ul>
             </motion.div>
 
             <motion.div
               className="space-card"
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <h3>주방</h3>
+              <ul className="amenity-list">
+                <li className="amenity-item">냉장고/가스레인지 3구/전자레인지</li>
+                <li className="amenity-item">식기/컵/냄비/프라이팬/수저/가위/칼/집게</li>
+                <li className="amenity-item">6인용 아일랜드원목식탁 및 의자</li>
+                <li className="amenity-item">에어프라이기/토스트기</li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              className="space-card"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              <h3>화장실</h3>
+              <ul className="amenity-list">
+                <li className="amenity-item">샴푸/린스/바디워시/바디타올/치약/핸드워시</li>
+                <li className="amenity-item">수건</li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              className="space-card"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <h3>거실 & 북스테이</h3>
+              <ul className="amenity-list">
+                <li className="amenity-item">4인 책상/의자 2</li>
+                <li className="amenity-item">400여권의 서적</li>
+                <li className="amenity-item">블루투스 오디오/감성라디오</li>
+                <li className="amenity-item">통기타</li>
+                <li className="amenity-item">루미큐브/스케치북/색연필</li>
+                <li className="amenity-item">필사도구</li>
+                <li className="amenity-item">WI-FI/4way냉난방기</li>
+                <li className="amenity-item">시네마빔/노트북<br/>(*별도의 TV는 비치되어 있지 않습니다.)</li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              className="space-card"
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
               viewport={{ once: true }}
             >
-              <h3>🌿 Veranda</h3>
-              <div className="amenity-list">
-                <span className="amenity-item">4인 의자</span>
-                <span className="amenity-item">전신거울 2개</span>
-                <span className="amenity-item">식물/포토존</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="space-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <h3>🔥 Terrace</h3>
-              <div className="amenity-list">
-                <span className="amenity-item">6인 테이블/방석</span>
-                <span className="amenity-item">야외조명</span>
-                <span className="amenity-item">바베큐 (신청 시 화로,토치,숯,집게 제공)</span>
-              </div>
+              <h3>마당 & 테라스</h3>
+              <ul className="amenity-list">
+                <li className="amenity-item">6인 테이블 및 의자 / 야외조명</li>
+                <li className="amenity-item">바베큐존 (바베큐신청시 화로,토치,집게,숯 제공)</li>
+                <li className="amenity-item">이용요금 20,000원</li>
+              </ul>
             </motion.div>
           </div>
         </div>
@@ -432,31 +370,33 @@ const ForestPage = () => {
       {/* Pricing Section */}
       <section className="pricing-section">
         <div className="container">
-          <motion.div
+          <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="pricing-content"
+            className="section-title"
           >
-            <h2 className="section-title">요금 정보</h2>
-
-            {/* Main Pricing Table */}
+            요금 정보
+          </motion.h2>
+          <div className="pricing-content">
             <div className="pricing-table-container">
               <table className="pricing-table">
                 <thead>
                   <tr>
                     <th>구분</th>
-                    <th>평일</th>
-                    <th>주말, 공휴일</th>
+                    <th>일~목</th>
+                    <th>금</th>
+                    <th>토</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className={isPeakSeason ? "current-season" : ""}>
                     <td>
-                      성수기(7-8월)
+                      성수기(7/20-8/20)
                       {isPeakSeason && <span className="current-season-badge">현재 시즌</span>}
                     </td>
+                    <td>250,000원</td>
                     <td>300,000원</td>
                     <td>300,000원</td>
                   </tr>
@@ -465,8 +405,9 @@ const ForestPage = () => {
                       비성수기
                       {!isPeakSeason && <span className="current-season-badge">현재 시즌</span>}
                     </td>
+                    <td>160,000원</td>
                     <td>200,000원</td>
-                    <td>300,000원</td>
+                    <td>250,000원</td>
                   </tr>
                 </tbody>
               </table>
@@ -475,39 +416,32 @@ const ForestPage = () => {
             {/* Additional Charges */}
             <div className="additional-charges">
               <h3>추가 요금</h3>
-              <div className="charges-grid four-items">
+              <div className="charges-grid">
                 <div className="charge-item">
-                  <span className="charge-label">2인 초과 시</span>
-                  <span className="charge-price">1인당 20,000원/박</span>
-                  <span className="charge-note">(추가침구 제공)</span>
+                  <span className="charge-label">4인 초과 시 1인당</span>
+                  <span className="charge-price">1박 15,000원</span>
                 </div>
                 <div className="charge-item">
-                  <span className="charge-label">반려견</span>
-                  <span className="charge-price">1마리당 30,000원/박</span>
-                  <span className="charge-note">(털날림이 적은 견종만)</span>
+                  <span className="charge-label">반려견 1마리당</span>
+                  <span className="charge-price">1박 30,000원</span>
                 </div>
                 <div className="charge-item">
-                  <span className="charge-label">바베큐 이용</span>
-                  <span className="charge-price">30,000원</span>
-                  <span className="charge-note">(화로, 토치, 숯, 집게 제공)</span>
+                  <span className="charge-label">바베큐 이용요금</span>
+                  <span className="charge-price">20,000원</span>
                 </div>
               </div>
             </div>
-          </motion.div>
 
-          {/* Basic Info */}
-          <div className="pricing-info">
-            <div className="info-item">
-              <span className="info-label">기준인원</span>
-              <span className="info-value">2인 (최대 6인 + 반려견 2마리)</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">체크인/아웃</span>
-              <span className="info-value">15:00 / 11:00</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">주차</span>
-              <span className="info-value">무료 (차량 3대 이상 가능)</span>
+            {/* Basic Info */}
+            <div className="pricing-info">
+              <div className="info-item">
+                <span className="info-label">기준인원</span>
+                <span className="info-value">4인 (최대 6인 + 반려견 2마리)</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">체크인/아웃</span>
+                <span className="info-value">15:00 / 11:00</span>
+              </div>
             </div>
           </div>
         </div>
@@ -517,16 +451,16 @@ const ForestPage = () => {
       <section className="booking-section">
         <div className="container">
           <motion.div
+            className="booking-content"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="booking-content"
           >
             <h2 className="section-title">예약하기</h2>
             <div className="booking-actions">
               <a
-                href="https://forest100.herokuapp.com/forest?page=calendar"
+                href="https://forest100.herokuapp.com/boulogne?page=calendar"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="booking-button"
@@ -557,18 +491,14 @@ const ForestPage = () => {
             </div>
             <div className="contact-info">
               <div className="contact-item">
-                <span className="contact-label">카카오톡</span>
-                <span className="contact-value">eunbibi1001</span>
-              </div>
-              <div className="contact-item">
                 <span className="contact-label">인스타그램</span>
                 <a
-                  href="https://www.instagram.com/hanok.100/"
+                  href="https://www.instagram.com/boulogne_forest/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="contact-link"
                 >
-                  @hanok.100
+                  @boulogne_forest
                 </a>
               </div>
             </div>
@@ -609,7 +539,7 @@ const ForestPage = () => {
 
               <img
                 src={(currentImageArray || images)[currentImageIndex]}
-                alt={`백년한옥별채 ${currentImageIndex + 1}`}
+                alt={`블로뉴숲 ${currentImageIndex + 1}`}
                 className="modal-image"
               />
 
@@ -629,4 +559,4 @@ const ForestPage = () => {
   );
 };
 
-export default ForestPage;
+export default BlonPage;
