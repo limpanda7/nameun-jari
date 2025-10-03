@@ -16,6 +16,7 @@ import appleBackgroundImg from './assets/apple/background.jpg';
 import AppleOrderPage from './components/AppleOrderPage/AppleOrderPage.jsx';
 import ForestPage from './components/ForestPage/ForestPage.jsx';
 import BlonPage from './components/BlonPage/BlonPage.jsx';
+import OnOffPage from './components/OnOffPage/OnOffPage.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 
 function App() {
@@ -37,7 +38,7 @@ function App() {
           const headerHeight = header ? header.offsetHeight : 0;
           const elementTop = element.getBoundingClientRect().top + window.scrollY;
           const offsetPosition = elementTop - headerHeight - 20; // 20px 추가 여백
-          
+
           window.scrollTo({
             top: offsetPosition,
             behavior: 'smooth'
@@ -77,7 +78,7 @@ function App() {
       location: "동해",
       type: "단기임대",
       image: onoffImg,
-      description: "동해의 아름다운 풍경과 함께하는 단기 체류",
+      description: "동해의 아름다운 풍경과 함께하는 단기 임대",
       url: "https://forest100.herokuapp.com/on-off",
       priceRange: "350,000원/1주"
     },
@@ -236,6 +237,8 @@ function App() {
                         navigate('/forest');
                       } else if (space.id === 2) {
                         navigate('/blon');
+                      } else if (space.id === 3) {
+                        navigate('/on-off');
                       } else if (space.url) {
                         window.open(space.url, '_blank', 'noopener noreferrer');
                       }
@@ -407,6 +410,7 @@ function App() {
 
       <Route path="/apple-order" element={<AppleOrderPage />} />
       <Route path="/forest" element={<ForestPage />} />
+      <Route path="/on-off" element={<OnOffPage />} />
     </Routes>
   );
 }

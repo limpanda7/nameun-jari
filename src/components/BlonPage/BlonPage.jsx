@@ -154,6 +154,7 @@ const BlonPage = () => {
 
       {/* Hero Section */}
       <section className="forest-hero blon-hero">
+        <div className="blon-hero-background"></div>
         <div className="container">
           <motion.div
             className="hero-content"

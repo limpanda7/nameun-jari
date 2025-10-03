@@ -74,8 +74,7 @@
   overflow: hidden;
 }
 
-.forest-hero::before {
-  content: '';
+.forest-hero-background {
   position: absolute;
   top: 0;
   left: 0;
@@ -83,12 +82,29 @@
   bottom: 0;
   background: url('../../assets/forest/1.webp') center/cover;
   opacity: 0.3;
-  z-index: 0;
+  z-index: 1;
+}
+
+.forest-hero .hero-content {
+  position: relative;
+  z-index: 2;
 }
 
 /* BlonPage 전용 배경 이미지 */
-.blon-hero::before {
+.blon-hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: url('../../assets/blon/1.jpg') center/cover;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.blon-hero .container {
+  position: relative;
+  z-index: 2;
 }
 
 /* BlonPage 블랙 톤 테마 */
@@ -390,8 +406,10 @@
 
 .space-amenities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .space-card {
@@ -1041,5 +1059,232 @@
     font-size: 0.55rem;
     padding: 1px 4px;
     margin-left: 2px;
+  }
+}
+
+/* OnOff Page Specific Styles */
+.onoff-page {
+  background: linear-gradient(135deg, #f0ffff 0%, #e0ffff 100%);
+}
+
+.onoff-hero {
+  position: relative;
+  background: linear-gradient(135deg, #008b8b 0%, #006666 100%);
+  color: white;
+  overflow: hidden;
+}
+
+.onoff-hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../../assets/on-off/1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.onoff-hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+.onoff-hero .forest-title {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.onoff-hero .forest-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.onoff-hero .forest-location {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.onoff-hero .forest-location svg {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Review Section */
+.review-section {
+  padding: 4rem 0;
+  background: #f8f9fa;
+}
+
+.review-content {
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.review-content:hover {
+  transform: translateY(-5px);
+}
+
+.review-content img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* OnOff specific feature cards */
+.onoff-page .feature-card {
+  background: white;
+  border: 2px solid #e0f7f7;
+  transition: all 0.3s ease;
+}
+
+.onoff-page .feature-card:hover {
+  border-color: #008b8b;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 139, 139, 0.15);
+}
+
+.onoff-page .feature-icon {
+  background: linear-gradient(135deg, #008b8b 0%, #006666 100%);
+  color: white;
+}
+
+/* OnOff additional info - 새로운 카드 디자인 */
+.onoff-page .additional-info {
+  margin-top: 3rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.onoff-page .info-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.onoff-page .info-icon {
+  font-size: 2rem;
+  background: linear-gradient(135deg, #008b8b 0%, #006666 100%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 139, 139, 0.3);
+}
+
+.onoff-page .additional-info h3 {
+  color: #006666;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.onoff-page .info-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.onoff-page .info-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 139, 139, 0.1);
+  border: 2px solid #e0f7f7;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.onoff-page .info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 139, 139, 0.2);
+  border-color: #008b8b;
+}
+
+.onoff-page .info-card-icon {
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #008b8b 0%, #006666 100%);
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0, 139, 139, 0.3);
+}
+
+.onoff-page .info-card-content {
+  flex: 1;
+}
+
+.onoff-page .info-card-content p {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+/* OnOff page mobile responsive */
+@media (max-width: 768px) {
+  .review-content {
+    margin: 0 1rem;
+  }
+
+  .onoff-page .info-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .onoff-page .info-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .onoff-page .additional-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .onoff-page .info-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .onoff-page .info-card {
+    padding: 1.25rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .onoff-page .info-card-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
+    margin: 0 auto;
+  }
+
+  .onoff-page .info-card-content p {
+    font-size: 0.9rem;
   }
 }
