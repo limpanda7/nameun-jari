@@ -441,7 +441,7 @@ const BlonPage = () => {
               </div>
               <div className="info-item">
                 <span className="info-label">체크인/아웃</span>
-                <span className="info-value">15:00 / 11:00</span>
+                <span className="info-value">16:00 / 12:00</span>
               </div>
             </div>
           </div>
