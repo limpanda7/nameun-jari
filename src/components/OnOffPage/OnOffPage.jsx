@@ -74,14 +74,6 @@ const OnOffPage = () => {
     return images.length > 9;
   };
 
-  const features = [
-    { icon: <Home size={24} />, title: "최소 1주 이상", description: "최소 1주 이상부터 계약 가능한 단기 임대공간" },
-    { icon: <TreePine size={24} />, title: "넓은 공간", description: "4개의 방, 2개의 주방, 거실, 화장실, 마당 제공" },
-    { icon: <Coffee size={24} />, title: "매트리스 비치", description: "퀸사이즈 매트리스 2개가 비치되어 있어 편리" },
-    { icon: <Coffee size={24} />, title: "반려동물 가능", description: "반려동물 동반 가능 (원상복구 조건)" },
-    { icon: <Car size={24} />, title: "주차 가능", description: "무릉복지회관 측면 공용주차장 이용 가능" },
-    { icon: <Users size={24} />, title: "전기차 충전소", description: "숙소 앞에 DC콤보 전기차 충전소 위치" }
-  ];
 
   const openModal = (image, index, imageArray) => {
     setSelectedImage(image);
@@ -248,36 +240,6 @@ const OnOffPage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="container">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="section-title"
-          >
-            특별한 경험
-          </motion.h2>
-          <div className="features-grid">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                className="feature-card"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="feature-icon">{feature.icon}</div>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Space & Amenities Section */}
       <section className="space-amenities-section">
@@ -402,7 +364,6 @@ const OnOffPage = () => {
             {/* Additional Info */}
             <div className="additional-info">
               <div className="info-header">
-                <div className="info-icon">📋</div>
                 <h3>이용 안내</h3>
               </div>
               <div className="info-cards">
@@ -430,6 +391,18 @@ const OnOffPage = () => {
                     <p>기름보일러를 과도하게 사용하는 경우,<br/>추가 관리비를 청구할 수 있습니다</p>
                   </div>
                 </div>
+                <div className="info-card">
+                  <div className="info-card-icon">🚗</div>
+                  <div className="info-card-content">
+                    <p>무릉복지회관 측면 공용주차장 이용 가능</p>
+                  </div>
+                </div>
+                <div className="info-card">
+                  <div className="info-card-icon">🔌</div>
+                  <div className="info-card-content">
+                    <p>숙소 앞에 DC콤보 전기차 충전소 위치</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -449,7 +422,7 @@ const OnOffPage = () => {
             <h2 className="section-title">예약하기</h2>
             <div className="booking-actions">
               <a
-                href="https://forest100.herokuapp.com/on-off"
+                href="https://forest100.herokuapp.com/on-off?page=calendar"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="booking-button"
