@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -21,6 +21,32 @@ const NPSSurvey = () => {
   });
 
   const totalSteps = 6;
+
+  // 테마 컬러 변경 (만족도 조사 페이지에서만 보라색으로)
+  useEffect(() => {
+    // 기존 테마 컬러 저장
+    const originalThemeColor = document.querySelector('meta[name="theme-color"]');
+    const originalColor = originalThemeColor ? originalThemeColor.getAttribute('content') : '#8B4513';
+    
+    // 테마 컬러를 보라색으로 변경
+    if (originalThemeColor) {
+      originalThemeColor.setAttribute('content', '#667eea');
+    } else {
+      // 테마 컬러 메타 태그가 없으면 새로 생성
+      const meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      meta.content = '#667eea';
+      document.head.appendChild(meta);
+    }
+
+    // 컴포넌트 언마운트 시 원래 테마 컬러로 복원
+    return () => {
+      const currentThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (currentThemeColor) {
+        currentThemeColor.setAttribute('content', originalColor);
+      }
+    };
+  }, []);
 
   const handleRecommendationChange = (value) => {
     setSurveyData(prev => ({ ...prev, recommendation: value }));
