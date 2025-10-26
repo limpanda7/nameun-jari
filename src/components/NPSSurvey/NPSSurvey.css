@@ -415,12 +415,12 @@
   background: #5a6268;
 }
 
-.next-btn, .submit-btn {
+.next-btn {
   background: #667eea;
   color: white;
 }
 
-.next-btn:hover, .submit-btn:hover {
+.next-btn:hover {
   background: #5a6fd8;
 }
 
@@ -428,30 +428,6 @@
   background: #ccc;
   cursor: not-allowed;
   opacity: 0.6;
-}
-
-.nav-btn:disabled.submit-btn {
-  background: #667eea;
-  opacity: 0.8;
-  position: relative;
-}
-
-.nav-btn:disabled.submit-btn::after {
-  content: '';
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  margin: auto;
-  border: 2px solid transparent;
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-left: 8px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 /* 모바일 반응형 */

@@ -21,13 +21,14 @@ const NPSSurvey = () => {
   });
 
   const totalSteps = 6;
+  const displaySteps = 4; // 프로그레스 바에 표시할 스텝 수 (이벤트 참여, 감사 페이지 제외)
 
   // 테마 컬러 변경 (만족도 조사 페이지에서만 보라색으로)
   useEffect(() => {
     // 기존 테마 컬러 저장
     const originalThemeColor = document.querySelector('meta[name="theme-color"]');
     const originalColor = originalThemeColor ? originalThemeColor.getAttribute('content') : '#8B4513';
-    
+
     // 테마 컬러를 보라색으로 변경
     if (originalThemeColor) {
       originalThemeColor.setAttribute('content', '#667eea');
@@ -150,12 +151,12 @@ const NPSSurvey = () => {
         improvementPoints: surveyData.improvementPoints,
         discoveryPath: surveyData.discoveryPath,
         otherDiscoveryPath: surveyData.otherDiscoveryPath,
-        
+
         // 이벤트 참여 정보
         eventParticipation: surveyData.eventParticipation,
         participantName: surveyData.eventParticipation ? surveyData.name : '',
         participantPhone: surveyData.eventParticipation ? surveyData.phone : '',
-        
+
         // 메타데이터
         submittedAt: serverTimestamp(),
         createdAt: serverTimestamp()
@@ -470,13 +471,15 @@ const NPSSurvey = () => {
       <div className="survey-container">
         <div className="survey-header">
           <h1>온오프 스페이스 만족도 조사</h1>
-          <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-            />
-          </div>
-          <p className="progress-text">{currentStep} / {totalSteps}</p>
+            <div className="progress-bar">
+              <div
+                className="progress-fill"
+                style={{ width: `${currentStep <= displaySteps ? (currentStep / displaySteps) * 100 : 100}%` }}
+              />
+            </div>
+            <p className="progress-text">
+              {currentStep <= displaySteps ? `${currentStep} / ${displaySteps}` : ''}
+            </p>
         </div>
 
         <motion.div
@@ -509,11 +512,11 @@ const NPSSurvey = () => {
 
           {currentStep === 5 && (
             <button
-              className="nav-btn submit-btn"
+              className='nav-btn next-btn'
               onClick={submitSurvey}
               disabled={isSubmitting || (surveyData.eventParticipation === true && (!surveyData.name || !surveyData.phone))}
             >
-              {isSubmitting ? '제출 중...' : '설문 완료'}
+              설문 완료
             </button>
           )}
         </div>
