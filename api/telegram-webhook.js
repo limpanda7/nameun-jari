@@ -17,19 +17,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { orderData } = req.body;
-
-    if (!orderData) {
-      return res.status(400).json({ error: 'Order data is required' });
-    }
+    const { orderData, surveyData } = req.body;
 
     // 텔레그램 봇 설정
     const token = process.env.TELEGRAM_TOKEN || '1857829748:AAEQqFmUc4AWxad1-t1KRjQaXoXORjV91I4';
-    const chatId = process.env.TELEGRAM_CHAT_ID_APPLE || '-4588249608';
     const baseUrl = `https://api.telegram.org/bot${token}`;
 
-    // 알림 메시지 생성
-    const message = createAppleOrderMessage(orderData);
+    let message, chatId;
+
+    if (orderData) {
+      // 사과 주문 처리
+      chatId = process.env.TELEGRAM_CHAT_ID_APPLE || '-4588249608';
+      message = createAppleOrderMessage(orderData);
+    } else if (surveyData) {
+      // 설문 데이터 처리
+      chatId = process.env.TELEGRAM_CHAT_ID_SPACE || '-4227666163';
+      message = createSurveyMessage(surveyData);
+    } else {
+      return res.status(400).json({ error: 'Order data or survey data is required' });
+    }
 
     // 텔레그램 메시지 발송
     const telegramResponse = await fetch(`${baseUrl}/sendMessage`, {
@@ -131,4 +137,57 @@ function createAppleOrderMessage(orderData) {
 ${message || '메시지 없음'}
 
 ⏰ 주문 확인 후 처리해주세요!`;
+}
+
+// 설문 알림 메시지 생성 함수
+function createSurveyMessage(surveyData) {
+  const {
+    recommendation,
+    personalGrowth,
+    eventParticipation,
+    participantName,
+    participantPhone,
+    submittedAt
+  } = surveyData;
+
+  // submittedAt이 ISO 문자열인지 확인하고 적절히 처리
+  let submittedAtStr;
+  if (submittedAt) {
+    try {
+      if (typeof submittedAt === 'string') {
+        submittedAtStr = new Date(submittedAt).toLocaleString('ko-KR');
+      } else if (submittedAt.toDate) {
+        // Firestore 타임스탬프인 경우
+        submittedAtStr = submittedAt.toDate().toLocaleString('ko-KR');
+      } else {
+        submittedAtStr = new Date(submittedAt).toLocaleString('ko-KR');
+      }
+    } catch (error) {
+      console.error('날짜 파싱 오류:', error);
+      submittedAtStr = new Date().toLocaleString('ko-KR');
+    }
+  } else {
+    submittedAtStr = new Date().toLocaleString('ko-KR');
+  }
+
+  let message = `📋 <b>새로운 온오프 스페이스 설문이 제출되었습니다!</b> 📋
+
+📊 <b>설문 정보</b>
+• 추천 의향: ${recommendation}/7점
+• 성장 기여도: ${personalGrowth}/7점
+• 제출일시: ${submittedAtStr}`;
+
+  if (eventParticipation && participantName && participantPhone) {
+    message += `
+
+🎁 <b>이벤트 참여자 정보</b>
+• 이름: ${participantName}
+• 전화번호: ${participantPhone}`;
+  }
+
+  message += `
+
+⏰ 설문 확인 후 처리해주세요!`;
+
+  return message;
 }

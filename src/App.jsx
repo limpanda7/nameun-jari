@@ -19,6 +19,7 @@ import BlonPage from './components/BlonPage/BlonPage.jsx';
 import OnOffPage from './components/OnOffPage/OnOffPage.jsx';
 import SpacePage from './components/SpacePage/SpacePage.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
+import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -415,6 +416,7 @@ function App() {
       <Route path="/forest" element={<ForestPage />} />
       <Route path="/on-off" element={<OnOffPage />} />
       <Route path="/space" element={<SpacePage />} />
+      <Route path="/space/survey" element={<NPSSurvey />} />
     </Routes>
   );
 }

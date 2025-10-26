@@ -2,15 +2,9 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // apple-orders 컬렉션에 대한 주문 생성 권한 허용
-    match /apple-orders/{document} {
-      allow create: if true;  // 주문 생성 허용
-      allow read, update, delete: if false;  // 다른 작업은 거부
-    }
-    
-    // 다른 모든 컬렉션은 기본적으로 거부
+    // 개발 중에는 모든 권한 허용 (배포 시 수정 필요)
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if true;
     }
   }
 }
