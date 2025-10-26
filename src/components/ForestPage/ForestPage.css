@@ -1301,3 +1301,115 @@
     font-size: 0.9rem;
   }
 }
+
+/* SpacePage 전용 스타일 */
+.space-page .space-hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('../../assets/space/1.jpg') center/cover;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.space-page .notice-section {
+  padding: 6rem 0;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.space-page .notice-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.space-page .notice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.space-page .notice-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #d4a574;
+}
+
+.space-page .notice-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.space-page .notice-text {
+  color: #333;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.space-page .payment-info {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.space-page .payment-info h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.space-page .payment-details p {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* SpacePage 전용 추가 요금 스타일 */
+.space-page .charges-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.space-page .charge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(212, 165, 116, 0.2);
+  min-width: 200px;
+}
+
+.space-page .charge-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.space-page .charge-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #d4a574;
+}
+
+/* SpacePage 모바일 반응형 */
+@media (max-width: 768px) {
+  .space-page .notice-grid {
+    grid-template-columns: 1fr;
+  }
+}
