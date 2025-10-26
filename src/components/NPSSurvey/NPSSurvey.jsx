@@ -521,6 +521,20 @@ const NPSSurvey = () => {
           )}
         </div>
       </div>
+
+      {/* 로딩 오버레이 */}
+      {isSubmitting && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <div className="loading-text">설문을 제출하고 있습니다</div>
+            <div className="loading-subtext">
+              잠시만 기다려주세요...<br/>
+              설문 데이터를 저장하고 있습니다.
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

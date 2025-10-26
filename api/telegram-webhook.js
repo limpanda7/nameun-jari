@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
     if (telegramResult.ok) {
       console.log('텔레그램 알림 발송 성공:', telegramResult);
-      
+
       return res.status(200).json({
         success: true,
         message: '텔레그램 알림이 성공적으로 발송되었습니다.',
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
       });
     } else {
       console.error('텔레그램 알림 발송 실패:', telegramResult);
-      
+
       return res.status(500).json({
         success: false,
         error: '텔레그램 알림 발송에 실패했습니다.',
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('API 처리 중 오류 발생:', error);
-    
+
     return res.status(500).json({
       success: false,
       error: '서버 오류가 발생했습니다.',
@@ -174,8 +174,7 @@ function createSurveyMessage(surveyData) {
 
 📊 <b>설문 정보</b>
 • 추천 의향: ${recommendation}/7점
-• 성장 기여도: ${personalGrowth}/7점
-• 제출일시: ${submittedAtStr}`;
+• 성장 기여도: ${personalGrowth}/7점`;
 
   if (eventParticipation && participantName && participantPhone) {
     message += `
