@@ -1,0 +1,124 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import Calendar from '../Calendar/Calendar';
+import './ForestCalendar.css';
+
+const ForestCalendar = () => {
+  const navigate = useNavigate();
+  const [picked, setPicked] = useState([]);
+  const [isContinuous] = useState(true);
+  const [reserved, setReserved] = useState([]);
+  const [error, setError] = useState(null);
+
+  // API에서 예약 데이터 가져오기
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        // 환경에 따라 다른 API URL 사용
+        const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const baseUrl = isDevelopment ? '/forest-api' : 'https://forest100.herokuapp.com/api';
+        
+        // 내부 DB 예약 데이터와 에어비앤비 iCal 데이터를 병렬로 가져오기
+        const [internalResponse, airbnbResponse] = await Promise.all([
+          fetch(`${baseUrl}/reservation/forest`),
+          fetch(`${baseUrl}/ical/forest`)
+        ]);
+
+        if (!internalResponse.ok) {
+          throw new Error('내부 예약 데이터를 가져오는데 실패했습니다.');
+        }
+        if (!airbnbResponse.ok) {
+          throw new Error('에어비앤비 예약 데이터를 가져오는데 실패했습니다.');
+        }
+
+        const internalData = await internalResponse.json();
+        const airbnbData = await airbnbResponse.json();
+
+        // 내부 DB 데이터를 캘린더 형식으로 변환
+        const internalReservations = internalData.map(reservation => ({
+          checkin_date: reservation.checkin_date,
+          checkout_date: reservation.checkout_date
+        }));
+
+        // 에어비앤비 데이터를 캘린더 형식으로 변환
+        const airbnbReservations = airbnbData.map(reservation => ({
+          checkin_date: reservation.start_dt,
+          checkout_date: reservation.end_dt
+        }));
+
+        // 두 데이터를 합치기
+        const allReservations = [...internalReservations, ...airbnbReservations];
+        setReserved(allReservations);
+        setError(null);
+      } catch (err) {
+        console.error('예약 데이터 로딩 에러:', err);
+        setError(err.message);
+        // 에러 발생 시 빈 배열로 설정
+        setReserved([]);
+      }
+    };
+
+    fetchReservations();
+  }, []);
+
+  const handleReservation = () => {
+    if (picked.length === 0) {
+      alert('체크인과 체크아웃 날짜를 선택해주세요.');
+      return;
+    }
+
+    // ForestReservation 페이지로 이동하면서 선택된 날짜 전달
+    navigate('/forest/reservation', {
+      state: { picked }
+    });
+  };
+
+  return (
+    <div className="forest-calendar">
+      {/* Header */}
+      <div className="forest-calendar-header-section">
+        <button
+          className="back-button"
+          onClick={() => navigate('/forest')}
+        >
+          <ArrowLeft size={20} />
+          돌아가기
+        </button>
+      </div>
+
+      <div className="forest-calendar-header">
+        <h1>백년한옥별채 예약</h1>
+        <p>원하시는 날짜를 선택해주세요</p>
+      </div>
+
+      <div className="forest-calendar-content">
+        {error ? (
+          <div className="error-container">
+            <p className="error-message">⚠️ {error}</p>
+            <p className="error-note">예약 가능한 날짜를 확인할 수 없습니다. 잠시 후 다시 시도해주세요.</p>
+          </div>
+        ) : (
+          <Calendar
+            isContinuous={isContinuous}
+            picked={picked}
+            setPicked={setPicked}
+            reserved={reserved}
+          />
+        )}
+
+        {!error && (
+          <button
+            className="reservation-btn"
+            onClick={handleReservation}
+            disabled={picked.length === 0}
+          >
+            예약하기
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ForestCalendar;

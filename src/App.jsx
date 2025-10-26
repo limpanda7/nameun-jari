@@ -15,6 +15,8 @@ import jebokImg from './assets/landing/jebok.jpeg';
 import appleBackgroundImg from './assets/apple/background.jpg';
 import AppleOrderPage from './components/AppleOrderPage/AppleOrderPage.jsx';
 import ForestPage from './components/ForestPage/ForestPage.jsx';
+import ForestCalendar from './components/ForestCalendar/ForestCalendar.jsx';
+import ForestReservation from './components/ForestReservation/ForestReservation.jsx';
 import BlonPage from './components/BlonPage/BlonPage.jsx';
 import OnOffPage from './components/OnOffPage/OnOffPage.jsx';
 import SpacePage from './components/SpacePage/SpacePage.jsx';
@@ -414,6 +416,8 @@ function App() {
 
       <Route path="/apple-order" element={<AppleOrderPage />} />
       <Route path="/forest" element={<ForestPage />} />
+      <Route path="/forest/calendar" element={<ForestCalendar />} />
+      <Route path="/forest/reservation" element={<ForestReservation />} />
       <Route path="/on-off" element={<OnOffPage />} />
       <Route path="/space" element={<SpacePage />} />
       <Route path="/space/survey" element={<NPSSurvey />} />

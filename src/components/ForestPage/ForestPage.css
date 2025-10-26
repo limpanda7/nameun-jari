@@ -545,28 +545,6 @@
   color: #333;
 }
 
-.pricing-table .current-season {
-  background: rgba(212, 165, 116, 0.1);
-  border: 2px solid #d4a574;
-  position: relative;
-}
-
-.pricing-table .current-season td {
-  color: #d4a574;
-  font-weight: 600;
-}
-
-.current-season-badge {
-  display: inline-block;
-  background: #d4a574;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  margin-left: 8px;
-  vertical-align: middle;
-}
 
 /* Additional Charges */
 .additional-charges {
@@ -944,29 +922,14 @@
   /* Pricing Table Mobile Optimization */
   .pricing-table {
     max-width: 100%;
-    font-size: 0.9rem;
   }
 
   .pricing-table th,
   .pricing-table td {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.9rem;
+    padding: 0.5rem;
+    font-size: 1rem;
     word-wrap: break-word;
     overflow-wrap: break-word;
-  }
-
-  .pricing-table th {
-    font-size: 0.9rem;
-  }
-
-  .pricing-table td {
-    font-size: 0.9rem;
-  }
-
-  .current-season-badge {
-    font-size: 0.6rem;
-    padding: 1px 6px;
-    margin-left: 4px;
   }
 
   .contact-info {
@@ -1036,61 +999,6 @@
 
   .gallery-item img {
     height: 200px;
-  }
-}
-
-/* 더 작은 모바일 화면 (480px 이하) */
-@media (max-width: 480px) {
-  .space-amenities-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem;
-    width: 100% !important;
-  }
-
-  .space-card {
-    padding: 1.5rem;
-    width: 100% !important;
-    max-width: none !important;
-    min-width: 0 !important;
-  }
-
-  .space-card h3 {
-    font-size: 1.2rem;
-  }
-
-  .amenity-list {
-    gap: 0.5rem;
-  }
-
-  .amenity-item {
-    font-size: 0.9rem;
-  }
-
-  /* Pricing Table Extra Small Mobile Optimization */
-  .pricing-table {
-    font-size: 0.8rem;
-  }
-
-  .pricing-table th,
-  .pricing-table td {
-    padding: 0.5rem 0.25rem;
-    font-size: 0.8rem;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-
-  .pricing-table th {
-    font-size: 0.8rem;
-  }
-
-  .pricing-table td {
-    font-size: 0.8rem;
-  }
-
-  .current-season-badge {
-    font-size: 0.55rem;
-    padding: 1px 4px;
-    margin-left: 2px;
   }
 }
 

@@ -31,7 +31,6 @@ const ForestPage = () => {
   const [currentImageArray, setCurrentImageArray] = useState(null);
   const [showAllGirlsGeneration, setShowAllGirlsGeneration] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isPeakSeason, setIsPeakSeason] = useState(false);
 
   const images = [
     forest1,
@@ -64,13 +63,6 @@ const ForestPage = () => {
     window.addEventListener('resize', checkIsMobile);
 
     return () => window.removeEventListener('resize', checkIsMobile);
-  }, []);
-
-  // 성수기 감지 (7-8월)
-  useEffect(() => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1; // 1-12
-    setIsPeakSeason(currentMonth === 7 || currentMonth === 8);
   }, []);
 
   // 화면 크기에 따라 표시할 이미지 수 결정
@@ -151,14 +143,12 @@ const ForestPage = () => {
             <ArrowLeft size={20} />
             돌아가기
           </button>
-          <a
-            href="https://forest100.herokuapp.com/forest?page=calendar"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
             className="header-booking-button"
+            onClick={() => navigate('/forest/calendar')}
           >
             📅 예약하기
-          </a>
+          </button>
         </div>
       </motion.header>
 
@@ -453,19 +443,13 @@ const ForestPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className={isPeakSeason ? "current-season" : ""}>
-                    <td>
-                      성수기(7-8월)
-                      {isPeakSeason && <span className="current-season-badge">현재 시즌</span>}
-                    </td>
+                  <tr>
+                    <td>성수기(7-8월)</td>
                     <td>300,000원</td>
                     <td>300,000원</td>
                   </tr>
-                  <tr className={!isPeakSeason ? "current-season" : ""}>
-                    <td>
-                      비성수기
-                      {!isPeakSeason && <span className="current-season-badge">현재 시즌</span>}
-                    </td>
+                  <tr>
+                    <td>비성수기</td>
                     <td>200,000원</td>
                     <td>300,000원</td>
                   </tr>
@@ -526,14 +510,12 @@ const ForestPage = () => {
           >
             <h2 className="section-title">예약하기</h2>
             <div className="booking-actions">
-              <a
-                href="https://forest100.herokuapp.com/forest?page=calendar"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
                 className="booking-button"
+                onClick={() => navigate('/forest/calendar')}
               >
                 📅 예약하기
-              </a>
+              </button>
             </div>
             <div className="booking-note">
               <p>실시간 예약 가능 일정을 확인하고 바로 예약하세요.</p>

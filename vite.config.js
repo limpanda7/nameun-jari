@@ -10,6 +10,12 @@ export default defineConfig({
         target: 'https://nameun-jari-cph86m5r6-sunghoon-lims-projects.vercel.app',
         changeOrigin: true,
         secure: false,
+      },
+      '/forest-api': {
+        target: 'https://forest100.herokuapp.com',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/forest-api/, '/api')
       }
     }
   }
