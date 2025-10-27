@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { FOREST_PRICE } from '../../constants/price';
 import { isFriday, isHoliday, isSummer, isWeekday } from '../../utils/date';
+import { FOREST_API_BASE } from '../../utils/api';
 import './ForestReservation.css';
 
 const ForestReservation = () => {
@@ -102,7 +103,7 @@ const ForestReservation = () => {
         isRequested = true;
         setIsLoading(true);
 
-        const response = await fetch('/forest-api/reservation/forest', {
+        const response = await fetch(`${FOREST_API_BASE}/reservation/forest`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

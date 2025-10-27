@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Calendar from '../Calendar/Calendar';
+import { FOREST_API_BASE } from '../../utils/api';
 import './ForestCalendar.css';
 
 const ForestCalendar = () => {
@@ -15,10 +16,10 @@ const ForestCalendar = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        // 모든 환경에서 /forest-api를 통해 프록시된 Vercel API 호출
+        // 환경에 따라 적절한 API URL 사용 (개발: 프록시, 프로덕션: 절대 URL)
         const [internalResponse, airbnbResponse] = await Promise.all([
-          fetch('/forest-api/reservation/forest'),
-          fetch('/forest-api/ical/forest')
+          fetch(`${FOREST_API_BASE}/reservation/forest`),
+          fetch(`${FOREST_API_BASE}/ical/forest`)
         ]);
 
         if (!internalResponse.ok) {
