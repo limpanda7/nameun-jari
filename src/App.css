@@ -6,7 +6,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
 }
 
 body {
@@ -74,6 +73,20 @@ body {
 
 .nav button:hover {
   color: #d4a574;
+}
+
+/* 데스크톱/모바일 메뉴 버튼 분리 */
+.nav-btn-desktop {
+  display: block;
+}
+
+.nav-btn-mobile {
+  display: none;
+}
+
+/* 모바일 메뉴 닫기 버튼 (기본 숨김) */
+.mobile-menu-close {
+  display: none;
 }
 
 .mobile-menu-btn {
@@ -712,6 +725,37 @@ body {
 
   .mobile-menu-btn {
     display: flex;
+  }
+
+  /* 모바일에서 메뉴 버튼 교체 */
+  .nav-btn-desktop {
+    display: none !important;
+  }
+
+  .nav-btn-mobile {
+    display: block !important;
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+  }
+
+  /* 모바일 메뉴 닫기 버튼 */
+  .mobile-menu-close {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #2c3e50;
+    z-index: 1001;
+  }
+
+  .nav-open .mobile-menu-close {
+    display: block;
+  }
+
+  .mobile-menu-close:hover {
+    color: #d4a574;
   }
 
   .hero {

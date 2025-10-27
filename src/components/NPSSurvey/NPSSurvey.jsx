@@ -107,7 +107,7 @@ const NPSSurvey = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
       // 모바일에서 다음 단계로 이동할 때 최상단으로 스크롤
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   };
 
@@ -115,7 +115,7 @@ const NPSSurvey = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
       // 이전 단계로 이동할 때도 최상단으로 스크롤
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   };
 
@@ -196,7 +196,7 @@ const NPSSurvey = () => {
       // 다음 단계(감사 페이지)로 이동
       setCurrentStep(6);
       // 감사 페이지로 이동할 때도 최상단으로 스크롤
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     } catch (error) {
       console.error('설문 저장 중 오류 발생:', error);
       alert('설문 저장 중 오류가 발생했습니다. 다시 시도해주세요.');

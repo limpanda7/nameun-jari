@@ -46,6 +46,27 @@
   margin: 0.5rem 0;
 }
 
+.business-info {
+  max-width: 400px;
+}
+
+.business-details {
+  margin-top: 0.5rem;
+}
+
+.business-details p {
+  margin: 0.5rem 0;
+  color: #d7ccc8;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.business-details strong {
+  color: #d4a574;
+  margin-right: 0.5rem;
+  font-weight: 600;
+}
+
 .footer-section button {
   background: none;
   border: none;
@@ -113,5 +134,13 @@
 
   .common-footer {
     padding: 2rem 0 1rem;
+  }
+
+  .business-info {
+    max-width: 100%;
+  }
+
+  .business-details p {
+    font-size: 0.9rem;
   }
 }

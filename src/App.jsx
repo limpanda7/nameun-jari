@@ -45,13 +45,13 @@ function App() {
 
           window.scrollTo({
             top: offsetPosition,
-            behavior: 'smooth'
+            behavior: 'auto'
           });
         }, 100);
       }
     } else {
       // 해시가 없으면 최상단으로 스크롤
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, [location.pathname, location.hash]);
 
@@ -114,7 +114,7 @@ function App() {
     const headerHeight = header ? header.offsetHeight : 0;
     if (element) {
       const y = element.getBoundingClientRect().top + window.scrollY - headerHeight;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: y, behavior: 'auto' });
     }
     setIsMenuOpen(false);
   };
@@ -141,9 +141,22 @@ function App() {
               </motion.div>
 
               <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-                <button onClick={() => scrollToSection('spaces')}>공간들</button>
-                {/*<button onClick={() => scrollToSection('apple-sales')}>동해사과</button>*/}
-                <button onClick={() => scrollToSection('host-message')}>호스트</button>
+                <button className="nav-btn-desktop" onClick={() => scrollToSection('spaces')}>공간들</button>
+                <button className="nav-btn-desktop" onClick={() => scrollToSection('host-message')}>호스트</button>
+                
+                {/* 모바일 메뉴 닫기 버튼 */}
+                <button className="mobile-menu-close" onClick={() => setIsMenuOpen(false)}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+                
+                {/* 모바일 전용 메뉴 */}
+                <button className="nav-btn-mobile" onClick={() => { navigate('/forest'); setIsMenuOpen(false); }}>백년한옥별채</button>
+                <button className="nav-btn-mobile" onClick={() => { navigate('/blon'); setIsMenuOpen(false); }}>블로뉴숲</button>
+                <button className="nav-btn-mobile" onClick={() => { navigate('/on-off'); setIsMenuOpen(false); }}>온오프스테이</button>
+                <button className="nav-btn-mobile" onClick={() => { navigate('/space'); setIsMenuOpen(false); }}>온오프스페이스</button>
               </nav>
 
               <button
