@@ -11,6 +11,12 @@
       "maxDuration": 10
     }
   },
+  "rewrites": [
+    {
+      "source": "/forest-api/:path*",
+      "destination": "https://forest100.herokuapp.com/api/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",

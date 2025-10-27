@@ -15,14 +15,10 @@ const ForestCalendar = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        // 환경에 따라 다른 API URL 사용
-        const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const baseUrl = isDevelopment ? '/forest-api' : 'https://forest100.herokuapp.com/api';
-        
-        // 내부 DB 예약 데이터와 에어비앤비 iCal 데이터를 병렬로 가져오기
+        // 모든 환경에서 /forest-api를 통해 프록시된 Vercel API 호출
         const [internalResponse, airbnbResponse] = await Promise.all([
-          fetch(`${baseUrl}/reservation/forest`),
-          fetch(`${baseUrl}/ical/forest`)
+          fetch('/forest-api/reservation/forest'),
+          fetch('/forest-api/ical/forest')
         ]);
 
         if (!internalResponse.ok) {
