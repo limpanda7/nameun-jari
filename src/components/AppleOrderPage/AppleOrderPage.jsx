@@ -88,15 +88,9 @@ function AppleOrderPage() {
       const docRef = await addDoc(collection(db, 'apple-orders'), orderData);
       console.log('주문이 성공적으로 저장되었습니다. 문서 ID:', docRef.id);
 
-      // 텔레그램 알림 발송 (환경에 따라 다른 API URL 사용)
+      // 텔레그램 알림 발송
       try {
-        // 환경에 따라 API URL 결정
-        const isVercel = window.location.hostname.includes('vercel.app');
-        const apiUrl = isVercel
-          ? '/api/telegram-webhook'
-          : 'https://nameun-jari.vercel.app/api/telegram-webhook';
-
-        const response = await fetch(apiUrl, {
+        const response = await fetch('/api/telegram-webhook', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

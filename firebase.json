@@ -8,6 +8,14 @@
     ],
     "rewrites": [
       {
+        "source": "/forest-api/**",
+        "function": "forestApi"
+      },
+      {
+        "source": "/api/telegram-webhook",
+        "function": "telegramWebhook"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
@@ -32,6 +40,9 @@
         ]
       }
     ]
+  },
+  "functions": {
+    "source": "functions"
   },
   "firestore": {
     "rules": "firestore.rules",

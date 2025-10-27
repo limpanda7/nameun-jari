@@ -174,13 +174,7 @@ const NPSSurvey = () => {
 
       // 텔레그램 알림 발송
       try {
-        // 환경에 따라 API URL 결정
-        const isVercel = window.location.hostname.includes('vercel.app');
-        const apiUrl = isVercel
-          ? '/api/telegram-webhook'
-          : 'https://nameun-jari.vercel.app/api/telegram-webhook';
-
-        const response = await fetch(apiUrl, {
+        const response = await fetch('/api/telegram-webhook', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

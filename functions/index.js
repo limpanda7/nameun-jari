@@ -1,11 +1,16 @@
-// Vercel Functions를 사용한 텔레그램 알림 API
-export default async function handler(req, res) {
-  // CORS 설정
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+const functions = require('firebase-functions');
+const https = require('https');
+const url = require('url');
+const fetch = require('node-fetch');
 
-  // OPTIONS 요청 처리 (CORS preflight)
+// 텔레그램 알림 함수
+exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
+  // CORS 설정
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+
+  // OPTIONS 요청 처리
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
@@ -54,16 +59,14 @@ export default async function handler(req, res) {
 
     if (telegramResult.ok) {
       console.log('텔레그램 알림 발송 성공:', telegramResult);
-
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         message: '텔레그램 알림이 성공적으로 발송되었습니다.',
         telegramResult: telegramResult
       });
     } else {
       console.error('텔레그램 알림 발송 실패:', telegramResult);
-
-      return res.status(500).json({
+      res.status(500).json({
         success: false,
         error: '텔레그램 알림 발송에 실패했습니다.',
         telegramError: telegramResult
@@ -72,14 +75,13 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('API 처리 중 오류 발생:', error);
-
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       error: '서버 오류가 발생했습니다.',
       details: error.message
     });
   }
-}
+});
 
 // 사과 주문 알림 메시지 생성 함수
 function createAppleOrderMessage(orderData) {
@@ -96,14 +98,12 @@ function createAppleOrderMessage(orderData) {
     orderDate
   } = orderData;
 
-  // orderDate가 ISO 문자열인지 확인하고 적절히 처리
   let orderDateStr;
   if (orderDate) {
     try {
       if (typeof orderDate === 'string') {
         orderDateStr = new Date(orderDate).toLocaleString('ko-KR');
       } else if (orderDate.toDate) {
-        // Firestore 타임스탬프인 경우
         orderDateStr = orderDate.toDate().toLocaleString('ko-KR');
       } else {
         orderDateStr = new Date(orderDate).toLocaleString('ko-KR');
@@ -150,14 +150,12 @@ function createSurveyMessage(surveyData) {
     submittedAt
   } = surveyData;
 
-  // submittedAt이 ISO 문자열인지 확인하고 적절히 처리
   let submittedAtStr;
   if (submittedAt) {
     try {
       if (typeof submittedAt === 'string') {
         submittedAtStr = new Date(submittedAt).toLocaleString('ko-KR');
       } else if (submittedAt.toDate) {
-        // Firestore 타임스탬프인 경우
         submittedAtStr = submittedAt.toDate().toLocaleString('ko-KR');
       } else {
         submittedAtStr = new Date(submittedAt).toLocaleString('ko-KR');
@@ -190,3 +188,77 @@ function createSurveyMessage(surveyData) {
 
   return message;
 }
+
+// Forest API 프록시 함수
+exports.forestApi = functions.https.onRequest((req, res) => {
+  // CORS 설정
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // OPTIONS 요청 처리 (CORS preflight)
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  // 경로 추출: /forest-api/reservation/forest -> /api/reservation/forest
+  const path = req.url.replace('/forest-api', '/api');
+  const targetUrl = `https://forest100.herokuapp.com${path}`;
+
+  console.log(`프록시 요청: ${req.method} ${path}`);
+
+  // POST 요청 처리
+  if (req.method === 'POST' || req.method === 'PUT') {
+    const targetUrlObj = new URL(targetUrl);
+    const postData = JSON.stringify(req.body);
+
+    const options = {
+      hostname: targetUrlObj.hostname,
+      port: 443,
+      path: targetUrlObj.pathname + targetUrlObj.search,
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
+    const proxyReq = https.request(options, (response) => {
+      let data = '';
+
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      response.on('end', () => {
+        res.status(response.statusCode).send(data);
+      });
+    });
+
+    proxyReq.on('error', (error) => {
+      console.error('프록시 에러:', error);
+      res.status(500).json({ error: '프록시 서버 오류', details: error.message });
+    });
+
+    proxyReq.write(postData);
+    proxyReq.end();
+  } else {
+    // GET 요청 처리
+    https.get(targetUrl, (response) => {
+      let data = '';
+
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      response.on('end', () => {
+        res.status(response.statusCode).send(data);
+      });
+    }).on('error', (error) => {
+      console.error('프록시 에러:', error);
+      res.status(500).json({ error: '프록시 서버 오류', details: error.message });
+    });
+  }
+});
+
