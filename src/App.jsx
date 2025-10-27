@@ -214,7 +214,7 @@ function App() {
                 viewport={{ once: true }}
                 className="section-title"
               >
-                나믄자리 공간들
+                " 당신을 위해 남은 자리 "
               </motion.h2>
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -223,7 +223,6 @@ function App() {
                 viewport={{ once: true }}
                 className="spaces-intro"
               >
-                <p style={{ fontWeight: 'bold', fontSize: '1.15em', marginBottom: '1.2em' }}>" 당신을 위해 남은 자리 "</p>
                 <p>
                   나믄자리는 공간 운영에 특화된 호스트가 직접 관리하는 다양한 공간들의 집합입니다.<br/>
                   각 공간마다 고유한 이야기와 정성이 담겨 있어, 단순한 이용을 넘어선 특별한 경험을 선사합니다.

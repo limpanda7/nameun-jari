@@ -11,10 +11,12 @@ const ForestCalendar = () => {
   const [isContinuous] = useState(true);
   const [reserved, setReserved] = useState([]);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // API에서 예약 데이터 가져오기
   useEffect(() => {
     const fetchReservations = async () => {
+      setIsLoading(true);
       try {
         // 환경에 따라 적절한 API URL 사용 (개발: 프록시, 프로덕션: 절대 URL)
         const [internalResponse, airbnbResponse] = await Promise.all([
@@ -53,6 +55,8 @@ const ForestCalendar = () => {
         setError(err.message);
         // 에러 발생 시 빈 배열로 설정
         setReserved([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -90,7 +94,12 @@ const ForestCalendar = () => {
       </div>
 
       <div className="forest-calendar-content">
-        {error ? (
+        {isLoading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>예약 내역 불러오는 중...</p>
+          </div>
+        ) : error ? (
           <div className="error-container">
             <p className="error-message">⚠️ {error}</p>
             <p className="error-note">예약 가능한 날짜를 확인할 수 없습니다. 잠시 후 다시 시도해주세요.</p>
@@ -104,7 +113,7 @@ const ForestCalendar = () => {
           />
         )}
 
-        {!error && (
+        {!error && !isLoading && (
           <button
             className="reservation-btn"
             onClick={handleReservation}
