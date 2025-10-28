@@ -16,6 +16,7 @@ const CommonFooter = () => {
             <p><strong>대표자:</strong> 남은비</p>
             <p><strong>주소:</strong> 서울특별시 성북구 정릉로40길 11, 1층(정릉동)</p>
             <p><strong>사업자등록번호:</strong> 170-57-00870</p>
+            <p><strong>통신판매업신고:</strong> 2025-서울성북-1226</p>
             <p><strong>이메일:</strong> limpanda7@naver.com</p>
           </div>
         </div>
