@@ -277,6 +277,7 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
       >
         <ReactCalendar
           className="calendar"
+          calendarType="gregory"
           prev2Label={null}
           next2Label={null}
           formatDay={(localeDay, date) => date.getDate()}

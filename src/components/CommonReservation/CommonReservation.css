@@ -1,4 +1,4 @@
-.forest-reservation {
+.common-reservation {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -7,7 +7,7 @@
   min-height: 100vh;
 }
 
-.forest-reservation .back-button {
+.common-reservation .back-button {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -22,7 +22,7 @@
   margin-bottom: 20px;
 }
 
-.forest-reservation .back-button:hover {
+.common-reservation .back-button:hover {
   background-color: #f8f9fa;
   border-color: #999;
   color: #333;
@@ -389,7 +389,7 @@
 }
 
 @media (max-width: 768px) {
-  .forest-reservation {
+  .common-reservation {
     padding: 15px;
   }
 
@@ -444,4 +444,3 @@
     font-size: 2rem;
   }
 }
-

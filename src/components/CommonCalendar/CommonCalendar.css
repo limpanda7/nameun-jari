@@ -1,4 +1,4 @@
-.forest-calendar {
+.common-calendar {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -7,11 +7,11 @@
   min-height: 100vh;
 }
 
-.forest-calendar-header-section {
+.common-calendar-header-section {
   margin-bottom: 20px;
 }
 
-.forest-calendar .back-button {
+.common-calendar .back-button {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -25,31 +25,31 @@
   transition: all 0.3s ease;
 }
 
-.forest-calendar .back-button:hover {
+.common-calendar .back-button:hover {
   background-color: #f8f9fa;
   border-color: #999;
   color: #333;
 }
 
-.forest-calendar-header {
+.common-calendar-header {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.forest-calendar-header h1 {
+.common-calendar-header h1 {
   color: #2c3e50;
   margin-bottom: 10px;
   font-size: 2.5rem;
   font-weight: bold;
 }
 
-.forest-calendar-header p {
+.common-calendar-header p {
   color: #34495e;
   font-size: 1.1rem;
   font-weight: 500;
 }
 
-.forest-calendar-content {
+.common-calendar-content {
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
@@ -153,11 +153,11 @@
 }
 
 @media (max-width: 768px) {
-  .forest-calendar {
+  .common-calendar {
     padding: 15px;
   }
 
-  .forest-calendar-header h1 {
+  .common-calendar-header h1 {
     font-size: 2rem;
   }
 }

@@ -1,13 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CommonFooter.css';
 
 const CommonFooter = () => {
+  const navigate = useNavigate();
+
   return (
     <footer className="common-footer">
       <div className="footer-content">
         <div className="footer-section">
           <h3>나믄자리</h3>
-          <p>당신을 위해 남은 자리</p>
+          <div style={{ marginTop: '1rem' }}>
+            <button
+              className="footer-link-button"
+              onClick={() => navigate('/terms')}
+            >
+              이용약관
+            </button>
+          </div>
         </div>
         <div className="footer-section business-info">
           <h4>사업자 정보</h4>

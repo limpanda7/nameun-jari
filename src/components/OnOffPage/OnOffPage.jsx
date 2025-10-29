@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
-import '../ForestPage/ForestPage.css';
+import '../../styles/CommonPage.css';
 
 // Import on-off images
 import onoff1 from '../../assets/on-off/1.jpg';
@@ -52,6 +52,24 @@ const OnOffPage = () => {
     onoff16,
     onoff17
   ];
+
+  // 브라우저 테마 색상 설정
+  useEffect(() => {
+    let themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (!themeColorMeta) {
+      themeColorMeta = document.createElement('meta');
+      themeColorMeta.name = 'theme-color';
+      document.head.appendChild(themeColorMeta);
+    }
+    themeColorMeta.content = '#008b8b'; // OnOff hero 색상 (dark cyan)
+
+    return () => {
+      // 컴포넌트 언마운트 시 기본 색상으로 복구
+      if (themeColorMeta) {
+        themeColorMeta.content = '#ffffff';
+      }
+    };
+  }, []);
 
   // 모바일 감지
   useEffect(() => {
@@ -140,7 +158,10 @@ const OnOffPage = () => {
 
       {/* Hero Section */}
       <section className="forest-hero onoff-hero">
-        <div className="onoff-hero-background"></div>
+        <div 
+          className="onoff-hero-background"
+          style={{ backgroundImage: `url(${onoff1})` }}
+        ></div>
         <div className="container">
           <motion.div
             className="hero-content"

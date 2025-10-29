@@ -1,8 +1,12 @@
 import { HOLIDAYS } from '../constants/price';
 
-export const formatDate = (date) => {
-  return date?.toLocaleDateString("sv-SE", { timeZone: "Asia/Seoul" });
-}
+export const formatDateWithDay = (date) => {
+  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+  const dayIdx = new Date(date).getDay();
+  const month = date.slice(5, 7);
+  const day = date.slice(8, 10);
+  return `${month}/${day}(${dayNames[dayIdx]})`;
+};
 
 export const isSummer = (date) => {
   return date.slice(5, 7) === '07' || date.slice(5, 7) === '08'

@@ -15,13 +15,15 @@ import jebokImg from './assets/landing/jebok.jpeg';
 import appleBackgroundImg from './assets/apple/background.jpg';
 import AppleOrderPage from './components/AppleOrderPage/AppleOrderPage.jsx';
 import ForestPage from './components/ForestPage/ForestPage.jsx';
-import ForestCalendar from './components/ForestCalendar/ForestCalendar.jsx';
-import ForestReservation from './components/ForestReservation/ForestReservation.jsx';
+import CommonCalendar from './components/CommonCalendar/CommonCalendar.jsx';
+import CommonReservation from './components/CommonReservation/CommonReservation.jsx';
 import BlonPage from './components/BlonPage/BlonPage.jsx';
 import OnOffPage from './components/OnOffPage/OnOffPage.jsx';
 import SpacePage from './components/SpacePage/SpacePage.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
+import TermsPage from './components/TermsPage/TermsPage.jsx';
+import { FOREST_PRICE, BLON_PRICE } from './constants/price';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -428,11 +430,54 @@ function App() {
 
       <Route path="/apple-order" element={<AppleOrderPage />} />
       <Route path="/forest" element={<ForestPage />} />
-      <Route path="/forest/calendar" element={<ForestCalendar />} />
-      <Route path="/forest/reservation" element={<ForestReservation />} />
+      <Route path="/forest/calendar" element={
+        <CommonCalendar 
+          propertyType="forest"
+          title="백년한옥별채 예약"
+          backPath="/forest"
+          reservationPath="/forest/reservation"
+        />
+      } />
+      <Route path="/forest/reservation" element={
+        <CommonReservation 
+          propertyType="forest"
+          title="백년한옥별채 예약"
+          calendarPath="/forest/calendar"
+          backPath="/forest"
+          priceConfig={FOREST_PRICE}
+          maxPerson={6}
+          maxBaby={4}
+          maxDog={2}
+          basePerson={2}
+          bankAccount="카카오 79420661213 남은진"
+        />
+      } />
+      <Route path="/blon/calendar" element={
+        <CommonCalendar 
+          propertyType="blon"
+          title="블로뉴숲 예약"
+          backPath="/blon"
+          reservationPath="/blon/reservation"
+        />
+      } />
+      <Route path="/blon/reservation" element={
+        <CommonReservation 
+          propertyType="blon"
+          title="블로뉴숲 예약"
+          calendarPath="/blon/calendar"
+          backPath="/blon"
+          priceConfig={BLON_PRICE}
+          maxPerson={6}
+          maxBaby={4}
+          maxDog={2}
+          basePerson={4}
+          bankAccount="카카오 79420661213 남은진"
+        />
+      } />
       <Route path="/on-off" element={<OnOffPage />} />
       <Route path="/space" element={<SpacePage />} />
       <Route path="/space/survey" element={<NPSSurvey />} />
+      <Route path="/terms" element={<TermsPage />} />
     </Routes>
   );
 }

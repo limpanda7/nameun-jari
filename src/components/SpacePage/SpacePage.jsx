@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
-import '../ForestPage/ForestPage.css';
+import '../../styles/CommonPage.css';
 
 // Import space images
 import space1 from '../../assets/space/1.jpg';
@@ -39,6 +39,24 @@ const SpacePage = () => {
     space10,
     space11
   ];
+
+  // 브라우저 테마 색상 설정
+  useEffect(() => {
+    let themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (!themeColorMeta) {
+      themeColorMeta = document.createElement('meta');
+      themeColorMeta.name = 'theme-color';
+      document.head.appendChild(themeColorMeta);
+    }
+    themeColorMeta.content = '#d4a574'; // Space hero 색상 (Forest와 동일)
+
+    return () => {
+      // 컴포넌트 언마운트 시 기본 색상으로 복구
+      if (themeColorMeta) {
+        themeColorMeta.content = '#ffffff';
+      }
+    };
+  }, []);
 
   // 모바일 감지
   useEffect(() => {
@@ -135,7 +153,10 @@ const SpacePage = () => {
 
       {/* Hero Section */}
       <section className="forest-hero space-hero">
-        <div className="space-hero-background"></div>
+        <div 
+          className="space-hero-background"
+          style={{ backgroundImage: `url(${space1})` }}
+        ></div>
         <div className="container">
           <motion.div
             className="hero-content"

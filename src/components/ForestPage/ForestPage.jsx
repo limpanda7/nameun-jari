@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
-import './ForestPage.css';
+import '../../styles/CommonPage.css';
 
 // Import forest images
 import forest1 from '../../assets/forest/1.webp';
@@ -52,6 +52,24 @@ const ForestPage = () => {
     ss10,
     ss8
   ];
+
+  // 브라우저 테마 색상 설정
+  useEffect(() => {
+    let themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (!themeColorMeta) {
+      themeColorMeta = document.createElement('meta');
+      themeColorMeta.name = 'theme-color';
+      document.head.appendChild(themeColorMeta);
+    }
+    themeColorMeta.content = '#d4a574'; // Forest hero 색상
+
+    return () => {
+      // 컴포넌트 언마운트 시 기본 색상으로 복구
+      if (themeColorMeta) {
+        themeColorMeta.content = '#ffffff';
+      }
+    };
+  }, []);
 
   // 모바일 감지
   useEffect(() => {
@@ -154,7 +172,10 @@ const ForestPage = () => {
 
       {/* Hero Section */}
       <section className="forest-hero">
-        <div className="forest-hero-background"></div>
+        <div 
+          className="forest-hero-background"
+          style={{ backgroundImage: `url(${forest1})` }}
+        ></div>
         <div className="hero-content">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}

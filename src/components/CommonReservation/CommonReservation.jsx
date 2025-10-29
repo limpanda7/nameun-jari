@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { FOREST_PRICE } from '../../constants/price';
-import { isFriday, isHoliday, isSummer, isWeekday } from '../../utils/date';
+import { FOREST_PRICE, BLON_PRICE } from '../../constants/price';
+import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDateWithDay } from '../../utils/date';
 import { FOREST_API_BASE } from '../../utils/api';
-import './ForestReservation.css';
+import './CommonReservation.css';
 
-const ForestReservation = () => {
+const CommonReservation = ({
+  propertyType,
+  title,
+  calendarPath,
+  backPath,
+  priceConfig,
+  maxPerson = 6,
+  maxBaby = 4,
+  maxDog = 2,
+  basePerson = 2,
+  bankAccount = "카카오 79420205681 남은비"
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const picked = location.state?.picked || [];
 
-  const [person, setPerson] = useState(2);
+  const [person, setPerson] = useState(basePerson);
   const [baby, setBaby] = useState(0);
   const [dog, setDog] = useState(0);
   const [barbecue, setBarbecue] = useState('N');
@@ -30,61 +41,86 @@ const ForestReservation = () => {
   }, [person, dog, barbecue, priceOption, picked]);
 
   const calcPrice = () => {
-    let tempPrice = 0;
     let tempBasePrice = 0;
 
     for (let i = 0; i < picked.length - 1; i++) {
       const date = picked[i];
       let dayPrice = 0;
 
-      if (isSummer(date)) {
-        if (isWeekday(date)) {
-          dayPrice = FOREST_PRICE.SUMMER.WEEKDAY;
-        } else {
-          dayPrice = FOREST_PRICE.SUMMER.WEEKEND;
+      if (propertyType === 'blon') {
+        // 블로뉴숲: 토요일, 금요일을 별도로 계산
+        const prices = isSummer(date) ? priceConfig.SUMMER : priceConfig.NORMAL;
+
+        if (isHoliday(date)) {
+          dayPrice = prices.HOLIDAY;
+        } else if (isWeekday(date)) {
+          dayPrice = prices.WEEKDAY;
+        } else if (isFriday(date)) {
+          dayPrice = prices.FRIDAY;
+        } else if (isSaturday(date)) {
+          dayPrice = prices.SATURDAY;
         }
       } else {
+        // 백년한옥별채 (forest): 평일/주말 구분만
+        const prices = isSummer(date) ? priceConfig.SUMMER : priceConfig.NORMAL;
+
         if (isHoliday(date)) {
-          dayPrice = FOREST_PRICE.NORMAL.HOLIDAY;
+          dayPrice = prices.HOLIDAY;
         } else if (isWeekday(date)) {
-          dayPrice = FOREST_PRICE.NORMAL.WEEKDAY;
+          dayPrice = prices.WEEKDAY;
         } else {
-          dayPrice = FOREST_PRICE.NORMAL.WEEKEND;
+          dayPrice = prices.WEEKEND;
         }
       }
 
       tempBasePrice += dayPrice;
-      tempPrice += dayPrice;
     }
+
+    let totalPrice = tempBasePrice;
+    const days = picked.length - 1;
 
     // 인원 초과 요금
-    if (person > 2) {
-      const overPersonPrice = FOREST_PRICE.OVER_TWO * (person - 2) * (picked.length - 1);
-      tempPrice += overPersonPrice;
-    }
+    if (propertyType === 'blon') {
+      // 블로뉴숲: 최소 4인 기준 (4인 미만이어도 4인으로 계산)
+      const personCnt = person >= 4 ? person : 4;
+      const overPersonPrice = priceConfig.OVER_FOUR * (personCnt - 4) * days;
+      totalPrice += overPersonPrice;
 
-    // 반려견 요금
-    if (dog > 0) {
-      const dogPrice = FOREST_PRICE.DOG * dog * (picked.length - 1);
-      tempPrice += dogPrice;
+      // 반려견 요금
+      if (dog > 0) {
+        const dogPrice = priceConfig.DOG * dog * days;
+        totalPrice += dogPrice;
+      }
+    } else {
+      // 백년한옥별채: 2인 초과 기준
+      if (person > 2) {
+        const overPersonPrice = priceConfig.OVER_TWO * (person - 2) * days;
+        totalPrice += overPersonPrice;
+      }
+
+      // 반려견 요금
+      if (dog > 0) {
+        const dogPrice = priceConfig.DOG * dog * days;
+        totalPrice += dogPrice;
+      }
     }
 
     // 바베큐 요금
     if (barbecue === 'Y') {
-      tempPrice += FOREST_PRICE.BARBECUE;
+      totalPrice += priceConfig.BARBECUE;
     }
 
     // 환불불가 할인
     if (priceOption === 'non-refundable') {
-      const discountAmount = Math.floor(tempPrice * 0.1);
+      const discountAmount = totalPrice * 0.1;
       setDiscount(discountAmount);
-      tempPrice -= discountAmount;
+      totalPrice *= 0.9;
     } else {
       setDiscount(0);
     }
 
     setBasePrice(tempBasePrice);
-    setPrice(tempPrice);
+    setPrice(totalPrice);
   };
 
   const saveReservation = async () => {
@@ -103,7 +139,7 @@ const ForestReservation = () => {
         isRequested = true;
         setIsLoading(true);
 
-        const response = await fetch(`${FOREST_API_BASE}/reservation/forest`, {
+        const response = await fetch(`${FOREST_API_BASE}/reservation/${propertyType}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -124,7 +160,7 @@ const ForestReservation = () => {
 
         if (response.ok) {
           alert(`예약해주셔서 감사합니다! 입금하실 금액은 ${price.toLocaleString()}원입니다.`);
-          navigate('/forest');
+          navigate(backPath);
         } else {
           throw new Error('예약 요청에 실패했습니다.');
         }
@@ -139,11 +175,11 @@ const ForestReservation = () => {
 
   if (picked.length === 0) {
     return (
-      <div className="forest-reservation">
-        <div className="forest-reservation-header">
+      <div className="common-reservation">
+        <div className="common-reservation-header">
           <button
             className="back-button"
-            onClick={() => navigate('/forest/calendar')}
+            onClick={() => navigate(calendarPath)}
           >
             <ArrowLeft size={20} />
             돌아가기
@@ -154,7 +190,7 @@ const ForestReservation = () => {
           <p>예약하려면 먼저 체크인과 체크아웃 날짜를 선택해주세요.</p>
           <button
             className="select-dates-btn"
-            onClick={() => navigate('/forest/calendar')}
+            onClick={() => navigate(calendarPath)}
           >
             날짜 선택하기
           </button>
@@ -163,11 +199,14 @@ const ForestReservation = () => {
     );
   }
 
+  const overPersonKey = propertyType === 'forest' ? 'OVER_TWO' : 'OVER_FOUR';
+  const overPersonThreshold = propertyType === 'forest' ? 2 : 4;
+
   return (
-    <div className="forest-reservation">
+    <div className="common-reservation">
       <button
         className="back-button"
-        onClick={() => navigate('/forest/calendar')}
+        onClick={() => navigate(calendarPath)}
       >
         <ArrowLeft size={20} />
         돌아가기
@@ -178,15 +217,15 @@ const ForestReservation = () => {
           <h2>예약 정보</h2>
           <div className="info-grid">
             <div className="info-item">
-              <span className="label">체크인:</span>
-              <span className="value">{picked[0]}</span>
+              <span className="label">체크인</span>
+              <span className="value">{formatDateWithDay(picked[0])}</span>
             </div>
             <div className="info-item">
-              <span className="label">체크아웃:</span>
-              <span className="value">{picked[picked.length - 1]}</span>
+              <span className="label">체크아웃</span>
+              <span className="value">{formatDateWithDay(picked[picked.length - 1])}</span>
             </div>
             <div className="info-item">
-              <span className="label">숙박일수:</span>
+              <span className="label">숙박일수</span>
               <span className="value">{picked.length - 1}박</span>
             </div>
           </div>
@@ -194,7 +233,7 @@ const ForestReservation = () => {
 
         {/* 인원 및 옵션 선택 */}
         <section className="guest-options-section">
-          <h2>인원수 선택 (최대 6인)</h2>
+          <h2>인원수 선택 (최대 {maxPerson}인)</h2>
 
           <div className="option-group">
             <div className="option-header">
@@ -212,8 +251,8 @@ const ForestReservation = () => {
                 <button
                   type="button"
                   className="counter-btn"
-                  onClick={() => setPerson(Math.min(6, person + 1))}
-                  disabled={person >= 6}
+                  onClick={() => setPerson(Math.min(maxPerson, person + 1))}
+                  disabled={person >= maxPerson}
                 >
                   +
                 </button>
@@ -237,8 +276,8 @@ const ForestReservation = () => {
                 <button
                   type="button"
                   className="counter-btn"
-                  onClick={() => setBaby(Math.min(4, baby + 1))}
-                  disabled={baby >= 4}
+                  onClick={() => setBaby(Math.min(maxBaby, baby + 1))}
+                  disabled={baby >= maxBaby}
                 >
                   +
                 </button>
@@ -262,8 +301,8 @@ const ForestReservation = () => {
                 <button
                   type="button"
                   className="counter-btn"
-                  onClick={() => setDog(Math.min(2, dog + 1))}
-                  disabled={dog >= 2}
+                  onClick={() => setDog(Math.min(maxDog, dog + 1))}
+                  disabled={dog >= maxDog}
                 >
                   +
                 </button>
@@ -333,17 +372,24 @@ const ForestReservation = () => {
           <div className="total-price">{price.toLocaleString()}원</div>
           <div className="price-detail">
             <p><b>숙박요금:</b> {basePrice.toLocaleString()}원 (총 {picked.length - 1}박)</p>
-            {person > 2 && (
-              <p><b>인원초과:</b> {FOREST_PRICE.OVER_TWO.toLocaleString()}원 x {person - 2}명 x {picked.length - 1}박</p>
+            {propertyType === 'blon' && (() => {
+              const personCnt = person >= 4 ? person : 4;
+              const overPerson = personCnt - 4;
+              return overPerson > 0 && (
+                <p><b>인원초과:</b> {priceConfig.OVER_FOUR.toLocaleString()}원 x {overPerson}명 x {picked.length - 1}박</p>
+              );
+            })()}
+            {propertyType === 'forest' && person > 2 && (
+              <p><b>인원초과:</b> {priceConfig.OVER_TWO.toLocaleString()}원 x {person - 2}명 x {picked.length - 1}박</p>
             )}
             {dog > 0 && (
-              <p><b>반려견:</b> {FOREST_PRICE.DOG.toLocaleString()}원 x {dog}마리 x {picked.length - 1}박</p>
+              <p><b>반려견:</b> {priceConfig.DOG.toLocaleString()}원 x {dog}마리 x {picked.length - 1}박</p>
             )}
             {barbecue === 'Y' && (
-              <p><b>바베큐:</b> {FOREST_PRICE.BARBECUE.toLocaleString()}원</p>
+              <p><b>바베큐:</b> {priceConfig.BARBECUE.toLocaleString()}원</p>
             )}
             {discount > 0 && (
-              <p><b>환불불가 할인:</b> -{discount.toLocaleString()}원</p>
+              <p><b>환불불가 할인:</b> -{Math.floor(discount).toLocaleString()}원</p>
             )}
           </div>
         </section>
@@ -351,7 +397,7 @@ const ForestReservation = () => {
         {/* 입금 정보 */}
         <section className="deposit-section">
           <h2>입금하기</h2>
-          <div className="bank-account">카카오 79420205681 남은비</div>
+          <div className="bank-account">{bankAccount}</div>
           <p>
             위 계좌로 <b>{price.toLocaleString()}원</b>을 입금해주세요.<br/>
             3시간 내에 입금 해 주셔야 예약이 확정됩니다.
@@ -399,5 +445,4 @@ const ForestReservation = () => {
   );
 };
 
-export default ForestReservation;
-
+export default CommonReservation;

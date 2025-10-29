@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Calendar from '../Calendar/Calendar';
 import { FOREST_API_BASE } from '../../utils/api';
-import './ForestCalendar.css';
+import '../../styles/CommonPage.css';
+import './CommonCalendar.css';
 
-const ForestCalendar = () => {
+const CommonCalendar = ({ propertyType, title, backPath, reservationPath }) => {
   const navigate = useNavigate();
   const [picked, setPicked] = useState([]);
   const [isContinuous] = useState(true);
@@ -20,8 +21,8 @@ const ForestCalendar = () => {
       try {
         // 환경에 따라 적절한 API URL 사용 (개발: 프록시, 프로덕션: 절대 URL)
         const [internalResponse, airbnbResponse] = await Promise.all([
-          fetch(`${FOREST_API_BASE}/reservation/forest`),
-          fetch(`${FOREST_API_BASE}/ical/forest`)
+          fetch(`${FOREST_API_BASE}/reservation/${propertyType}`),
+          fetch(`${FOREST_API_BASE}/ical/${propertyType}`)
         ]);
 
         if (!internalResponse.ok) {
@@ -61,7 +62,7 @@ const ForestCalendar = () => {
     };
 
     fetchReservations();
-  }, []);
+  }, [propertyType]);
 
   const handleReservation = () => {
     if (picked.length === 0) {
@@ -69,31 +70,31 @@ const ForestCalendar = () => {
       return;
     }
 
-    // ForestReservation 페이지로 이동하면서 선택된 날짜 전달
-    navigate('/forest/reservation', {
+    // Reservation 페이지로 이동하면서 선택된 날짜 전달
+    navigate(reservationPath, {
       state: { picked }
     });
   };
 
   return (
-    <div className="forest-calendar">
+    <div className="common-calendar">
       {/* Header */}
-      <div className="forest-calendar-header-section">
+      <div className="common-calendar-header-section">
         <button
           className="back-button"
-          onClick={() => navigate('/forest')}
+          onClick={() => navigate(backPath)}
         >
           <ArrowLeft size={20} />
           돌아가기
         </button>
       </div>
 
-      <div className="forest-calendar-header">
-        <h1>백년한옥별채 예약</h1>
+      <div className="common-calendar-header">
+        <h1>{title}</h1>
         <p>원하시는 날짜를 선택해주세요</p>
       </div>
 
-      <div className="forest-calendar-content">
+      <div className="common-calendar-content">
         {isLoading ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
@@ -127,4 +128,4 @@ const ForestCalendar = () => {
   );
 };
 
-export default ForestCalendar;
+export default CommonCalendar;

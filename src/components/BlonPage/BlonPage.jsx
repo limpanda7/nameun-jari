@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
-import '../ForestPage/ForestPage.css';
+import '../../styles/CommonPage.css';
 
 // Import blon images
 import blon1 from '../../assets/blon/1.jpg';
@@ -28,7 +28,6 @@ const BlonPage = () => {
   const [currentImageArray, setCurrentImageArray] = useState(null);
   const [showAllImages, setShowAllImages] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isPeakSeason, setIsPeakSeason] = useState(false);
 
   const images = [
     blon1,
@@ -47,6 +46,24 @@ const BlonPage = () => {
     blon15
   ];
 
+  // 브라우저 테마 색상 설정
+  useEffect(() => {
+    let themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (!themeColorMeta) {
+      themeColorMeta = document.createElement('meta');
+      themeColorMeta.name = 'theme-color';
+      document.head.appendChild(themeColorMeta);
+    }
+    themeColorMeta.content = '#1a1a1a'; // Blon hero 색상 (블랙)
+
+    return () => {
+      // 컴포넌트 언마운트 시 기본 색상으로 복구
+      if (themeColorMeta) {
+        themeColorMeta.content = '#ffffff';
+      }
+    };
+  }, []);
+
   // 모바일 감지
   useEffect(() => {
     const checkIsMobile = () => {
@@ -57,18 +74,6 @@ const BlonPage = () => {
     window.addEventListener('resize', checkIsMobile);
 
     return () => window.removeEventListener('resize', checkIsMobile);
-  }, []);
-
-  // 성수기 감지 (7월 20일 - 8월 20일)
-  useEffect(() => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1; // 1-12
-    const currentDay = currentDate.getDate();
-
-    // 7월 20일 - 8월 20일이 성수기
-    const isPeak = (currentMonth === 7 && currentDay >= 20) ||
-                   (currentMonth === 8 && currentDay <= 20);
-    setIsPeakSeason(isPeak);
   }, []);
 
   // 화면 크기에 따라 표시할 이미지 수 결정
@@ -141,20 +146,21 @@ const BlonPage = () => {
             <ArrowLeft size={20} />
             돌아가기
           </button>
-          <a
-            href="https://forest100.herokuapp.com/boulogne?page=calendar"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
             className="header-booking-button"
+            onClick={() => navigate('/blon/calendar')}
           >
             📅 예약하기
-          </a>
+          </button>
         </div>
       </motion.header>
 
       {/* Hero Section */}
       <section className="forest-hero blon-hero">
-        <div className="blon-hero-background"></div>
+        <div 
+          className="blon-hero-background"
+          style={{ backgroundImage: `url(${blon1})` }}
+        ></div>
         <div className="container">
           <motion.div
             className="hero-content"
@@ -392,19 +398,17 @@ const BlonPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className={isPeakSeason ? "current-season" : ""}>
+                  <tr>
                     <td>
-                      성수기<br/>(7/20-8/20)
-                      {isPeakSeason && <span className="current-season-badge">현재 시즌</span>}
+                      성수기<br/><span className="peak-season-period">(7/20-8/20)</span>
                     </td>
                     <td>250,000원</td>
                     <td>300,000원</td>
                     <td>300,000원</td>
                   </tr>
-                  <tr className={!isPeakSeason ? "current-season" : ""}>
+                  <tr>
                     <td>
                       비성수기
-                      {!isPeakSeason && <span className="current-season-badge">현재 시즌</span>}
                     </td>
                     <td>160,000원</td>
                     <td>200,000원</td>
@@ -460,14 +464,12 @@ const BlonPage = () => {
           >
             <h2 className="section-title">예약하기</h2>
             <div className="booking-actions">
-              <a
-                href="https://forest100.herokuapp.com/boulogne?page=calendar"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
                 className="booking-button"
+                onClick={() => navigate('/blon/calendar')}
               >
                 📅 예약하기
-              </a>
+              </button>
             </div>
             <div className="booking-note">
               <p>실시간 예약 가능 일정을 확인하고 바로 예약하세요.</p>

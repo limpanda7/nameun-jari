@@ -129,7 +129,8 @@
   .footer-content {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    text-align: center;
+    text-align: left;
+    padding: 0 1.5rem;
   }
 
   .common-footer {
@@ -142,5 +143,11 @@
 
   .business-details p {
     font-size: 0.9rem;
+  }
+
+  .footer-bottom {
+    text-align: left;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
