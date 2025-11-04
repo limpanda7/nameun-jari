@@ -1,5 +1,6 @@
 import ReactCalendar from "react-calendar";
 import {useMemo, useState, useRef, useEffect} from "react";
+import {formatDate} from "../../utils/date";
 import "./Calendar.css";
 
 const SWIPE_THRESHOLD = 50; // px
@@ -15,8 +16,14 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
     const map = {};
 
     reserved.forEach(({checkin_date, checkout_date}) => {
-      const checkinTimestamp = new Date(checkin_date).valueOf();
-      const checkoutTimestamp = new Date(checkout_date).valueOf();
+      // 날짜를 정규화 (시간 부분 제거)
+      const checkinDate = new Date(checkin_date);
+      checkinDate.setHours(0, 0, 0, 0);
+      const checkinTimestamp = checkinDate.valueOf();
+      
+      const checkoutDate = new Date(checkout_date);
+      checkoutDate.setHours(0, 0, 0, 0);
+      const checkoutTimestamp = checkoutDate.valueOf();
 
       map[checkinTimestamp] = {
         ...map[checkinTimestamp],
@@ -64,22 +71,38 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
         return false;
       }
 
-      startDate.setDate(startDate.getDate() + 1);
-      endDate.setDate(endDate.getDate() + 1);
-      while (startDate <= endDate) {
-        tempArr.push(startDate.toISOString().split("T")[0]);
-        startDate.setDate(startDate.getDate() + 1);
-      }
+      // 날짜를 정규화하여 비교
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
 
-      // 마감된 날짜와 겹치는지 여부
-      for (const element of tempArr) {
-        if (reserved.includes(element)) {
+      // 체크인 날짜와 체크아웃 날짜만 포함 (로컬 시간대 기준)
+      tempArr.push(formatDate(startDate));
+      tempArr.push(formatDate(endDate));
+
+      // 체크인 날짜부터 체크아웃 날짜 전날까지의 날짜가 마감되었는지 확인
+      let checkDate = new Date(startDate);
+      checkDate.setDate(checkDate.getDate() + 1);
+      while (checkDate < endDate) {
+        const dateStr = formatDate(checkDate);
+        if (reserved.includes(dateStr)) {
           alert(
             "예약할 수 없는 날짜가 포함되어 있습니다. 날짜를 다시 선택해주세요."
           );
           setPicked([]);
           return false;
         }
+        checkDate.setDate(checkDate.getDate() + 1);
+      }
+
+      // 체크인과 체크아웃 날짜가 마감되었는지 확인
+      const startDateStr = formatDate(startDate);
+      const endDateStr = formatDate(endDate);
+      if (reserved.includes(startDateStr) || reserved.includes(endDateStr)) {
+        alert(
+          "예약할 수 없는 날짜가 포함되어 있습니다. 날짜를 다시 선택해주세요."
+        );
+        setPicked([]);
+        return false;
       }
 
       setPicked(tempArr);
@@ -90,15 +113,34 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
   const tileDisabled = () => {
     if (isContinuous) {
       return ({date}) => {
+        // 날짜를 정규화하여 비교
+        const normalizedDate = new Date(date);
+        normalizedDate.setHours(0, 0, 0, 0);
+        const dateTimestamp = normalizedDate.valueOf();
+        
+        // 선택된 날짜 범위에 포함된 날짜는 비활성화하지 않음
+        if (picked.length > 0) {
+          const dateStr = formatDate(date);
+          if (picked.includes(dateStr)) {
+            return false;
+          }
+        }
+        
         if (
           reserved.find(({checkin_date, checkout_date}) => {
-            const checkinTimestamp = new Date(checkin_date).valueOf();
-            const checkoutTimestamp = new Date(checkout_date).valueOf();
+            const checkinDate = new Date(checkin_date);
+            checkinDate.setHours(0, 0, 0, 0);
+            const checkinTimestamp = checkinDate.valueOf();
+            
+            const checkoutDate = new Date(checkout_date);
+            checkoutDate.setHours(0, 0, 0, 0);
+            const checkoutTimestamp = checkoutDate.valueOf();
+            
             return (
-              (checkinTimestamp.valueOf() < date.valueOf() &&
-                checkoutTimestamp.valueOf() > date.valueOf()) ||
-              (checker[date.valueOf()]?.checkIn &&
-                checker[date.valueOf()]?.checkOut)
+              (checkinTimestamp < dateTimestamp &&
+                checkoutTimestamp > dateTimestamp) ||
+              (checker[dateTimestamp]?.checkIn &&
+                checker[dateTimestamp]?.checkOut)
             );
           })
         ) {
@@ -106,24 +148,44 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
         }
         if (
           selected &&
-          ((selected < date.valueOf() &&
-              checker[date.valueOf()]?.checkOut) ||
-            (selected > date.valueOf() && checker[date.valueOf()]?.checkIn))
+          ((selected < dateTimestamp &&
+              checker[dateTimestamp]?.checkOut) ||
+            (selected > dateTimestamp && checker[dateTimestamp]?.checkIn))
         ) {
           return true;
-        } else if (!selected && checker[date.valueOf()]?.checkIn) {
+        } else if (!selected && checker[dateTimestamp]?.checkIn && !checker[dateTimestamp]?.checkOut) {
+          // 체크인 날짜이지만 체크아웃 날짜가 아닌 경우만 비활성화 (체크아웃만 가능한 날짜)
           return true;
         }
       }
     } else {
       return ({date}) => {
+        // 날짜를 정규화하여 비교
+        const normalizedDate = new Date(date);
+        normalizedDate.setHours(0, 0, 0, 0);
+        const dateTimestamp = normalizedDate.valueOf();
+        
+        // 선택된 날짜 범위에 포함된 날짜는 비활성화하지 않음
+        if (picked.length > 0) {
+          const dateStr = formatDate(date);
+          if (picked.includes(dateStr)) {
+            return false;
+          }
+        }
+        
         if (
           reserved.find(({checkin_date, checkout_date}) => {
-            const checkinTimestamp = new Date(checkin_date).valueOf();
-            const checkoutTimestamp = new Date(checkout_date).valueOf();
+            const checkinDate = new Date(checkin_date);
+            checkinDate.setHours(0, 0, 0, 0);
+            const checkinTimestamp = checkinDate.valueOf();
+            
+            const checkoutDate = new Date(checkout_date);
+            checkoutDate.setHours(0, 0, 0, 0);
+            const checkoutTimestamp = checkoutDate.valueOf();
+            
             return (
-              checkinTimestamp <= date.valueOf() &&
-              checkoutTimestamp >= date.valueOf()
+              checkinTimestamp <= dateTimestamp &&
+              checkoutTimestamp >= dateTimestamp
             );
           })
         ) {
@@ -132,12 +194,13 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
         if (
           selected &&
           checker[selected]?.checkIn &&
-          date.valueOf() > selected
+          dateTimestamp > selected
         ) {
           return true;
-        } else if (selected && checker[selected]?.checkOut && date.valueOf() < selected) {
+        } else if (selected && checker[selected]?.checkOut && dateTimestamp < selected) {
           return true;
-        } else if (!selected && checker[date.valueOf()]?.checkIn) {
+        } else if (!selected && checker[dateTimestamp]?.checkIn && !checker[dateTimestamp]?.checkOut) {
+          // 체크인 날짜이지만 체크아웃 날짜가 아닌 경우만 비활성화 (체크아웃만 가능한 날짜)
           return true;
         }
       }
@@ -147,45 +210,55 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
   const tileClassname = () => {
     if (isContinuous) {
       return ({date}) => {
-        let start = null;
-        let end = null;
-        if (picked.length) {
-          start = new Date(new Date(picked[0])?.toISOString().slice(0, -1));
-          end = new Date(
-            new Date(picked[picked.length - 1])?.toISOString().slice(0, -1)
-          );
+        // 날짜를 정규화하여 비교
+        const normalizedDate = new Date(date);
+        normalizedDate.setHours(0, 0, 0, 0);
+        const dateTimestamp = normalizedDate.valueOf();
+        
+        // 선택된 날짜 범위 확인
+        if (picked.length > 0) {
+          const dateStr = formatDate(date);
+          const isPicked = picked.includes(dateStr);
+          
+          // 선택된 날짜 범위 내의 날짜인 경우 브라운 색으로 표시 (체크아웃 날짜 포함)
+          if (isPicked) {
+            return "react-calendar__tile--select-date";
+          }
         }
-
-        if (
-          start?.valueOf() === date.valueOf() ||
-          end?.valueOf() === date.valueOf()
-        ) {
-          return "react-calendar__tile--select-date";
-        }
+        
+        // 체크아웃만 가능한 날짜 표시 (선택되지 않은 경우에만)
         if (
           !selected &&
-          !checker[date.valueOf()]?.checkOut &&
-          checker[date.valueOf()]?.checkIn
+          !checker[dateTimestamp]?.checkOut &&
+          checker[dateTimestamp]?.checkIn
         )
           return "react-calendar__tile--checkout-only";
       };
     } else {
       return ({date}) => {
-        let start = null;
-        let end = null;
-        if (picked.length) {
-          start = new Date(new Date(picked[0])?.toISOString().slice(0, -1));
-          end = new Date(
-            new Date(picked[picked.length - 1])?.toISOString().slice(0, -1)
-          );
+        // 날짜를 정규화하여 비교
+        const normalizedDate = new Date(date);
+        normalizedDate.setHours(0, 0, 0, 0);
+        const dateTimestamp = normalizedDate.valueOf();
+        
+        // 선택된 날짜 범위 확인
+        if (picked.length > 0) {
+          const dateStr = formatDate(date);
+          const isPicked = picked.includes(dateStr);
+          
+          // 선택된 날짜 범위 내의 날짜인 경우 브라운 색으로 표시 (체크아웃 날짜 포함)
+          if (isPicked) {
+            return "react-calendar__tile--select-date";
+          }
         }
-
+        
+        // 체크아웃만 가능한 날짜 표시 (선택되지 않은 경우에만)
         if (
-          start?.valueOf() === date.valueOf() ||
-          end?.valueOf() === date.valueOf()
-        ) {
-          return "react-calendar__tile--select-date";
-        }
+          !selected &&
+          !checker[dateTimestamp]?.checkOut &&
+          checker[dateTimestamp]?.checkIn
+        )
+          return "react-calendar__tile--checkout-only";
       };
     }
   }
@@ -291,7 +364,12 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
           tileClassName={tileClassname()}
           selectRange={!!selected || !!picked.length}
           onClickDay={(value) => {
-            if (!checker[value.valueOf()]?.checkIn) {
+            // 날짜를 정규화하여 비교
+            const normalizedDate = new Date(value);
+            normalizedDate.setHours(0, 0, 0, 0);
+            const dateTimestamp = normalizedDate.valueOf();
+            
+            if (!checker[dateTimestamp]?.checkIn) {
               setSelected(new Date(value));
             }
             if (picked.length) {

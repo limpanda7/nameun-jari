@@ -19,6 +19,8 @@ import CommonCalendar from './components/CommonCalendar/CommonCalendar.jsx';
 import CommonReservation from './components/CommonReservation/CommonReservation.jsx';
 import BlonPage from './components/BlonPage/BlonPage.jsx';
 import OnOffPage from './components/OnOffPage/OnOffPage.jsx';
+import OnOffCalendar from './components/OnOffCalendar/OnOffCalendar.jsx';
+import OnOffReservation from './components/OnOffReservation/OnOffReservation.jsx';
 import SpacePage from './components/SpacePage/SpacePage.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
@@ -449,7 +451,7 @@ function App() {
           maxBaby={4}
           maxDog={2}
           basePerson={2}
-          bankAccount="카카오 79420661213 남은진"
+          bankAccount="카카오 79420205681 남은비"
         />
       } />
       <Route path="/blon/calendar" element={
@@ -475,6 +477,8 @@ function App() {
         />
       } />
       <Route path="/on-off" element={<OnOffPage />} />
+      <Route path="/on-off/calendar" element={<OnOffCalendar />} />
+      <Route path="/on-off/reservation" element={<OnOffReservation />} />
       <Route path="/space" element={<SpacePage />} />
       <Route path="/space/survey" element={<NPSSurvey />} />
       <Route path="/terms" element={<TermsPage />} />

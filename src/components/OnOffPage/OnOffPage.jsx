@@ -145,14 +145,12 @@ const OnOffPage = () => {
             <ArrowLeft size={20} />
             돌아가기
           </button>
-          <a
-            href="https://forest100.herokuapp.com/on-off?page=calendar"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => navigate('/on-off/calendar')}
             className="header-booking-button"
           >
             📅 예약하기
-          </a>
+          </button>
         </div>
       </motion.header>
 
@@ -442,14 +440,12 @@ const OnOffPage = () => {
           >
             <h2 className="section-title">예약하기</h2>
             <div className="booking-actions">
-              <a
-                href="https://forest100.herokuapp.com/on-off?page=calendar"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => navigate('/on-off/calendar')}
                 className="booking-button"
               >
                 📅 예약하기
-              </a>
+              </button>
             </div>
             <div className="booking-note">
               <p>실시간 예약 가능 일정을 확인하고 바로 예약하세요.</p>

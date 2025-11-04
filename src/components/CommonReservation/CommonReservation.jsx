@@ -276,8 +276,7 @@ const CommonReservation = ({
                 <button
                   type="button"
                   className="counter-btn"
-                  onClick={() => setBaby(Math.min(maxBaby, baby + 1))}
-                  disabled={baby >= maxBaby}
+                  onClick={() => setBaby(baby + 1)}
                 >
                   +
                 </button>
@@ -301,8 +300,7 @@ const CommonReservation = ({
                 <button
                   type="button"
                   className="counter-btn"
-                  onClick={() => setDog(Math.min(maxDog, dog + 1))}
-                  disabled={dog >= maxDog}
+                  onClick={() => setDog(dog + 1)}
                 >
                   +
                 </button>
