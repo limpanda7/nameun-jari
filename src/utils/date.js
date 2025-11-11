@@ -1,4 +1,4 @@
-import { HOLIDAYS } from '../constants/price';
+import { HOLIDAYS, BLON_SPECIAL_DATES } from '../constants/price';
 
 export const formatDate = (date) => {
   if (!date) return '';
@@ -38,5 +38,9 @@ export const isSaturday = (date) => {
 
 export const isHoliday = (date) => {
   return HOLIDAYS.includes(date);
+}
+
+export const getBlonSpecialDatePrice = (date) => {
+  return BLON_SPECIAL_DATES[date] || null;
 }
 

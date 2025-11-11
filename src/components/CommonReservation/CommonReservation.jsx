@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { FOREST_PRICE, BLON_PRICE } from '../../constants/price';
-import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDateWithDay } from '../../utils/date';
+import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDateWithDay, getBlonSpecialDatePrice, formatDate } from '../../utils/date';
 import { FOREST_API_BASE } from '../../utils/api';
 import './CommonReservation.css';
 
@@ -30,6 +30,7 @@ const CommonReservation = ({
   const [price, setPrice] = useState(0);
   const [priceOption, setPriceOption] = useState('refundable');
   const [discount, setDiscount] = useState(0);
+  const [days, setDays] = useState(0);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -43,22 +44,42 @@ const CommonReservation = ({
   const calcPrice = () => {
     let tempBasePrice = 0;
 
-    for (let i = 0; i < picked.length - 1; i++) {
-      const date = picked[i];
+    if (picked.length < 2) {
+      setBasePrice(0);
+      setPrice(0);
+      setDays(0);
+      return;
+    }
+
+    // 체크인 날짜부터 체크아웃 전날까지의 모든 날짜 계산
+    const checkinDate = new Date(picked[0]);
+    const checkoutDate = new Date(picked[picked.length - 1]);
+    
+    let currentDate = new Date(checkinDate);
+    let calculatedDays = 0; // 실제 숙박 일수
+    
+    while (currentDate < checkoutDate) {
+      const date = formatDate(currentDate);
       let dayPrice = 0;
 
       if (propertyType === 'blon') {
-        // 블로뉴숲: 토요일, 금요일을 별도로 계산
-        const prices = isSummer(date) ? priceConfig.SUMMER : priceConfig.NORMAL;
+        // 블로뉴숲: 특수일 가격 우선 적용
+        const specialPrice = getBlonSpecialDatePrice(date);
+        if (specialPrice !== null) {
+          dayPrice = specialPrice;
+        } else {
+          // 특수일이 아닌 경우 일반 가격 계산
+          const prices = isSummer(date) ? priceConfig.SUMMER : priceConfig.NORMAL;
 
-        if (isHoliday(date)) {
-          dayPrice = prices.HOLIDAY;
-        } else if (isWeekday(date)) {
-          dayPrice = prices.WEEKDAY;
-        } else if (isFriday(date)) {
-          dayPrice = prices.FRIDAY;
-        } else if (isSaturday(date)) {
-          dayPrice = prices.SATURDAY;
+          if (isHoliday(date)) {
+            dayPrice = prices.HOLIDAY;
+          } else if (isWeekday(date)) {
+            dayPrice = prices.WEEKDAY;
+          } else if (isFriday(date)) {
+            dayPrice = prices.FRIDAY;
+          } else if (isSaturday(date)) {
+            dayPrice = prices.SATURDAY;
+          }
         }
       } else {
         // 백년한옥별채 (forest): 평일/주말 구분만
@@ -74,33 +95,37 @@ const CommonReservation = ({
       }
 
       tempBasePrice += dayPrice;
+      calculatedDays++; // 숙박 일수 증가
+      
+      // 다음 날로 이동
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
+    setDays(calculatedDays);
     let totalPrice = tempBasePrice;
-    const days = picked.length - 1;
 
     // 인원 초과 요금
     if (propertyType === 'blon') {
       // 블로뉴숲: 최소 4인 기준 (4인 미만이어도 4인으로 계산)
       const personCnt = person >= 4 ? person : 4;
-      const overPersonPrice = priceConfig.OVER_FOUR * (personCnt - 4) * days;
+      const overPersonPrice = priceConfig.OVER_FOUR * (personCnt - 4) * calculatedDays;
       totalPrice += overPersonPrice;
 
       // 반려견 요금
       if (dog > 0) {
-        const dogPrice = priceConfig.DOG * dog * days;
+        const dogPrice = priceConfig.DOG * dog * calculatedDays;
         totalPrice += dogPrice;
       }
     } else {
       // 백년한옥별채: 2인 초과 기준
       if (person > 2) {
-        const overPersonPrice = priceConfig.OVER_TWO * (person - 2) * days;
+        const overPersonPrice = priceConfig.OVER_TWO * (person - 2) * calculatedDays;
         totalPrice += overPersonPrice;
       }
 
       // 반려견 요금
       if (dog > 0) {
-        const dogPrice = priceConfig.DOG * dog * days;
+        const dogPrice = priceConfig.DOG * dog * calculatedDays;
         totalPrice += dogPrice;
       }
     }
@@ -226,7 +251,7 @@ const CommonReservation = ({
             </div>
             <div className="info-item">
               <span className="label">숙박일수</span>
-              <span className="value">{picked.length - 1}박</span>
+              <span className="value">{days}박</span>
             </div>
           </div>
         </section>
@@ -369,19 +394,19 @@ const CommonReservation = ({
           <h2>총 이용요금</h2>
           <div className="total-price">{price.toLocaleString()}원</div>
           <div className="price-detail">
-            <p><b>숙박요금:</b> {basePrice.toLocaleString()}원 (총 {picked.length - 1}박)</p>
+            <p><b>숙박요금:</b> {basePrice.toLocaleString()}원 (총 {days}박)</p>
             {propertyType === 'blon' && (() => {
               const personCnt = person >= 4 ? person : 4;
               const overPerson = personCnt - 4;
               return overPerson > 0 && (
-                <p><b>인원초과:</b> {priceConfig.OVER_FOUR.toLocaleString()}원 x {overPerson}명 x {picked.length - 1}박</p>
+                <p><b>인원초과:</b> {priceConfig.OVER_FOUR.toLocaleString()}원 x {overPerson}명 x {days}박</p>
               );
             })()}
             {propertyType === 'forest' && person > 2 && (
-              <p><b>인원초과:</b> {priceConfig.OVER_TWO.toLocaleString()}원 x {person - 2}명 x {picked.length - 1}박</p>
+              <p><b>인원초과:</b> {priceConfig.OVER_TWO.toLocaleString()}원 x {person - 2}명 x {days}박</p>
             )}
             {dog > 0 && (
-              <p><b>반려견:</b> {priceConfig.DOG.toLocaleString()}원 x {dog}마리 x {picked.length - 1}박</p>
+              <p><b>반려견:</b> {priceConfig.DOG.toLocaleString()}원 x {dog}마리 x {days}박</p>
             )}
             {barbecue === 'Y' && (
               <p><b>바베큐:</b> {priceConfig.BARBECUE.toLocaleString()}원</p>
