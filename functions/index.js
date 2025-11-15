@@ -1,10 +1,29 @@
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const https = require('https');
 const url = require('url');
 const fetch = require('node-fetch');
+const { updateIcal } = require('./updateIcal');
+
+// Firebase Admin 초기화
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+// 환경변수 secrets 정의
+const secrets = [
+  'TELEGRAM_TOKEN',
+  'TELEGRAM_CHAT_ID_APPLE',
+  'TELEGRAM_CHAT_ID_SPACE',
+  'TELEGRAM_CHAT_ID_FOREST',
+  'TELEGRAM_CHAT_ID_BLON',
+  'MMS_APP_KEY',
+  'MMS_SECRET_KEY',
+  'MMS_SEND_NO'
+];
 
 // 텔레그램 알림 함수
-exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
+exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (req, res) => {
   // CORS 설정
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -24,19 +43,28 @@ exports.telegramWebhook = functions.https.onRequest(async (req, res) => {
   try {
     const { orderData, surveyData } = req.body;
 
-    // 텔레그램 봇 설정
-    const token = process.env.TELEGRAM_TOKEN || '1857829748:AAEQqFmUc4AWxad1-t1KRjQaXoXORjV91I4';
+    // 텔레그램 봇 설정 (Firebase 환경변수 우선, 없으면 process.env fallback)
+    const token = process.env.TELEGRAM_TOKEN;
+    if (!token) {
+      return res.status(500).json({ error: 'TELEGRAM_TOKEN이 설정되지 않았습니다.' });
+    }
     const baseUrl = `https://api.telegram.org/bot${token}`;
 
     let message, chatId;
 
     if (orderData) {
       // 사과 주문 처리
-      chatId = process.env.TELEGRAM_CHAT_ID_APPLE || '-4588249608';
+      chatId = process.env.TELEGRAM_CHAT_ID_APPLE;
+      if (!chatId) {
+        return res.status(500).json({ error: 'TELEGRAM_CHAT_ID_APPLE이 설정되지 않았습니다.' });
+      }
       message = createAppleOrderMessage(orderData);
     } else if (surveyData) {
       // 설문 데이터 처리
-      chatId = process.env.TELEGRAM_CHAT_ID_SPACE || '-4227666163';
+      chatId = process.env.TELEGRAM_CHAT_ID_SPACE;
+      if (!chatId) {
+        return res.status(500).json({ error: 'TELEGRAM_CHAT_ID_SPACE가 설정되지 않았습니다.' });
+      }
       message = createSurveyMessage(surveyData);
     } else {
       return res.status(400).json({ error: 'Order data or survey data is required' });
@@ -262,3 +290,31 @@ exports.forestApi = functions.https.onRequest((req, res) => {
   }
 });
 
+// iCal 동기화 Scheduled Function (5분마다 실행)
+exports.syncIcal = functions.runWith({ secrets }).pubsub
+  .schedule('*/5 * * * *') // 5분마다 실행
+  .timeZone('Asia/Seoul')
+  .onRun(async (context) => {
+    console.log('iCal 동기화 시작');
+
+    try {
+      // Forest iCal 동기화
+      await updateIcal(
+        'https://www.airbnb.co.kr/calendar/ical/45390781.ics?s=0445b573c993602570eb6ba077995e5c',
+        'forest'
+      );
+      console.log('Forest iCal 동기화 완료');
+
+      // Blon iCal 동기화
+      await updateIcal(
+        'https://www.airbnb.co.kr/calendar/ical/43357745.ics?s=b2f3b0a34285a4574daf03fe3429f505',
+        'blon'
+      );
+      console.log('Blon iCal 동기화 완료');
+
+      return null;
+    } catch (error) {
+      console.error('iCal 동기화 중 오류 발생:', error);
+      throw error;
+    }
+  });
