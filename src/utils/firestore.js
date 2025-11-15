@@ -1,0 +1,113 @@
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../firebase';
+
+/**
+ * Firestore에서 숙소 예약 내역을 조회합니다.
+ * @param {string} propertyType - 숙소 타입 ('forest', 'blon' 등)
+ * @returns {Promise<Array>} 예약 내역 배열
+ */
+export const getReservations = async (propertyType) => {
+  try {
+    const collectionName = `${propertyType}_reservation`;
+    const reservationsRef = collection(db, collectionName);
+    
+    // createdAt 필드가 있으면 정렬, 없으면 그냥 가져오기
+    let querySnapshot;
+    try {
+      const q = query(reservationsRef, orderBy('createdAt', 'desc'));
+      querySnapshot = await getDocs(q);
+    } catch (orderError) {
+      // createdAt 필드가 없거나 인덱스가 없는 경우 정렬 없이 가져오기
+      console.warn('createdAt 필드로 정렬 실패, 정렬 없이 조회:', orderError);
+      querySnapshot = await getDocs(reservationsRef);
+    }
+    
+    const reservations = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      reservations.push({
+        id: doc.id,
+        ...data,
+        // Firestore Timestamp를 문자열로 변환
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+        checkin_date: data.checkin_date || data.checkinDate,
+        checkout_date: data.checkout_date || data.checkoutDate,
+      });
+    });
+    
+    return reservations;
+  } catch (error) {
+    console.error(`Firestore에서 ${propertyType} 예약 데이터 조회 실패:`, error);
+    throw error;
+  }
+};
+
+/**
+ * 특정 날짜 범위의 예약 내역을 조회합니다.
+ * @param {string} propertyType - 숙소 타입
+ * @param {string} startDate - 시작 날짜 (YYYY-MM-DD)
+ * @param {string} endDate - 종료 날짜 (YYYY-MM-DD)
+ * @returns {Promise<Array>} 예약 내역 배열
+ */
+export const getReservationsByDateRange = async (propertyType, startDate, endDate) => {
+  try {
+    const allReservations = await getReservations(propertyType);
+    
+    // 날짜 범위에 해당하는 예약만 필터링
+    return allReservations.filter(reservation => {
+      const checkin = reservation.checkin_date || reservation.checkinDate;
+      const checkout = reservation.checkout_date || reservation.checkoutDate;
+      
+      if (!checkin || !checkout) return false;
+      
+      // 체크인 날짜가 endDate 이전이고, 체크아웃 날짜가 startDate 이후인 예약
+      return checkin <= endDate && checkout >= startDate;
+    });
+  } catch (error) {
+    console.error(`날짜 범위별 ${propertyType} 예약 데이터 조회 실패:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Firestore에서 iCal 예약 내역을 조회합니다.
+ * @param {string} propertyType - 숙소 타입 ('forest', 'blon' 등)
+ * @returns {Promise<Array>} iCal 예약 내역 배열
+ */
+export const getIcalReservations = async (propertyType) => {
+  try {
+    const collectionName = `${propertyType}_ical`;
+    const icalRef = collection(db, collectionName);
+    
+    // updated_at 기준으로 정렬 시도, 실패하면 정렬 없이 조회
+    let querySnapshot;
+    try {
+      const q = query(icalRef, orderBy('updated_at', 'desc'));
+      querySnapshot = await getDocs(q);
+    } catch (orderError) {
+      // updated_at 필드가 없거나 인덱스가 없는 경우 정렬 없이 가져오기
+      console.warn('updated_at 필드로 정렬 실패, 정렬 없이 조회:', orderError);
+      querySnapshot = await getDocs(icalRef);
+    }
+    
+    const reservations = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      reservations.push({
+        id: doc.id,
+        ...data,
+        // Firestore Timestamp를 문자열로 변환
+        updated_at: data.updated_at?.toDate ? data.updated_at.toDate().toISOString() : data.updated_at,
+        // start_dt, end_dt는 이미 YYYY-MM-DD 형식으로 저장되어 있음
+        start_dt: data.start_dt,
+        end_dt: data.end_dt,
+      });
+    });
+    
+    return reservations;
+  } catch (error) {
+    console.error(`Firestore에서 ${propertyType} iCal 데이터 조회 실패:`, error);
+    throw error;
+  }
+};
+

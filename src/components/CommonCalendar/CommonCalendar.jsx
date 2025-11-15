@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Calendar from '../Calendar/Calendar';
-import { FOREST_API_BASE } from '../../utils/api';
+import { getReservations, getIcalReservations } from '../../utils/firestore';
 import '../../styles/CommonPage.css';
 import './CommonCalendar.css';
 
@@ -14,41 +14,37 @@ const CommonCalendar = ({ propertyType, title, backPath, reservationPath }) => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // API에서 예약 데이터 가져오기
+  // Firestore에서 예약 데이터 가져오기
   useEffect(() => {
     const fetchReservations = async () => {
       setIsLoading(true);
       try {
-        // 환경에 따라 적절한 API URL 사용 (개발: 프록시, 프로덕션: 절대 URL)
-        const [internalResponse, airbnbResponse] = await Promise.all([
-          fetch(`${FOREST_API_BASE}/reservation/${propertyType}`),
-          fetch(`${FOREST_API_BASE}/ical/${propertyType}`)
+        // Firestore에서 내부 예약 데이터와 iCal 데이터 가져오기
+        const [internalData, icalData] = await Promise.all([
+          getReservations(propertyType).catch(err => {
+            console.warn('Firestore 예약 데이터 조회 실패, 빈 배열 반환:', err);
+            return [];
+          }),
+          getIcalReservations(propertyType).catch(err => {
+            console.warn('Firestore iCal 데이터 조회 실패, 빈 배열 반환:', err);
+            return [];
+          })
         ]);
 
-        if (!internalResponse.ok) {
-          throw new Error('내부 예약 데이터를 가져오는데 실패했습니다.');
-        }
-        if (!airbnbResponse.ok) {
-          throw new Error('에어비앤비 예약 데이터를 가져오는데 실패했습니다.');
-        }
-
-        const internalData = await internalResponse.json();
-        const airbnbData = await airbnbResponse.json();
-
-        // 내부 DB 데이터를 캘린더 형식으로 변환
+        // Firestore 내부 DB 데이터를 캘린더 형식으로 변환
         const internalReservations = internalData.map(reservation => ({
           checkin_date: reservation.checkin_date,
           checkout_date: reservation.checkout_date
         }));
 
-        // 에어비앤비 데이터를 캘린더 형식으로 변환
-        const airbnbReservations = airbnbData.map(reservation => ({
+        // iCal 데이터를 캘린더 형식으로 변환
+        const icalReservations = icalData.map(reservation => ({
           checkin_date: reservation.start_dt,
           checkout_date: reservation.end_dt
         }));
 
         // 두 데이터를 합치기
-        const allReservations = [...internalReservations, ...airbnbReservations];
+        const allReservations = [...internalReservations, ...icalReservations];
         setReserved(allReservations);
         setError(null);
       } catch (err) {
