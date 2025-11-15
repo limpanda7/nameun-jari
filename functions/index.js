@@ -4,6 +4,7 @@ const https = require('https');
 const url = require('url');
 const fetch = require('node-fetch');
 const { updateIcal } = require('./updateIcal');
+const { forestMMS, blonMMS } = require('./mms');
 
 // Firebase Admin 초기화
 if (!admin.apps.length) {
@@ -24,6 +25,10 @@ const secrets = [
 
 // 텔레그램 알림 함수
 exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (req, res) => {
+  console.log('=== telegramWebhook 함수 호출됨 ===');
+  console.log('요청 메서드:', req.method);
+  console.log('요청 URL:', req.url);
+  
   // CORS 설정
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -41,10 +46,21 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
   }
 
   try {
+    // 디버깅: 요청 본문 로깅
+    console.log('=== 요청 본문 확인 ===');
+    console.log('요청 본문:', JSON.stringify({
+      hasOrderData: !!req.body.orderData,
+      hasSurveyData: !!req.body.surveyData,
+      hasReservationData: !!req.body.reservationData,
+      bodyKeys: Object.keys(req.body || {}),
+      reservationDataKeys: req.body.reservationData ? Object.keys(req.body.reservationData) : null
+    }));
+
     const { orderData, surveyData, reservationData } = req.body;
 
     // 텔레그램 봇 설정 (Firebase 환경변수 우선, 없으면 process.env fallback)
-    const token = process.env.TELEGRAM_TOKEN;
+    // Firebase Secrets에서 가져온 값에 줄바꿈이 포함될 수 있으므로 trim() 처리
+    const token = process.env.TELEGRAM_TOKEN?.trim();
     if (!token) {
       return res.status(500).json({ error: 'TELEGRAM_TOKEN이 설정되지 않았습니다.' });
     }
@@ -54,14 +70,14 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
 
     if (orderData) {
       // 사과 주문 처리
-      chatId = process.env.TELEGRAM_CHAT_ID_APPLE;
+      chatId = process.env.TELEGRAM_CHAT_ID_APPLE?.trim();
       if (!chatId) {
         return res.status(500).json({ error: 'TELEGRAM_CHAT_ID_APPLE이 설정되지 않았습니다.' });
       }
       message = createAppleOrderMessage(orderData);
     } else if (surveyData) {
       // 설문 데이터 처리
-      chatId = process.env.TELEGRAM_CHAT_ID_SPACE;
+      chatId = process.env.TELEGRAM_CHAT_ID_SPACE?.trim();
       if (!chatId) {
         return res.status(500).json({ error: 'TELEGRAM_CHAT_ID_SPACE가 설정되지 않았습니다.' });
       }
@@ -70,9 +86,9 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
       // 예약 데이터 처리
       const propertyType = reservationData.propertyType;
       if (propertyType === 'forest') {
-        chatId = process.env.TELEGRAM_CHAT_ID_FOREST;
+        chatId = process.env.TELEGRAM_CHAT_ID_FOREST?.trim();
       } else if (propertyType === 'blon') {
-        chatId = process.env.TELEGRAM_CHAT_ID_BLON;
+        chatId = process.env.TELEGRAM_CHAT_ID_BLON?.trim();
       } else {
         return res.status(400).json({ error: '지원하지 않는 숙소 타입입니다.' });
       }
@@ -99,6 +115,26 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
     });
 
     const telegramResult = await telegramResponse.json();
+
+    // 예약 데이터인 경우 MMS 발송 (텔레그램 결과와 관계없이)
+    if (reservationData) {
+      try {
+        console.log('MMS 발송 시작:', { propertyType: reservationData.propertyType, phone: reservationData.phone });
+        await sendMMS(reservationData, chatId, token, baseUrl);
+        console.log('MMS 발송 완료');
+      } catch (mmsError) {
+        console.error('MMS 발송 중 오류:', mmsError);
+        console.error('MMS 발송 에러 상세:', {
+          message: mmsError.message,
+          stack: mmsError.stack,
+          reservationData: {
+            propertyType: reservationData?.propertyType,
+            phone: reservationData?.phone
+          }
+        });
+        // MMS 발송 실패는 전체 프로세스를 막지 않음
+      }
+    }
 
     if (telegramResult.ok) {
       console.log('텔레그램 알림 발송 성공:', telegramResult);
@@ -300,6 +336,128 @@ function createReservationMessage(reservationData) {
   return message;
 }
 
+// MMS 발송 함수
+async function sendMMS(reservationData, chatId, token, baseUrl) {
+  const {
+    propertyType,
+    name,
+    phone,
+    person,
+    baby,
+    dog,
+    bedding,
+    barbecue,
+    price,
+    checkinDate,
+    checkoutDate
+  } = reservationData;
+
+  // 전화번호 정규화 (하이픈 제거)
+  const normalizedPhone = phone.replace(/[^0-9]/g, '');
+  console.log('전화번호 정규화:', { original: phone, normalized: normalizedPhone });
+
+  // MMS 메시지 생성
+  let mmsBody;
+  const picked = [checkinDate, checkoutDate]; // 날짜 배열 형식으로 변환
+
+  if (propertyType === 'forest') {
+    mmsBody = forestMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price);
+  } else if (propertyType === 'blon') {
+    mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price);
+  } else {
+    console.warn(`지원하지 않는 숙소 타입: ${propertyType}`);
+    return;
+  }
+
+  // MMS 제목 설정
+  const mmsTitle = propertyType === 'forest' ? '백년한옥별채 안내문자' : '블로뉴숲 안내문자';
+
+  try {
+    // Toast Cloud SMS API로 MMS 발송
+    // Firebase Secrets에서 가져온 값에 줄바꿈이 포함될 수 있으므로 trim() 처리
+    const mmsAppKey = process.env.MMS_APP_KEY?.trim();
+    const mmsSecretKey = process.env.MMS_SECRET_KEY?.trim();
+    const mmsSendNo = process.env.MMS_SEND_NO?.trim();
+
+    console.log('MMS 환경변수 확인:', {
+      hasAppKey: !!mmsAppKey,
+      hasSecretKey: !!mmsSecretKey,
+      hasSendNo: !!mmsSendNo,
+      appKeyLength: mmsAppKey?.length || 0,
+      secretKeyLength: mmsSecretKey?.length || 0
+    });
+
+    if (!mmsAppKey || !mmsSecretKey || !mmsSendNo) {
+      const missingVars = [];
+      if (!mmsAppKey) missingVars.push('MMS_APP_KEY');
+      if (!mmsSecretKey) missingVars.push('MMS_SECRET_KEY');
+      if (!mmsSendNo) missingVars.push('MMS_SEND_NO');
+      throw new Error(`MMS 환경변수가 설정되지 않았습니다: ${missingVars.join(', ')}`);
+    }
+
+    const mmsResponse = await fetch(
+      `https://api-sms.cloud.toast.com/sms/v3.0/appKeys/${mmsAppKey}/sender/mms`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          'X-Secret-Key': mmsSecretKey,
+        },
+        body: JSON.stringify({
+          title: mmsTitle,
+          body: mmsBody,
+          sendNo: mmsSendNo,
+          recipientList: [{ recipientNo: normalizedPhone }],
+        }),
+      }
+    );
+
+    const mmsResult = await mmsResponse.json();
+    console.log('MMS API 응답:', JSON.stringify(mmsResult, null, 2));
+
+    if (mmsResult.header && mmsResult.header.resultMessage === 'SUCCESS') {
+      console.log('MMS 발송 성공:', mmsResult);
+      // 텔레그램으로 MMS 발송 성공 알림
+      try {
+        await fetch(`${baseUrl}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: '문자 발송에 성공하였습니다.'
+          })
+        });
+      } catch (telegramError) {
+        console.warn('MMS 성공 알림 텔레그램 전송 실패:', telegramError);
+      }
+    } else {
+      console.error('MMS 발송 실패:', mmsResult);
+      const errorMessage = mmsResult.header?.resultMessage || mmsResult.header?.resultCode || 'Unknown error';
+      // 텔레그램으로 MMS 발송 실패 알림
+      try {
+        await fetch(`${baseUrl}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: `문자 발송에 실패하였습니다. (${errorMessage})`
+          })
+        });
+      } catch (telegramError) {
+        console.warn('MMS 실패 알림 텔레그램 전송 실패:', telegramError);
+      }
+      throw new Error(`MMS 발송 실패: ${errorMessage}`);
+    }
+  } catch (error) {
+    console.error('MMS 발송 중 오류:', error);
+    throw error;
+  }
+}
+
 // Forest API 프록시 함수
 exports.forestApi = functions.https.onRequest((req, res) => {
   // CORS 설정
@@ -374,7 +532,13 @@ exports.forestApi = functions.https.onRequest((req, res) => {
 });
 
 // iCal 동기화 Scheduled Function (5분마다 실행)
-exports.syncIcal = functions.runWith({ secrets }).pubsub
+// syncIcal은 updateIcal에서 사용하는 secrets만 필요함
+const syncIcalSecrets = [
+  'TELEGRAM_TOKEN',
+  'TELEGRAM_CHAT_ID_FOREST',
+  'TELEGRAM_CHAT_ID_BLON'
+];
+exports.syncIcal = functions.runWith({ secrets: syncIcalSecrets }).pubsub
   .schedule('*/5 * * * *') // 5분마다 실행
   .timeZone('Asia/Seoul')
   .onRun(async (context) => {

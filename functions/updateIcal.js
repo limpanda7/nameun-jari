@@ -129,7 +129,8 @@ const updateIcal = async (url, target) => {
  * 텔레그램 알림 발송 (telegramWebhook과 동일한 방식)
  */
 const checkAndSendAlert = async (target, errorMessage = '') => {
-  const token = process.env.TELEGRAM_TOKEN;
+  // Firebase Secrets에서 가져온 값에 줄바꿈이 포함될 수 있으므로 trim() 처리
+  const token = process.env.TELEGRAM_TOKEN?.trim();
   if (!token) {
     console.warn('TELEGRAM_TOKEN이 설정되지 않았습니다.');
     return;
@@ -142,11 +143,11 @@ const checkAndSendAlert = async (target, errorMessage = '') => {
       // target에 따라 적절한 chatId 선택
       let chatId;
       if (target === 'forest') {
-        chatId = process.env.TELEGRAM_CHAT_ID_FOREST;
+        chatId = process.env.TELEGRAM_CHAT_ID_FOREST?.trim();
       } else if (target === 'blon') {
-        chatId = process.env.TELEGRAM_CHAT_ID_BLON;
+        chatId = process.env.TELEGRAM_CHAT_ID_BLON?.trim();
       } else {
-        chatId = process.env.TELEGRAM_CHAT_ID;
+        chatId = process.env.TELEGRAM_CHAT_ID?.trim();
       }
 
       if (chatId) {
