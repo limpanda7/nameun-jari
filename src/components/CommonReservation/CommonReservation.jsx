@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { FOREST_PRICE, BLON_PRICE } from '../../constants/price';
 import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDateWithDay, getBlonSpecialDatePrice, formatDate } from '../../utils/date';
-import { FOREST_API_BASE } from '../../utils/api';
+import { saveReservation as saveReservationToFirestore } from '../../utils/firestore';
 import './CommonReservation.css';
 
 const CommonReservation = ({
@@ -164,31 +164,60 @@ const CommonReservation = ({
         isRequested = true;
         setIsLoading(true);
 
-        const response = await fetch(`${FOREST_API_BASE}/reservation/${propertyType}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            picked,
-            name,
-            phone,
-            person,
-            baby,
-            dog,
-            bedding,
-            barbecue,
-            price,
-            priceOption
-          })
+        // 날짜 형식 변환
+        const checkinDate = picked.length > 0 ? new Date(picked[0]).toISOString().split('T')[0] : null;
+        const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
+
+        // Firestore에 예약 저장
+        const reservationId = await saveReservationToFirestore(propertyType, {
+          picked,
+          name,
+          phone,
+          person,
+          baby,
+          dog,
+          bedding,
+          barbecue,
+          price,
+          priceOption
         });
 
-        if (response.ok) {
-          alert(`예약해주셔서 감사합니다! 입금하실 금액은 ${price.toLocaleString()}원입니다.`);
-          navigate(backPath);
-        } else {
-          throw new Error('예약 요청에 실패했습니다.');
+        // 텔레그램 알림 전송
+        try {
+          const telegramResponse = await fetch('/api/telegram-webhook', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              reservationData: {
+                propertyType,
+                name,
+                phone,
+                person,
+                baby,
+                dog,
+                bedding,
+                barbecue,
+                price,
+                priceOption,
+                checkinDate,
+                checkoutDate,
+                createdAt: new Date().toISOString()
+              }
+            })
+          });
+
+          if (!telegramResponse.ok) {
+            console.warn('텔레그램 알림 전송 실패:', await telegramResponse.text());
+          }
+        } catch (telegramError) {
+          // 텔레그램 알림 실패는 예약 저장을 막지 않음
+          console.warn('텔레그램 알림 전송 중 오류:', telegramError);
         }
+
+        alert(`예약해주셔서 감사합니다! 입금하실 금액은 ${price.toLocaleString()}원입니다.`);
+        navigate(backPath);
       } catch (e) {
         isRequested = false;
         setIsLoading(false);

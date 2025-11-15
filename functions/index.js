@@ -41,7 +41,7 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
   }
 
   try {
-    const { orderData, surveyData } = req.body;
+    const { orderData, surveyData, reservationData } = req.body;
 
     // 텔레그램 봇 설정 (Firebase 환경변수 우선, 없으면 process.env fallback)
     const token = process.env.TELEGRAM_TOKEN;
@@ -66,8 +66,23 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
         return res.status(500).json({ error: 'TELEGRAM_CHAT_ID_SPACE가 설정되지 않았습니다.' });
       }
       message = createSurveyMessage(surveyData);
+    } else if (reservationData) {
+      // 예약 데이터 처리
+      const propertyType = reservationData.propertyType;
+      if (propertyType === 'forest') {
+        chatId = process.env.TELEGRAM_CHAT_ID_FOREST;
+      } else if (propertyType === 'blon') {
+        chatId = process.env.TELEGRAM_CHAT_ID_BLON;
+      } else {
+        return res.status(400).json({ error: '지원하지 않는 숙소 타입입니다.' });
+      }
+
+      if (!chatId) {
+        return res.status(500).json({ error: `TELEGRAM_CHAT_ID_${propertyType.toUpperCase()}이 설정되지 않았습니다.` });
+      }
+      message = createReservationMessage(reservationData);
     } else {
-      return res.status(400).json({ error: 'Order data or survey data is required' });
+      return res.status(400).json({ error: 'Order data, survey data, or reservation data is required' });
     }
 
     // 텔레그램 메시지 발송
@@ -213,6 +228,74 @@ function createSurveyMessage(surveyData) {
   message += `
 
 ⏰ 설문 확인 후 처리해주세요!`;
+
+  return message;
+}
+
+// 예약 알림 메시지 생성 함수
+function createReservationMessage(reservationData) {
+  const {
+    propertyType,
+    name,
+    phone,
+    person,
+    baby,
+    dog,
+    bedding,
+    barbecue,
+    price,
+    priceOption,
+    checkinDate,
+    checkoutDate
+  } = reservationData;
+
+  // 숙소 이름 매핑
+  const propertyName = propertyType === 'forest' ? '백년한옥별채' : propertyType === 'blon' ? '블로뉴숲' : propertyType;
+
+  // 날짜 포맷팅 (YYYY-MM-DD 형식)
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      return dateStr;
+    }
+  };
+
+  // 기간 포맷팅 (체크인, 체크아웃)
+  const period = checkinDate && checkoutDate
+    ? `${formatDate(checkinDate)},${formatDate(checkoutDate)}`
+    : checkinDate
+    ? formatDate(checkinDate)
+    : '날짜 없음';
+
+  // 환불 옵션 텍스트
+  const refundOption = priceOption === 'refundable' ? '환불가능' : '환불불가';
+
+  // 금액 포맷팅 (천 단위 구분)
+  const formattedPrice = price ? price.toLocaleString() : '0';
+
+  let message = `${propertyName} 신규 예약이 들어왔습니다.
+
+기간: ${period}
+
+이름: ${name}
+
+전화번호: ${phone}
+
+인원수: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리
+
+추가침구: ${bedding}개
+
+바베큐 이용여부: ${barbecue === 'Y' ? 'Y' : 'N'}
+
+이용금액: ${formattedPrice}
+
+환불옵션: ${refundOption}`;
 
   return message;
 }

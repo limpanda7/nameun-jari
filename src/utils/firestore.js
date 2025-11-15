@@ -1,4 +1,4 @@
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
 /**
@@ -107,6 +107,51 @@ export const getIcalReservations = async (propertyType) => {
     return reservations;
   } catch (error) {
     console.error(`Firestore에서 ${propertyType} iCal 데이터 조회 실패:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Firestore에 예약 내역을 저장합니다.
+ * @param {string} propertyType - 숙소 타입 ('forest', 'blon' 등)
+ * @param {Object} reservationData - 예약 데이터
+ * @returns {Promise<string>} 저장된 문서 ID
+ */
+export const saveReservation = async (propertyType, reservationData) => {
+  try {
+    const collectionName = `${propertyType}_reservation`;
+    const reservationsRef = collection(db, collectionName);
+    
+    // 날짜 형식 변환 (picked 배열에서 checkin_date, checkout_date 추출)
+    const checkinDate = reservationData.picked && reservationData.picked.length > 0
+      ? new Date(reservationData.picked[0]).toISOString().split('T')[0]
+      : null;
+    const checkoutDate = reservationData.picked && reservationData.picked.length > 1
+      ? new Date(reservationData.picked[reservationData.picked.length - 1]).toISOString().split('T')[0]
+      : null;
+    
+    // Firestore에 저장할 데이터 구성
+    const dataToSave = {
+      name: reservationData.name,
+      phone: reservationData.phone,
+      person: reservationData.person || 0,
+      baby: reservationData.baby || 0,
+      dog: reservationData.dog || 0,
+      bedding: reservationData.bedding || 0,
+      barbecue: reservationData.barbecue || 'N',
+      price: reservationData.price || 0,
+      price_option: reservationData.priceOption || 'refundable',
+      checkin_date: checkinDate,
+      checkout_date: checkoutDate,
+      createdAt: serverTimestamp()
+    };
+    
+    const docRef = await addDoc(reservationsRef, dataToSave);
+    console.log(`${propertyType} 예약이 성공적으로 저장되었습니다. 문서 ID:`, docRef.id);
+    
+    return docRef.id;
+  } catch (error) {
+    console.error(`Firestore에 ${propertyType} 예약 저장 실패:`, error);
     throw error;
   }
 };

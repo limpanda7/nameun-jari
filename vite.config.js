@@ -11,6 +11,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/forest-api/, '/api')
+      },
+      '/api/telegram-webhook': {
+        target: 'https://asia-northeast3-nameun-jari.cloudfunctions.net',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api\/telegram-webhook/, '/telegramWebhook')
       }
     }
   }
