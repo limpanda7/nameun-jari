@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { ON_OFF_PRICE } from '../../constants/price';
 import { formatDateWithDay } from '../../utils/date';
-import { FOREST_API_BASE } from '../../utils/api';
+import { saveReservation as saveReservationToFirestore } from '../../utils/firestore';
 import '../CommonReservation/CommonReservation.css';
 
 const OnOffReservation = () => {
@@ -53,29 +53,64 @@ const OnOffReservation = () => {
         isRequested = true;
         setIsLoading(true);
 
-        const response = await fetch(`${FOREST_API_BASE}/reservation/on_off`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            picked,
-            name,
-            phone,
-            person,
-            baby,
-            dog,
-            price: totalPrice,
-            weeks: weeks
-          })
+        // 날짜 형식 변환
+        const checkinDate = picked.length > 0 ? new Date(picked[0]).toISOString().split('T')[0] : null;
+        const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
+
+        // Firestore에 예약 저장
+        const reservationId = await saveReservationToFirestore('on_off', {
+          picked,
+          name,
+          phone,
+          person,
+          baby: 0, // on_off는 baby 필드가 없지만 호환성을 위해 0으로 설정
+          dog,
+          bedding: 0, // on_off는 bedding 필드가 없지만 호환성을 위해 0으로 설정
+          barbecue: 'N', // on_off는 barbecue 필드가 없지만 호환성을 위해 'N'으로 설정
+          price: totalPrice,
+          priceOption: 'refundable' // on_off는 priceOption 필드가 없지만 호환성을 위해 설정
         });
 
-        if (response.ok) {
-          alert(`예약해주셔서 감사합니다! 입금하실 금액은 ${totalPrice.toLocaleString()}원입니다.`);
-          navigate('/on-off');
-        } else {
-          throw new Error('예약 요청에 실패했습니다.');
+        // 텔레그램 알림 및 MMS 발송
+        try {
+          // Firebase Hosting의 rewrite를 통해 프록시되므로 상대 경로 사용
+          const telegramResponse = await fetch('/api/telegram-webhook', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              reservationData: {
+                propertyType: 'on_off',
+                name,
+                phone,
+                person,
+                baby: 0,
+                dog,
+                bedding: 0,
+                barbecue: 'N',
+                price: totalPrice,
+                priceOption: 'refundable',
+                checkinDate,
+                checkoutDate,
+                createdAt: new Date().toISOString()
+              }
+            })
+          });
+
+          if (!telegramResponse.ok) {
+            const errorText = await telegramResponse.text();
+            console.warn('텔레그램 알림 전송 실패:', errorText);
+          } else {
+            console.log('텔레그램 알림 전송 성공');
+          }
+        } catch (telegramError) {
+          // 텔레그램 알림 실패는 예약 저장을 막지 않음
+          console.warn('텔레그램 알림 전송 중 오류:', telegramError);
         }
+
+        alert(`예약해주셔서 감사합니다! 입금하실 금액은 ${totalPrice.toLocaleString()}원입니다.`);
+        navigate('/on-off');
       } catch (e) {
         isRequested = false;
         setIsLoading(false);

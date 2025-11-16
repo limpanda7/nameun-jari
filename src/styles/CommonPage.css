@@ -1335,3 +1335,46 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* MukhoPage 전용 스타일 */
+.mukho-page .section-title {
+  color: #2B5DA4;
+}
+
+.mukho-page .feature-icon {
+  background: linear-gradient(135deg, #2B5DA4 0%, #1a4a7a 100%);
+}
+
+.mukho-page .show-more-button {
+  background: linear-gradient(135deg, #2B5DA4 0%, #1a4a7a 100%);
+  box-shadow: 0 4px 15px rgba(43, 93, 164, 0.3);
+}
+
+.mukho-page .show-more-button:hover {
+  box-shadow: 0 6px 20px rgba(43, 93, 164, 0.4);
+  background: linear-gradient(135deg, #1a4a7a 0%, #2B5DA4 100%);
+}
+
+.mukho-page .pricing-content .section-title {
+  color: #2B5DA4;
+}
+
+.mukho-page .space-card h3 {
+  color: #2B5DA4;
+  border-bottom: 2px solid #2B5DA4;
+}
+
+.mukho-page .amenity-item {
+  border-left: 3px solid #2B5DA4;
+}
+
+.mukho-page .amenity-item::before {
+  color: #2B5DA4;
+}
+
+.mukho-page .space-amenities-grid {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 800px;
+  margin: 0 auto;
+  justify-items: center;
+}

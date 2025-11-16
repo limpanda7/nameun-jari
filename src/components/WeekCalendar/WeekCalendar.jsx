@@ -65,6 +65,8 @@ const WeekCalendar = ({picked, setPicked, reserved}) => {
 
     if (blocked) {
       alert("해당 기간에는 예약이 불가능합니다.");
+      setPicked([]);
+      setSelected(null);
       setShowModal(false);
       return;
     }

@@ -22,6 +22,7 @@ import OnOffPage from './components/OnOffPage/OnOffPage.jsx';
 import OnOffCalendar from './components/OnOffCalendar/OnOffCalendar.jsx';
 import OnOffReservation from './components/OnOffReservation/OnOffReservation.jsx';
 import SpacePage from './components/SpacePage/SpacePage.jsx';
+import MukhoPage from './components/MukhoPage/MukhoPage.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
 import TermsPage from './components/TermsPage/TermsPage.jsx';
@@ -107,8 +108,8 @@ function App() {
       type: "숙소",
       image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
       description: "동해 묵호의 아름다움을 담은 새로운 공간",
-      url: null,
-      priceRange: "오픈예정"
+      url: "/mukho",
+      priceRange: "200,000원/1주"
     }
   ];
 
@@ -261,6 +262,8 @@ function App() {
                         navigate('/on-off');
                       } else if (space.id === 4) {
                         navigate('/space');
+                      } else if (space.id === 5) {
+                        navigate('/mukho');
                       } else if (space.url) {
                         window.open(space.url, '_blank', 'noopener noreferrer');
                       }
@@ -269,9 +272,6 @@ function App() {
                   >
                     <div className="space-image">
                       <img src={space.image} alt={space.name} />
-                      {space.priceRange === "오픈예정" && (
-                        <div className="coming-soon-badge">오픈예정</div>
-                      )}
                     </div>
                     <div className="space-info">
                       <h3>{space.name}</h3>
@@ -481,6 +481,7 @@ function App() {
       <Route path="/on-off/reservation" element={<OnOffReservation />} />
       <Route path="/space" element={<SpacePage />} />
       <Route path="/space/survey" element={<NPSSurvey />} />
+      <Route path="/mukho" element={<MukhoPage />} />
       <Route path="/terms" element={<TermsPage />} />
     </Routes>
   );

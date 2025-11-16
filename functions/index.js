@@ -4,7 +4,7 @@ const https = require('https');
 const url = require('url');
 const fetch = require('node-fetch');
 const { updateIcal } = require('./updateIcal');
-const { forestMMS, blonMMS } = require('./mms');
+const { forestMMS, blonMMS, onOffMMS } = require('./mms');
 
 // Firebase Admin 초기화
 if (!admin.apps.length) {
@@ -18,6 +18,7 @@ const secrets = [
   'TELEGRAM_CHAT_ID_SPACE',
   'TELEGRAM_CHAT_ID_FOREST',
   'TELEGRAM_CHAT_ID_BLON',
+  'TELEGRAM_CHAT_ID_ON_OFF',
   'MMS_APP_KEY',
   'MMS_SECRET_KEY',
   'MMS_SEND_NO'
@@ -89,6 +90,8 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
         chatId = process.env.TELEGRAM_CHAT_ID_FOREST?.trim();
       } else if (propertyType === 'blon') {
         chatId = process.env.TELEGRAM_CHAT_ID_BLON?.trim();
+      } else if (propertyType === 'on_off') {
+        chatId = process.env.TELEGRAM_CHAT_ID_ON_OFF?.trim();
       } else {
         return res.status(400).json({ error: '지원하지 않는 숙소 타입입니다.' });
       }
@@ -286,7 +289,10 @@ function createReservationMessage(reservationData) {
   } = reservationData;
 
   // 숙소 이름 매핑
-  const propertyName = propertyType === 'forest' ? '백년한옥별채' : propertyType === 'blon' ? '블로뉴숲' : propertyType;
+  const propertyName = propertyType === 'forest' ? '백년한옥별채' 
+    : propertyType === 'blon' ? '블로뉴숲'
+    : propertyType === 'on_off' ? '온오프스테이'
+    : propertyType;
 
   // 날짜 포맷팅 (YYYY-MM-DD 형식)
   const formatDate = (dateStr) => {
@@ -321,7 +327,17 @@ function createReservationMessage(reservationData) {
 
 이름: ${name}
 
-전화번호: ${phone}
+전화번호: ${phone}`;
+
+  // on_off는 person, dog만 표시
+  if (propertyType === 'on_off') {
+    message += `
+
+인원수: ${person}명, 반려견 ${dog}마리
+
+이용금액: ${formattedPrice}`;
+  } else {
+    message += `
 
 인원수: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리
 
@@ -332,6 +348,7 @@ function createReservationMessage(reservationData) {
 이용금액: ${formattedPrice}
 
 환불옵션: ${refundOption}`;
+  }
 
   return message;
 }
@@ -364,13 +381,18 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
     mmsBody = forestMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price);
   } else if (propertyType === 'blon') {
     mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price);
+  } else if (propertyType === 'on_off') {
+    mmsBody = onOffMMS(picked, person, dog || 0, price);
   } else {
     console.warn(`지원하지 않는 숙소 타입: ${propertyType}`);
     return;
   }
 
   // MMS 제목 설정
-  const mmsTitle = propertyType === 'forest' ? '백년한옥별채 안내문자' : '블로뉴숲 안내문자';
+  const mmsTitle = propertyType === 'forest' ? '백년한옥별채 안내문자' 
+    : propertyType === 'blon' ? '블로뉴숲 안내문자'
+    : propertyType === 'on_off' ? '온오프스테이 안내문자'
+    : '안내문자';
 
   try {
     // Toast Cloud SMS API로 MMS 발송
@@ -528,6 +550,213 @@ exports.forestApi = functions.https.onRequest((req, res) => {
       console.error('프록시 에러:', error);
       res.status(500).json({ error: '프록시 서버 오류', details: error.message });
     });
+  }
+});
+
+// 온오프스테이 예약 API (Firestore 사용)
+const db = admin.firestore();
+const onOffSecrets = [
+  'TELEGRAM_TOKEN',
+  'TELEGRAM_CHAT_ID_ON_OFF',
+  'MMS_APP_KEY',
+  'MMS_SECRET_KEY',
+  'MMS_SEND_NO'
+];
+
+exports.onOffReservation = functions.runWith({ secrets: onOffSecrets }).https.onRequest(async (req, res) => {
+  // CORS 설정
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+
+  // OPTIONS 요청 처리
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  try {
+    if (req.method === 'GET') {
+      // GET: 예약 데이터 조회
+      const reservationsRef = db.collection('on_off_reservation');
+      const snapshot = await reservationsRef.orderBy('createdAt', 'desc').get();
+      
+      const reservations = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        reservations.push({
+          id: doc.id,
+          checkin_date: data.checkin_date,
+          checkout_date: data.checkout_date,
+          name: data.name,
+          phone: data.phone,
+          person: data.person,
+          dog: data.dog,
+          price: data.price,
+          createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt
+        });
+      });
+
+      res.status(200).json(reservations);
+    } else if (req.method === 'POST') {
+      // POST: 예약 저장 및 알림 발송
+      const { picked, name, phone, person, dog, price } = req.body;
+
+      if (!picked || !Array.isArray(picked) || picked.length === 0) {
+        return res.status(400).json({ error: '날짜를 선택해주세요.' });
+      }
+      if (!name || !phone) {
+        return res.status(400).json({ error: '이름과 전화번호를 입력해주세요.' });
+      }
+
+      // 날짜 형식 변환
+      const checkinDate = new Date(picked[0]).toISOString().split('T')[0];
+      const checkoutDate = new Date(picked[picked.length - 1]).toISOString().split('T')[0];
+
+      // Firestore에 예약 저장
+      const reservationData = {
+        checkin_date: checkinDate,
+        checkout_date: checkoutDate,
+        name,
+        phone,
+        person: person || 2,
+        dog: dog || 0,
+        price: price || 0,
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      };
+
+      const docRef = await db.collection('on_off_reservation').add(reservationData);
+      console.log('온오프스테이 예약 저장 완료:', docRef.id);
+
+      // 텔레그램 알림 발송
+      const token = process.env.TELEGRAM_TOKEN?.trim();
+      const chatId = process.env.TELEGRAM_CHAT_ID_ON_OFF?.trim();
+      const baseUrl = `https://api.telegram.org/bot${token}`;
+
+      if (token && chatId) {
+        const telegramMessage = `온오프스테이 신규 계약이 들어왔습니다.\n` +
+          `\n` +
+          `기간: ${checkinDate} ~ ${checkoutDate}\n` +
+          `\n` +
+          `이름: ${name}\n` +
+          `\n` +
+          `전화번호: ${phone}\n` +
+          `\n` +
+          `인원수: ${person || 2}명, 반려견 ${dog || 0}마리\n` +
+          `\n` +
+          `이용금액: ${(price || 0).toLocaleString()}\n`;
+
+        try {
+          await fetch(`${baseUrl}/sendMessage`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: telegramMessage
+            })
+          });
+        } catch (telegramError) {
+          console.error('텔레그램 알림 발송 실패:', telegramError);
+        }
+      }
+
+      // MMS 발송
+      try {
+        const mmsAppKey = process.env.MMS_APP_KEY?.trim();
+        const mmsSecretKey = process.env.MMS_SECRET_KEY?.trim();
+        const mmsSendNo = process.env.MMS_SEND_NO?.trim();
+
+        if (mmsAppKey && mmsSecretKey && mmsSendNo) {
+          const normalizedPhone = phone.replace(/[^0-9]/g, '');
+          // picked 배열을 날짜 문자열 배열로 변환
+          const pickedDates = picked.map(date => {
+            if (date instanceof Date) {
+              return date.toISOString().split('T')[0];
+            } else if (typeof date === 'string') {
+              return date.split('T')[0];
+            }
+            return date;
+          });
+          const mmsBody = onOffMMS(pickedDates, person || 2, dog || 0, price || 0);
+
+          const mmsResponse = await fetch(
+            `https://api-sms.cloud.toast.com/sms/v3.0/appKeys/${mmsAppKey}/sender/mms`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'X-Secret-Key': mmsSecretKey,
+              },
+              body: JSON.stringify({
+                title: '온오프스테이 안내문자',
+                body: mmsBody,
+                sendNo: mmsSendNo,
+                recipientList: [{ recipientNo: normalizedPhone }],
+              }),
+            }
+          );
+
+          const mmsResult = await mmsResponse.json();
+          console.log('MMS API 응답:', JSON.stringify(mmsResult, null, 2));
+
+          if (mmsResult.header && mmsResult.header.resultMessage === 'SUCCESS') {
+            console.log('MMS 발송 성공');
+            // 텔레그램으로 MMS 발송 성공 알림
+            if (token && chatId) {
+              try {
+                await fetch(`${baseUrl}/sendMessage`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    chat_id: chatId,
+                    text: '문자 발송에 성공하였습니다.'
+                  })
+                });
+              } catch (telegramError) {
+                console.warn('MMS 성공 알림 텔레그램 전송 실패:', telegramError);
+              }
+            }
+          } else {
+            console.error('MMS 발송 실패:', mmsResult);
+            const errorMessage = mmsResult.header?.resultMessage || mmsResult.header?.resultCode || 'Unknown error';
+            // 텔레그램으로 MMS 발송 실패 알림
+            if (token && chatId) {
+              try {
+                await fetch(`${baseUrl}/sendMessage`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    chat_id: chatId,
+                    text: `문자 발송에 실패하였습니다. (${errorMessage})`
+                  })
+                });
+              } catch (telegramError) {
+                console.warn('MMS 실패 알림 텔레그램 전송 실패:', telegramError);
+              }
+            }
+          }
+        }
+      } catch (mmsError) {
+        console.error('MMS 발송 중 오류:', mmsError);
+        // MMS 발송 실패는 예약 저장을 막지 않음
+      }
+
+      res.status(200).json({
+        id: docRef.id,
+        ...reservationData
+      });
+    } else {
+      res.status(405).json({ error: 'Method not allowed' });
+    }
+  } catch (error) {
+    console.error('온오프스테이 예약 처리 중 오류:', error);
+    res.status(500).json({ error: '예약 처리 중 오류가 발생했습니다.', details: error.message });
   }
 });
 

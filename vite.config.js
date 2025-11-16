@@ -17,6 +17,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api\/telegram-webhook/, '/telegramWebhook')
+      },
+      '/api/onOffReservation': {
+        target: 'https://asia-northeast3-nameun-jari.cloudfunctions.net',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api\/onOffReservation/, '/onOffReservation')
       }
     }
   }

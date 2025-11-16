@@ -89,6 +89,7 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
             "예약할 수 없는 날짜가 포함되어 있습니다. 날짜를 다시 선택해주세요."
           );
           setPicked([]);
+          setSelected(null);
           return false;
         }
         checkDate.setDate(checkDate.getDate() + 1);
@@ -102,6 +103,7 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
           "예약할 수 없는 날짜가 포함되어 있습니다. 날짜를 다시 선택해주세요."
         );
         setPicked([]);
+        setSelected(null);
         return false;
       }
 
