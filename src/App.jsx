@@ -164,6 +164,7 @@ function App() {
                 <button className="nav-btn-mobile" onClick={() => { navigate('/blon'); setIsMenuOpen(false); }}>블로뉴숲</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/on-off'); setIsMenuOpen(false); }}>온오프스테이</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/space'); setIsMenuOpen(false); }}>온오프스페이스</button>
+                <button className="nav-btn-mobile" onClick={() => { navigate('/mukho'); setIsMenuOpen(false); }}>묵호쉴래</button>
               </nav>
 
               <button
