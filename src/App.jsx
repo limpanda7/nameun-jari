@@ -89,7 +89,7 @@ function App() {
       location: "동해",
       type: "단기임대",
       image: onoffImg,
-      description: "동해의 아름다운 풍경과 함께하는 단기 임대",
+      description: "한적한 시골 풍경과 함께하는 단기 임대",
       url: "https://forest100.herokuapp.com/on-off",
       priceRange: "350,000원/1주"
     },
@@ -109,7 +109,7 @@ function App() {
       location: "동해",
       type: "숙소",
       image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-      description: "동해 묵호의 아름다움을 담은 새로운 공간",
+      description: "묵호의 아름다움을 담은 새로운 공간",
       url: "/mukho",
       priceRange: "200,000원/1주"
     }
@@ -150,7 +150,7 @@ function App() {
               <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
                 <button className="nav-btn-desktop" onClick={() => scrollToSection('spaces')}>공간들</button>
                 <button className="nav-btn-desktop" onClick={() => scrollToSection('host-message')}>호스트</button>
-                
+
                 {/* 모바일 메뉴 닫기 버튼 */}
                 <button className="mobile-menu-close" onClick={() => setIsMenuOpen(false)}>
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -158,7 +158,7 @@ function App() {
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
                 </button>
-                
+
                 {/* 모바일 전용 메뉴 */}
                 <button className="nav-btn-mobile" onClick={() => { navigate('/forest'); setIsMenuOpen(false); }}>백년한옥별채</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/blon'); setIsMenuOpen(false); }}>블로뉴숲</button>
@@ -277,11 +277,13 @@ function App() {
                     </div>
                     <div className="space-info">
                       <h3>{space.name}</h3>
-                      <p className="location">
-                        <MapPin size={16} />
-                        {space.location}
-                      </p>
-                      <p className="space-type">{space.type}</p>
+                      <div className="location-type-row">
+                        <p className="location">
+                          <MapPin size={16} />
+                          {space.location}
+                        </p>
+                        <p className="space-type">{space.type}</p>
+                      </div>
                       <p className="description">{space.description}</p>
                       <div className="space-meta">
                         <div className="price">{space.priceRange}</div>
@@ -435,7 +437,7 @@ function App() {
       <Route path="/apple-order" element={<AppleOrderPage />} />
       <Route path="/forest" element={<ForestPage />} />
       <Route path="/forest/calendar" element={
-        <CommonCalendar 
+        <CommonCalendar
           propertyType="forest"
           title="백년한옥별채 예약"
           backPath="/forest"
@@ -443,7 +445,7 @@ function App() {
         />
       } />
       <Route path="/forest/reservation" element={
-        <CommonReservation 
+        <CommonReservation
           propertyType="forest"
           title="백년한옥별채 예약"
           calendarPath="/forest/calendar"
@@ -457,7 +459,7 @@ function App() {
         />
       } />
       <Route path="/blon/calendar" element={
-        <CommonCalendar 
+        <CommonCalendar
           propertyType="blon"
           title="블로뉴숲 예약"
           backPath="/blon"
@@ -465,7 +467,7 @@ function App() {
         />
       } />
       <Route path="/blon/reservation" element={
-        <CommonReservation 
+        <CommonReservation
           propertyType="blon"
           title="블로뉴숲 예약"
           calendarPath="/blon/calendar"
