@@ -4,7 +4,7 @@ const https = require('https');
 const url = require('url');
 const fetch = require('node-fetch');
 const { updateIcal } = require('./updateIcal');
-const { forestMMS, blonMMS, onOffMMS } = require('./mms');
+const { forestMMS, blonMMS, onOffMMS, mukhoMMS } = require('./mms');
 
 // Firebase Admin 초기화
 if (!admin.apps.length) {
@@ -19,6 +19,7 @@ const secrets = [
   'TELEGRAM_CHAT_ID_FOREST',
   'TELEGRAM_CHAT_ID_BLON',
   'TELEGRAM_CHAT_ID_ON_OFF',
+  'TELEGRAM_CHAT_ID_MUKHO',
   'MMS_APP_KEY',
   'MMS_SECRET_KEY',
   'MMS_SEND_NO'
@@ -92,6 +93,8 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
         chatId = process.env.TELEGRAM_CHAT_ID_BLON?.trim();
       } else if (propertyType === 'on_off') {
         chatId = process.env.TELEGRAM_CHAT_ID_ON_OFF?.trim();
+      } else if (propertyType === 'mukho') {
+        chatId = process.env.TELEGRAM_CHAT_ID_MUKHO?.trim();
       } else {
         return res.status(400).json({ error: '지원하지 않는 숙소 타입입니다.' });
       }
@@ -292,6 +295,7 @@ function createReservationMessage(reservationData) {
   const propertyName = propertyType === 'forest' ? '백년한옥별채' 
     : propertyType === 'blon' ? '블로뉴숲'
     : propertyType === 'on_off' ? '온오프스테이'
+    : propertyType === 'mukho' ? '묵호쉴래'
     : propertyType;
 
   // 날짜 포맷팅 (YYYY-MM-DD 형식)
@@ -329,8 +333,8 @@ function createReservationMessage(reservationData) {
 
 전화번호: ${phone}`;
 
-  // on_off는 person, dog만 표시
-  if (propertyType === 'on_off') {
+  // on_off와 mukho는 person, dog만 표시
+  if (propertyType === 'on_off' || propertyType === 'mukho') {
     message += `
 
 인원수: ${person}명, 반려견 ${dog}마리
@@ -383,6 +387,8 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
     mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price);
   } else if (propertyType === 'on_off') {
     mmsBody = onOffMMS(picked, person, dog || 0, price);
+  } else if (propertyType === 'mukho') {
+    mmsBody = mukhoMMS(picked, person, dog || 0, price);
   } else {
     console.warn(`지원하지 않는 숙소 타입: ${propertyType}`);
     return;
@@ -392,6 +398,7 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
   const mmsTitle = propertyType === 'forest' ? '백년한옥별채 안내문자' 
     : propertyType === 'blon' ? '블로뉴숲 안내문자'
     : propertyType === 'on_off' ? '온오프스테이 안내문자'
+    : propertyType === 'mukho' ? '묵호쉴래 안내문자'
     : '안내문자';
 
   try {

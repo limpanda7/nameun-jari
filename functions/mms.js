@@ -60,7 +60,7 @@ const onOffMMS = (picked, person, dog, price) => {
     `인원: ${person}명, 반려견 ${dog}마리\n` +
     '\n' +
     '-주소: 강원도 동해시 무릉1길 9-2\n' +
-    '-주차:  무릉복지회관 측면 공용주차장 or 도로에 하시면 됩니다.\n' +
+    '-주차: 무릉복지회관 측면 공용주차장 or 도로에 하시면 됩니다.\n' +
     '\n' +
     '※ 체크인 방법: 체크인 하루전 안내드립니다.\n' +
     '\n' +
@@ -189,10 +189,26 @@ const appleMMS = (name, phone, fiveKg, tenKg, price, receiverName, receiverPhone
     '※ 문의는 010-3024-1517로 부탁드립니다.';
 }
 
+const mukhoMMS = (picked, person, dog, price) => {
+  return '묵호쉴래를 찾아주셔서 감사합니다 :)\n' +
+    `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
+    '(입금계좌: 카카오 79420205681 남은비)\n' +
+    '\n' +
+    '[계약정보]\n' +
+    `기간: ${picked[0]} ~ ${picked[picked.length - 1]}\n` +
+    `인원: ${person}명, 반려견 ${dog}마리\n` +
+    '\n' +
+    '-주소: 강원도 동해시 발한동 354-76 명영한어린이집 2층\n' +
+    '\n' +
+    '※ 본 전화번호는 발신 전용입니다.\n' +
+    '※ 문의는 카카오톡(eunbibi1001)으로 부탁드립니다.';
+}
+
 module.exports = {
   forestMMS,
   blonMMS,
   onOffMMS,
   spaceMMS,
-  appleMMS
+  appleMMS,
+  mukhoMMS
 };

@@ -58,6 +58,13 @@ export const SPACE_PRICE = {
   // DOG: 15000,
 }
 
+export const MUKHO_PRICE = {
+  RENT_PER_WEEK: 200000,
+  MANAGEMENT_PER_WEEK: 70000,
+  CLEANING_FEE: 70000,
+  DEPOSIT: 330000,
+};
+
 export const HOLIDAYS = [
   '2025-01-01', // 신정
   '2025-01-27', // 임시공휴일

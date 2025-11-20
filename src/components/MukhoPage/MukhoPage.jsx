@@ -87,13 +87,13 @@ const MukhoPage = () => {
   // 화면 크기에 따라 표시할 이미지 수 결정
   const getDisplayImages = () => {
     if (isMobile) {
-      return showAllImages ? images : images.slice(0, 6);
+      return showAllImages ? images : images.slice(0, 9);
     }
-    return showAllImages ? images : images.slice(0, 6); // PC에서도 처음에는 6개만
+    return showAllImages ? images : images.slice(0, 9); // PC에서도 처음에는 9개만
   };
 
   const shouldShowMoreButton = () => {
-    return images.length > 6;
+    return images.length > 9;
   };
 
   const features = [
@@ -157,9 +157,12 @@ const MukhoPage = () => {
             <ArrowLeft size={20} />
             돌아가기
           </button>
-          <div style={{ fontSize: '0.9rem', color: '#666', padding: '0.5rem 1rem' }}>
-            가오픈 준비중
-          </div>
+          <button
+            className="header-booking-button"
+            onClick={() => navigate('/mukho/calendar')}
+          >
+            📅 예약하기
+          </button>
         </div>
       </motion.header>
 
@@ -184,8 +187,7 @@ const MukhoPage = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="forest-subtitle"
           >
-            모던하고 깔끔한 인테리어로 준비되는<br />
-            묵호의 새로운 공간
+            모던하고 깔끔한 인테리어의 묵호 단기임대
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -424,6 +426,33 @@ const MukhoPage = () => {
               </table>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Booking Section */}
+      <section className="features-section">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="booking-content"
+            style={{ textAlign: 'center' }}
+          >
+            <h2 className="section-title">예약하기</h2>
+            <div className="booking-actions">
+              <button
+                className="booking-button"
+                onClick={() => navigate('/mukho/calendar')}
+              >
+                📅 예약하기
+              </button>
+            </div>
+            <div className="booking-note">
+              <p>실시간 예약 가능 일정을 확인하고 바로 예약하세요.</p>
+            </div>
+          </motion.div>
         </div>
       </section>
 

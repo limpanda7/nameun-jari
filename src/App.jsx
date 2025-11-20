@@ -20,13 +20,15 @@ import CommonReservation from './components/CommonReservation/CommonReservation.
 import BlonPage from './components/BlonPage/BlonPage.jsx';
 import OnOffPage from './components/OnOffPage/OnOffPage.jsx';
 import OnOffCalendar from './components/OnOffCalendar/OnOffCalendar.jsx';
+import MukhoCalendar from './components/MukhoCalendar/MukhoCalendar.jsx';
 import OnOffReservation from './components/OnOffReservation/OnOffReservation.jsx';
 import SpacePage from './components/SpacePage/SpacePage.jsx';
 import MukhoPage from './components/MukhoPage/MukhoPage.jsx';
+import MukhoReservation from './components/MukhoReservation/MukhoReservation.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
 import TermsPage from './components/TermsPage/TermsPage.jsx';
-import { FOREST_PRICE, BLON_PRICE } from './constants/price';
+import { FOREST_PRICE, BLON_PRICE, MUKHO_PRICE } from './constants/price';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -482,6 +484,8 @@ function App() {
       <Route path="/space" element={<SpacePage />} />
       <Route path="/space/survey" element={<NPSSurvey />} />
       <Route path="/mukho" element={<MukhoPage />} />
+      <Route path="/mukho/calendar" element={<MukhoCalendar />} />
+      <Route path="/mukho/reservation" element={<MukhoReservation />} />
       <Route path="/terms" element={<TermsPage />} />
     </Routes>
   );

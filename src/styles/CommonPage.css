@@ -1378,3 +1378,23 @@
   margin: 0 auto;
   justify-items: center;
 }
+
+.mukho-page .booking-button {
+  background: linear-gradient(135deg, #2B5DA4 0%, #1a4a7a 100%);
+  box-shadow: 0 4px 15px rgba(43, 93, 164, 0.3);
+}
+
+.mukho-page .booking-button:hover {
+  box-shadow: 0 6px 20px rgba(43, 93, 164, 0.4);
+  background: linear-gradient(135deg, #1a4a7a 0%, #2B5DA4 100%);
+}
+
+.mukho-page .header-booking-button {
+  background: linear-gradient(135deg, #2B5DA4 0%, #1a4a7a 100%);
+  box-shadow: 0 4px 15px rgba(43, 93, 164, 0.3);
+}
+
+.mukho-page .header-booking-button:hover {
+  box-shadow: 0 6px 20px rgba(43, 93, 164, 0.4);
+  background: linear-gradient(135deg, #1a4a7a 0%, #2B5DA4 100%);
+}
