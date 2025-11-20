@@ -54,6 +54,40 @@ const MukhoPage = () => {
     mukho18
   ];
 
+  // OG 이미지 설정
+  useEffect(() => {
+    const heroImageUrl = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';
+    
+    // OG 이미지 메타 태그 업데이트
+    let ogImageMeta = document.querySelector('meta[property="og:image"]');
+    if (!ogImageMeta) {
+      ogImageMeta = document.createElement('meta');
+      ogImageMeta.setAttribute('property', 'og:image');
+      document.head.appendChild(ogImageMeta);
+    }
+    ogImageMeta.setAttribute('content', heroImageUrl);
+
+    // Twitter 이미지 메타 태그 업데이트
+    let twitterImageMeta = document.querySelector('meta[property="twitter:image"]');
+    if (!twitterImageMeta) {
+      twitterImageMeta = document.createElement('meta');
+      twitterImageMeta.setAttribute('property', 'twitter:image');
+      document.head.appendChild(twitterImageMeta);
+    }
+    twitterImageMeta.setAttribute('content', heroImageUrl);
+
+    return () => {
+      // 컴포넌트 언마운트 시 기본 OG 이미지로 복구
+      const defaultOgImage = `${window.location.origin}/og-image.png`;
+      if (ogImageMeta) {
+        ogImageMeta.setAttribute('content', defaultOgImage);
+      }
+      if (twitterImageMeta) {
+        twitterImageMeta.setAttribute('content', defaultOgImage);
+      }
+    };
+  }, []);
+
   // 브라우저 테마 색상 설정
   useEffect(() => {
     let themeColorMeta = document.querySelector('meta[name="theme-color"]');
@@ -170,7 +204,7 @@ const MukhoPage = () => {
       <section className="forest-hero" style={{ background: 'linear-gradient(135deg, #2B5DA4 0%, #1a4a7a 100%)' }}>
         <div
           className="forest-hero-background"
-          style={{ backgroundImage: `url(${mukho1})` }}
+          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80)` }}
         ></div>
         <div className="hero-content">
           <motion.h1

@@ -53,6 +53,41 @@ const OnOffPage = () => {
     onoff17
   ];
 
+  // OG 이미지 설정
+  useEffect(() => {
+    // Vite에서 import한 이미지는 빌드 시 절대 경로로 변환되므로, 이미 절대 경로인지 확인
+    const ogImageUrl = onoff1.startsWith('http') ? onoff1 : new URL(onoff1, window.location.origin).href;
+    
+    // OG 이미지 메타 태그 업데이트
+    let ogImageMeta = document.querySelector('meta[property="og:image"]');
+    if (!ogImageMeta) {
+      ogImageMeta = document.createElement('meta');
+      ogImageMeta.setAttribute('property', 'og:image');
+      document.head.appendChild(ogImageMeta);
+    }
+    ogImageMeta.setAttribute('content', ogImageUrl);
+
+    // Twitter 이미지 메타 태그 업데이트
+    let twitterImageMeta = document.querySelector('meta[property="twitter:image"]');
+    if (!twitterImageMeta) {
+      twitterImageMeta = document.createElement('meta');
+      twitterImageMeta.setAttribute('property', 'twitter:image');
+      document.head.appendChild(twitterImageMeta);
+    }
+    twitterImageMeta.setAttribute('content', ogImageUrl);
+
+    return () => {
+      // 컴포넌트 언마운트 시 기본 OG 이미지로 복구
+      const defaultOgImage = `${window.location.origin}/og-image.png`;
+      if (ogImageMeta) {
+        ogImageMeta.setAttribute('content', defaultOgImage);
+      }
+      if (twitterImageMeta) {
+        twitterImageMeta.setAttribute('content', defaultOgImage);
+      }
+    };
+  }, []);
+
   // 브라우저 테마 색상 설정
   useEffect(() => {
     let themeColorMeta = document.querySelector('meta[name="theme-color"]');
