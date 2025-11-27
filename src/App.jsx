@@ -23,6 +23,8 @@ import OnOffCalendar from './components/OnOffCalendar/OnOffCalendar.jsx';
 import MukhoCalendar from './components/MukhoCalendar/MukhoCalendar.jsx';
 import OnOffReservation from './components/OnOffReservation/OnOffReservation.jsx';
 import SpacePage from './components/SpacePage/SpacePage.jsx';
+import SpaceCalendar from './components/SpaceCalendar/SpaceCalendar.jsx';
+import SpaceReservation from './components/SpaceReservation/SpaceReservation.jsx';
 import MukhoPage from './components/MukhoPage/MukhoPage.jsx';
 import MukhoReservation from './components/MukhoReservation/MukhoReservation.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
@@ -485,6 +487,8 @@ function App() {
       <Route path="/on-off/calendar" element={<OnOffCalendar />} />
       <Route path="/on-off/reservation" element={<OnOffReservation />} />
       <Route path="/space" element={<SpacePage />} />
+      <Route path="/space/calendar" element={<SpaceCalendar />} />
+      <Route path="/space/reservation" element={<SpaceReservation />} />
       <Route path="/space/survey" element={<NPSSurvey />} />
       <Route path="/mukho" element={<MukhoPage />} />
       <Route path="/mukho/calendar" element={<MukhoCalendar />} />

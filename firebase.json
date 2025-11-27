@@ -20,6 +20,7 @@
         "destination": "/index.html"
       }
     ],
+    "cleanUrls": true,
     "headers": [
       {
         "source": "/index.html",
@@ -36,6 +37,19 @@
           {
             "key": "Cache-Control",
             "value": "max-age=31536000"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          },
+          {
+            "key": "Content-Type",
+            "value": "image/*"
           }
         ]
       }

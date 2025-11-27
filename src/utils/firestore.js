@@ -156,3 +156,37 @@ export const saveReservation = async (propertyType, reservationData) => {
   }
 };
 
+/**
+ * Space 예약 내역을 저장합니다 (시간 단위 예약).
+ * @param {Object} reservationData - 예약 데이터
+ * @returns {Promise<string>} 저장된 문서 ID
+ */
+export const saveSpaceReservation = async (reservationData) => {
+  try {
+    const collectionName = 'space_reservation';
+    const reservationsRef = collection(db, collectionName);
+    
+    // Firestore에 저장할 데이터 구성
+    const dataToSave = {
+      name: reservationData.name,
+      phone: reservationData.phone,
+      person: reservationData.person || 0,
+      purpose: reservationData.purpose || '',
+      price: reservationData.price || 0,
+      date: reservationData.date, // YYYY-MM-DD 형식
+      time: reservationData.time, // 시간 배열 [9, 10, 11]
+      checkin_time: reservationData.checkin_time, // 시작 시간 (숫자)
+      checkout_time: reservationData.checkout_time, // 종료 시간 (숫자)
+      createdAt: serverTimestamp()
+    };
+    
+    const docRef = await addDoc(reservationsRef, dataToSave);
+    console.log('Space 예약이 성공적으로 저장되었습니다. 문서 ID:', docRef.id);
+    
+    return docRef.id;
+  } catch (error) {
+    console.error('Firestore에 Space 예약 저장 실패:', error);
+    throw error;
+  }
+};
+

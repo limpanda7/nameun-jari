@@ -4,7 +4,7 @@ const https = require('https');
 const url = require('url');
 const fetch = require('node-fetch');
 const { updateIcal } = require('./updateIcal');
-const { forestMMS, blonMMS, onOffMMS, mukhoMMS } = require('./mms');
+const { forestMMS, blonMMS, onOffMMS, mukhoMMS, spaceMMS } = require('./mms');
 
 // Firebase Admin 초기화
 if (!admin.apps.length) {
@@ -95,6 +95,8 @@ exports.telegramWebhook = functions.runWith({ secrets }).https.onRequest(async (
         chatId = process.env.TELEGRAM_CHAT_ID_ON_OFF?.trim();
       } else if (propertyType === 'mukho') {
         chatId = process.env.TELEGRAM_CHAT_ID_MUKHO?.trim();
+      } else if (propertyType === 'space') {
+        chatId = process.env.TELEGRAM_CHAT_ID_SPACE?.trim();
       } else {
         return res.status(400).json({ error: '지원하지 않는 숙소 타입입니다.' });
       }
@@ -296,6 +298,7 @@ function createReservationMessage(reservationData) {
     : propertyType === 'blon' ? '블로뉴숲'
     : propertyType === 'on_off' ? '온오프스테이'
     : propertyType === 'mukho' ? '묵호쉴래'
+    : propertyType === 'space' ? '온오프 스페이스'
     : propertyType;
 
   // 날짜 포맷팅 (YYYY-MM-DD 형식)
@@ -312,12 +315,30 @@ function createReservationMessage(reservationData) {
     }
   };
 
-  // 기간 포맷팅 (체크인, 체크아웃)
-  const period = checkinDate && checkoutDate
-    ? `${formatDate(checkinDate)},${formatDate(checkoutDate)}`
-    : checkinDate
-    ? formatDate(checkinDate)
-    : '날짜 없음';
+  // 기간 포맷팅 (체크인, 체크아웃 또는 날짜/시간)
+  let period;
+  if (propertyType === 'space') {
+    // Space는 날짜와 시간 배열 사용
+    const date = reservationData.date;
+    const time = reservationData.time;
+    const checkinTime = reservationData.checkin_time;
+    const checkoutTime = reservationData.checkout_time;
+    if (date && checkinTime !== undefined && checkoutTime !== undefined) {
+      period = `${formatDate(date)} ${checkinTime}:00 ~ ${checkoutTime}:00`;
+    } else if (date && time && Array.isArray(time) && time.length > 0) {
+      const startTime = Math.min(...time);
+      const endTime = Math.max(...time) + 1;
+      period = `${formatDate(date)} ${startTime}:00 ~ ${endTime}:00`;
+    } else {
+      period = date ? formatDate(date) : '날짜 없음';
+    }
+  } else {
+    period = checkinDate && checkoutDate
+      ? `${formatDate(checkinDate)},${formatDate(checkoutDate)}`
+      : checkinDate
+      ? formatDate(checkinDate)
+      : '날짜 없음';
+  }
 
   // 환불 옵션 텍스트
   const refundOption = priceOption === 'refundable' ? '환불가능' : '환불불가';
@@ -338,6 +359,16 @@ function createReservationMessage(reservationData) {
     message += `
 
 인원수: ${person}명, 반려견 ${dog}마리
+
+이용금액: ${formattedPrice}`;
+  } else if (propertyType === 'space') {
+    // Space는 person, purpose만 표시
+    const purpose = reservationData.purpose || '미입력';
+    message += `
+
+인원수: ${person}명
+
+사용목적: ${purpose}
 
 이용금액: ${formattedPrice}`;
   } else {
@@ -389,6 +420,12 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
     mmsBody = onOffMMS(picked, person, dog || 0, price);
   } else if (propertyType === 'mukho') {
     mmsBody = mukhoMMS(picked, person, dog || 0, price);
+  } else if (propertyType === 'space') {
+    // Space는 날짜와 시간 배열 사용
+    const date = reservationData.date;
+    const time = reservationData.time || [];
+    const purpose = reservationData.purpose || '미입력';
+    mmsBody = spaceMMS(date, time, person, purpose, price);
   } else {
     console.warn(`지원하지 않는 숙소 타입: ${propertyType}`);
     return;
@@ -399,6 +436,7 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
     : propertyType === 'blon' ? '블로뉴숲 안내문자'
     : propertyType === 'on_off' ? '온오프스테이 안내문자'
     : propertyType === 'mukho' ? '묵호쉴래 안내문자'
+    : propertyType === 'space' ? '온오프 스페이스 안내문자'
     : '안내문자';
 
   try {
