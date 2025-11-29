@@ -148,10 +148,7 @@ const Admin = () => {
     try {
       setIsLoading(true);
 
-      // Firestore에 확정 상태 업데이트
-      await confirmReservation(target, reservation.id);
-
-      // 확정 문자 전송
+      // 확정 문자 전송 (성공 시 Firestore 업데이트도 함께 처리)
       const response = await fetch('/api/confirm-reservation', {
         method: 'POST',
         headers: {

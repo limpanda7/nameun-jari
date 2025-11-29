@@ -486,11 +486,6 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
       console.log('MMS 발송 성공:', mmsResult);
       // 텔레그램으로 MMS 발송 성공 알림
       try {
-        // 예약 기간 포맷팅
-        const periodText = checkinDate && checkoutDate
-          ? `\n\n기간: ${checkinDate},${checkoutDate}`
-          : '';
-
         await fetch(`${baseUrl}/sendMessage`, {
           method: 'POST',
           headers: {
@@ -498,7 +493,7 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
           },
           body: JSON.stringify({
             chat_id: chatId,
-            text: `문자 발송에 성공하였습니다.${periodText}`
+            text: '문자 발송에 성공하였습니다.'
           })
         });
       } catch (telegramError) {
@@ -763,7 +758,7 @@ exports.onOffReservation = functions.runWith({ secrets: onOffSecrets }).https.on
                   },
                   body: JSON.stringify({
                     chat_id: chatId,
-                    text: `문자 발송에 성공하였습니다.`
+                    text: '문자 발송에 성공하였습니다.'
                   })
                 });
               } catch (telegramError) {
@@ -906,6 +901,17 @@ exports.confirmReservation = functions.runWith({ secrets }).https.onRequest(asyn
     console.log('확정 문자 API 응답:', JSON.stringify(mmsResult, null, 2));
 
     if (mmsResult.header && mmsResult.header.resultMessage === 'SUCCESS') {
+      // 문자 발송 성공 후 Firestore에 확정 상태 업데이트
+      try {
+        await db.collection(collectionName).doc(reservationId).update({
+          confirmed: 'Y'
+        });
+        console.log('예약 확정 상태 업데이트 완료:', reservationId);
+      } catch (updateError) {
+        console.error('Firestore 확정 상태 업데이트 실패:', updateError);
+        // Firestore 업데이트 실패는 이미 문자를 보냈으므로 경고만 하고 계속 진행
+      }
+
       // 텔레그램 알림 전송
       try {
         const token = process.env.TELEGRAM_TOKEN?.trim();
