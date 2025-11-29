@@ -858,7 +858,7 @@ exports.confirmReservation = functions.runWith({ secrets }).https.onRequest(asyn
     const person = reservationData.person || 0;
     const baby = reservationData.baby || 0;
     const dog = reservationData.dog || 0;
-    const barbecue = reservationData.barbecue === 'Y' ? '예' : '아니오';
+    const barbecue = reservationData.barbecue || 'N';
 
     // 확정 메시지 생성
     const confirmMessage = '입금 확인되어 예약이 확정되었습니다.\n\n' +
@@ -880,7 +880,12 @@ exports.confirmReservation = functions.runWith({ secrets }).https.onRequest(asyn
       throw new Error('MMS 환경변수가 설정되지 않았습니다.');
     }
 
-    // Toast Cloud SMS API로 SMS 발송
+    // MMS 제목 설정
+    const mmsTitle = propertyType === 'forest' ? '백년한옥별채 확정안내'
+      : propertyType === 'blon' ? '블로뉴숲 확정안내'
+      : '예약 확정안내';
+
+    // Toast Cloud SMS API로 MMS 발송
     const mmsResponse = await fetch(
       `https://api-sms.cloud.toast.com/sms/v3.0/appKeys/${mmsAppKey}/sender/mms`,
       {
@@ -890,6 +895,7 @@ exports.confirmReservation = functions.runWith({ secrets }).https.onRequest(asyn
           'X-Secret-Key': mmsSecretKey,
         },
         body: JSON.stringify({
+          title: mmsTitle,
           body: confirmMessage,
           sendNo: mmsSendNo,
           recipientList: [{ recipientNo: normalizedPhone }],

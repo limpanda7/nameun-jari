@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { FOREST_PRICE, BLON_PRICE } from '../../constants/price';
 import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDateWithDay, getBlonSpecialDatePrice, formatDate } from '../../utils/date';
 import { saveReservation as saveReservationToFirestore } from '../../utils/firestore';
+import LoadingOverlay from '../LoadingOverlay/LoadingOverlay';
 import './CommonReservation.css';
 
 const CommonReservation = ({
@@ -493,6 +494,13 @@ const CommonReservation = ({
             {isLoading ? '예약 처리 중...' : '예약하기'}
           </button>
         </section>
+
+      {/* 로딩 오버레이 */}
+      {isLoading && (
+        <LoadingOverlay
+          message="예약을 처리하고 있습니다"
+        />
+      )}
     </div>
   );
 };

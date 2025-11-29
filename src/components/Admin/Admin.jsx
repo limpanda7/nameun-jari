@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import { getReservations, getIcalReservations, deleteReservation, confirmReservation } from '../../utils/firestore';
 import { formatDate } from '../../utils/date';
+import LoadingOverlay from '../LoadingOverlay/LoadingOverlay';
 import './Admin.css';
 
 const BLON_PASSWORD = '0125';
@@ -17,6 +18,7 @@ const Admin = () => {
   const [selected, setSelected] = useState(null);
   const [isInfoModal, setIsInfoModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('처리 중입니다');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +46,7 @@ const Admin = () => {
 
   const init = async () => {
     setIsLoading(true);
+    setLoadingMessage('예약 내역을 불러오고 있습니다');
     try {
       // 오늘 날짜 (YYYY-MM-DD 형식)
       const today = new Date();
@@ -147,6 +150,7 @@ const Admin = () => {
 
     try {
       setIsLoading(true);
+      setLoadingMessage('확정 문자를 발송하고 있습니다');
 
       // 확정 문자 전송 (성공 시 Firestore 업데이트도 함께 처리)
       const response = await fetch('/api/confirm-reservation', {
@@ -268,7 +272,6 @@ const Admin = () => {
           </div>
         ) : (
           <>
-            {isLoading && <div className="admin-loading">로딩 중...</div>}
             <div className="admin-table-container">
               <table className="admin-table">
                 <thead>
@@ -375,6 +378,12 @@ const Admin = () => {
         </button>
       </ReactModal>
 
+      {/* 로딩 오버레이 */}
+      {isLoading && (
+        <LoadingOverlay
+          message={loadingMessage}
+        />
+      )}
     </div>
   );
 };
