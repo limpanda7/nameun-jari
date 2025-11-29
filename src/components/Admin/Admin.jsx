@@ -159,7 +159,8 @@ const Admin = () => {
         },
         body: JSON.stringify({
           phone: reservation.phone,
-          propertyType: target
+          propertyType: target,
+          reservationId: reservation.id
         })
       });
 
@@ -245,7 +246,7 @@ const Admin = () => {
     <div className="admin-container">
       <div className="admin-header">
         <button className="admin-back-button" onClick={handleGoBack}>
-음         ← 돌아가기
+          ← 돌아가기
         </button>
         <h1 className="admin-title">
           {targetKo ? `관리자 페이지 - ${targetKo}` : '관리자 페이지'}

@@ -823,16 +823,53 @@ exports.confirmReservation = functions.runWith({ secrets }).https.onRequest(asyn
   }
 
   try {
-    const { phone, propertyType } = req.body;
+    const { phone, propertyType, reservationId } = req.body;
 
-    if (!phone || !propertyType) {
-      res.status(400).json({ error: '전화번호와 숙소 타입이 필요합니다.' });
+    if (!phone || !propertyType || !reservationId) {
+      res.status(400).json({ error: '전화번호, 숙소 타입, 예약 ID가 필요합니다.' });
       return;
     }
 
+    // Firestore에서 예약 정보 조회
+    const db = admin.firestore();
+    const collectionName = `${propertyType}_reservation`;
+    const reservationDoc = await db.collection(collectionName).doc(reservationId).get();
+    
+    if (!reservationDoc.exists) {
+      res.status(404).json({ error: '예약 정보를 찾을 수 없습니다.' });
+      return;
+    }
+
+    const reservationData = reservationDoc.data();
+    
+    // 날짜 포맷팅 함수
+    const formatDate = (dateString) => {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // 예약 정보 포맷팅
+    const checkinDate = formatDate(reservationData.checkin_date || reservationData.checkinDate);
+    const checkoutDate = formatDate(reservationData.checkout_date || reservationData.checkoutDate);
+    const person = reservationData.person || 0;
+    const baby = reservationData.baby || 0;
+    const dog = reservationData.dog || 0;
+    const barbecue = reservationData.barbecue === 'Y' ? '예' : '아니오';
+
+    // 확정 메시지 생성
+    const confirmMessage = '입금 확인되어 예약이 확정되었습니다.\n\n' +
+      '[예약정보]\n' +
+      `체크인: ${checkinDate}\n` +
+      `체크아웃: ${checkoutDate}\n` +
+      `인원: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리\n` +
+      `바베큐 이용여부: ${barbecue}`;
+
     // 전화번호 정규화 (하이픈 제거)
     const normalizedPhone = phone.replace(/[^0-9]/g, '');
-    const confirmMessage = '입금 확인되어 예약이 확정되었습니다';
 
     // MMS 환경변수 확인
     const mmsAppKey = process.env.MMS_APP_KEY?.trim();

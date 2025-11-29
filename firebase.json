@@ -16,6 +16,10 @@
         "function": "telegramWebhook"
       },
       {
+        "source": "/api/confirm-reservation",
+        "function": "confirmReservation"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
