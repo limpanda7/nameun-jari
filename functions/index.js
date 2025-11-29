@@ -486,6 +486,11 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
       console.log('MMS 발송 성공:', mmsResult);
       // 텔레그램으로 MMS 발송 성공 알림
       try {
+        // 예약 기간 포맷팅
+        const periodText = checkinDate && checkoutDate 
+          ? `\n\n기간: ${checkinDate},${checkoutDate}`
+          : '';
+        
         await fetch(`${baseUrl}/sendMessage`, {
           method: 'POST',
           headers: {
@@ -493,7 +498,7 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
           },
           body: JSON.stringify({
             chat_id: chatId,
-            text: '문자 발송에 성공하였습니다.'
+            text: `문자 발송에 성공하였습니다.${periodText}`
           })
         });
       } catch (telegramError) {
@@ -751,6 +756,11 @@ exports.onOffReservation = functions.runWith({ secrets: onOffSecrets }).https.on
             // 텔레그램으로 MMS 발송 성공 알림
             if (token && chatId) {
               try {
+                // 예약 기간 포맷팅
+                const periodText = pickedDates.length >= 2
+                  ? `\n\n기간: ${pickedDates[0]},${pickedDates[pickedDates.length - 1]}`
+                  : '';
+                
                 await fetch(`${baseUrl}/sendMessage`, {
                   method: 'POST',
                   headers: {
@@ -758,7 +768,7 @@ exports.onOffReservation = functions.runWith({ secrets: onOffSecrets }).https.on
                   },
                   body: JSON.stringify({
                     chat_id: chatId,
-                    text: '문자 발송에 성공하였습니다.'
+                    text: `문자 발송에 성공하였습니다.${periodText}`
                   })
                 });
               } catch (telegramError) {
@@ -901,6 +911,38 @@ exports.confirmReservation = functions.runWith({ secrets }).https.onRequest(asyn
     console.log('확정 문자 API 응답:', JSON.stringify(mmsResult, null, 2));
 
     if (mmsResult.header && mmsResult.header.resultMessage === 'SUCCESS') {
+      // 텔레그램 알림 전송
+      try {
+        const token = process.env.TELEGRAM_TOKEN?.trim();
+        let chatId = null;
+        
+        // propertyType에 따라 적절한 chatId 선택
+        if (propertyType === 'forest') {
+          chatId = process.env.TELEGRAM_CHAT_ID_FOREST?.trim();
+        } else if (propertyType === 'blon') {
+          chatId = process.env.TELEGRAM_CHAT_ID_BLON?.trim();
+        }
+        
+        if (token && chatId) {
+          const baseUrl = `https://api.telegram.org/bot${token}`;
+          const periodText = `${checkinDate},${checkoutDate}`;
+          
+          await fetch(`${baseUrl}/sendMessage`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: `예약이 확정되었습니다.\n\n기간: ${periodText}`
+            })
+          });
+        }
+      } catch (telegramError) {
+        console.warn('확정 알림 텔레그램 전송 실패:', telegramError);
+        // 텔레그램 알림 실패는 전체 프로세스를 막지 않음
+      }
+      
       res.status(200).json({
         success: true,
         message: '확정 문자가 성공적으로 발송되었습니다.',
