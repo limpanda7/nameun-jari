@@ -30,6 +30,7 @@ import MukhoReservation from './components/MukhoReservation/MukhoReservation.jsx
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
 import TermsPage from './components/TermsPage/TermsPage.jsx';
+import Admin from './components/Admin/Admin.jsx';
 import { FOREST_PRICE, BLON_PRICE, MUKHO_PRICE } from './constants/price';
 
 function App() {
@@ -494,6 +495,7 @@ function App() {
       <Route path="/mukho/calendar" element={<MukhoCalendar />} />
       <Route path="/mukho/reservation" element={<MukhoReservation />} />
       <Route path="/terms" element={<TermsPage />} />
+      <Route path="/admin" element={<Admin />} />
     </Routes>
   );
 }

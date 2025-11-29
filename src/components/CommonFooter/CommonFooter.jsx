@@ -17,6 +17,13 @@ const CommonFooter = () => {
             >
               이용약관
             </button>
+            <button
+              className="footer-link-button"
+              onClick={() => navigate('/admin')}
+              style={{ marginTop: '0.5rem', display: 'block' }}
+            >
+              관리자
+            </button>
           </div>
         </div>
         <div className="footer-section business-info">

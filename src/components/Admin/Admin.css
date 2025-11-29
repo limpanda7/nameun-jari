@@ -1,0 +1,250 @@
+.admin-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.admin-back-button {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.3s ease;
+}
+
+.admin-back-button:hover {
+  background-color: #f0f0f0;
+}
+
+.admin-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.admin-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.admin-password-input {
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  width: 300px;
+  max-width: 100%;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.admin-password-input:focus {
+  border-color: #4a90e2;
+}
+
+.admin-loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.admin-table-container {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-table thead {
+  background-color: #f8f9fa;
+}
+
+.admin-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.homepage-cell {
+  color: #4a90e2;
+  font-weight: 500;
+}
+
+.airbnb-cell {
+  color: #ff5a5f;
+  font-weight: 500;
+}
+
+.admin-detail-btn,
+.admin-confirm-btn,
+.admin-delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.3s ease;
+}
+
+.admin-detail-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.admin-detail-btn:hover {
+  background-color: #357abd;
+}
+
+.admin-confirm-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.admin-confirm-btn:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.admin-confirm-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.admin-delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.admin-delete-btn:hover {
+  background-color: #c82333;
+}
+
+.reservation-info {
+  padding: 10px 0;
+}
+
+.reservation-info > div {
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.delete-modal-content {
+  text-align: center;
+}
+
+.delete-modal-content p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.admin-modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.admin-modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.admin-modal-btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.admin-modal-btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+.admin-modal-btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.admin-modal-btn-delete:hover {
+  background-color: #c82333;
+}
+
+.admin-modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 10px;
+  }
+
+  .admin-content {
+    padding: 15px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .admin-title {
+    font-size: 20px;
+  }
+
+  .admin-table {
+    font-size: 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 4px;
+  }
+
+  .admin-detail-btn,
+  .admin-confirm-btn,
+  .admin-delete-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+}
+

@@ -1,4 +1,4 @@
-import { collection, getDocs, query, orderBy, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, addDoc, serverTimestamp, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 /**
@@ -186,6 +186,44 @@ export const saveSpaceReservation = async (reservationData) => {
     return docRef.id;
   } catch (error) {
     console.error('Firestore에 Space 예약 저장 실패:', error);
+    throw error;
+  }
+};
+
+/**
+ * Firestore에서 예약을 삭제합니다.
+ * @param {string} propertyType - 숙소 타입 ('forest', 'blon' 등)
+ * @param {string} reservationId - 삭제할 예약 문서 ID
+ * @returns {Promise<void>}
+ */
+export const deleteReservation = async (propertyType, reservationId) => {
+  try {
+    const collectionName = `${propertyType}_reservation`;
+    const reservationRef = doc(db, collectionName, reservationId);
+    await deleteDoc(reservationRef);
+    console.log(`${propertyType} 예약이 성공적으로 삭제되었습니다. 문서 ID:`, reservationId);
+  } catch (error) {
+    console.error(`Firestore에서 ${propertyType} 예약 삭제 실패:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Firestore에서 예약을 확정합니다.
+ * @param {string} propertyType - 숙소 타입 ('forest', 'blon' 등)
+ * @param {string} reservationId - 확정할 예약 문서 ID
+ * @returns {Promise<void>}
+ */
+export const confirmReservation = async (propertyType, reservationId) => {
+  try {
+    const collectionName = `${propertyType}_reservation`;
+    const reservationRef = doc(db, collectionName, reservationId);
+    await updateDoc(reservationRef, {
+      confirmed: 'Y'
+    });
+    console.log(`${propertyType} 예약이 성공적으로 확정되었습니다. 문서 ID:`, reservationId);
+  } catch (error) {
+    console.error(`Firestore에서 ${propertyType} 예약 확정 실패:`, error);
     throw error;
   }
 };

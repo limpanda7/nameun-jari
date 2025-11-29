@@ -805,6 +805,83 @@ exports.onOffReservation = functions.runWith({ secrets: onOffSecrets }).https.on
   }
 });
 
+// 예약 확정 문자 전송 API
+exports.confirmReservation = functions.runWith({ secrets }).https.onRequest(async (req, res) => {
+  // CORS 설정
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  try {
+    const { phone, propertyType } = req.body;
+
+    if (!phone || !propertyType) {
+      res.status(400).json({ error: '전화번호와 숙소 타입이 필요합니다.' });
+      return;
+    }
+
+    // 전화번호 정규화 (하이픈 제거)
+    const normalizedPhone = phone.replace(/[^0-9]/g, '');
+    const confirmMessage = '입금 확인되어 예약이 확정되었습니다';
+
+    // MMS 환경변수 확인
+    const mmsAppKey = process.env.MMS_APP_KEY?.trim();
+    const mmsSecretKey = process.env.MMS_SECRET_KEY?.trim();
+    const mmsSendNo = process.env.MMS_SEND_NO?.trim();
+
+    if (!mmsAppKey || !mmsSecretKey || !mmsSendNo) {
+      throw new Error('MMS 환경변수가 설정되지 않았습니다.');
+    }
+
+    // Toast Cloud SMS API로 SMS 발송
+    const mmsResponse = await fetch(
+      `https://api-sms.cloud.toast.com/sms/v3.0/appKeys/${mmsAppKey}/sender/sms`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          'X-Secret-Key': mmsSecretKey,
+        },
+        body: JSON.stringify({
+          body: confirmMessage,
+          sendNo: mmsSendNo,
+          recipientList: [{ recipientNo: normalizedPhone }],
+        }),
+      }
+    );
+
+    const mmsResult = await mmsResponse.json();
+    console.log('확정 문자 API 응답:', JSON.stringify(mmsResult, null, 2));
+
+    if (mmsResult.header && mmsResult.header.resultMessage === 'SUCCESS') {
+      res.status(200).json({
+        success: true,
+        message: '확정 문자가 성공적으로 발송되었습니다.',
+      });
+    } else {
+      const errorMessage = mmsResult.header?.resultMessage || mmsResult.header?.resultCode || 'Unknown error';
+      throw new Error(`확정 문자 발송 실패: ${errorMessage}`);
+    }
+  } catch (error) {
+    console.error('확정 문자 발송 중 오류:', error);
+    res.status(500).json({
+      success: false,
+      error: '확정 문자 발송 중 오류가 발생했습니다.',
+      details: error.message
+    });
+  }
+});
+
 // iCal 동기화 Scheduled Function (5분마다 실행)
 // syncIcal은 updateIcal에서 사용하는 secrets만 필요함
 const syncIcalSecrets = [
