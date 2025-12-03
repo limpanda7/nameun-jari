@@ -38,15 +38,22 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
   }, [reserved]);
 
   const maxDate = useMemo(() => {
-    let maxDate;
+    // 오늘로부터 12개월 후 날짜 계산 (오늘 날짜에서 1년 후 같은 날짜의 전날까지)
+    const twelveMonthsLater = new Date();
+    twelveMonthsLater.setMonth(twelveMonthsLater.getMonth() + 12);
+    twelveMonthsLater.setDate(twelveMonthsLater.getDate() - 1); // 하루 전날까지
+    twelveMonthsLater.setHours(23, 59, 59, 999); // 하루 종료 시각으로 설정
+
+    let maxDate = twelveMonthsLater.valueOf();
 
     if (selected) {
       reserved.forEach(({checkin_date, checkout_date}) => {
         const checkinTimestamp = new Date(checkin_date).valueOf();
         const checkoutTimestamp = new Date(checkout_date).valueOf();
         if (selected?.valueOf() < checkinTimestamp.valueOf()) {
-          if (!maxDate || maxDate > checkinTimestamp.valueOf()) {
-            maxDate = checkinTimestamp.valueOf();
+          const reservedMaxDate = Math.min(checkinTimestamp.valueOf(), twelveMonthsLater.valueOf());
+          if (!maxDate || maxDate > reservedMaxDate) {
+            maxDate = reservedMaxDate;
           }
         }
       });
@@ -113,12 +120,24 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
   };
 
   const tileDisabled = () => {
+    // 오늘로부터 12개월 후 날짜 계산 (오늘 날짜에서 1년 후 같은 날짜의 전날까지)
+    const twelveMonthsLater = new Date();
+    twelveMonthsLater.setMonth(twelveMonthsLater.getMonth() + 12);
+    twelveMonthsLater.setDate(twelveMonthsLater.getDate() - 1); // 하루 전날까지
+    twelveMonthsLater.setHours(23, 59, 59, 999);
+    const twelveMonthsLaterTimestamp = twelveMonthsLater.valueOf();
+
     if (isContinuous) {
       return ({date}) => {
         // 날짜를 정규화하여 비교
         const normalizedDate = new Date(date);
         normalizedDate.setHours(0, 0, 0, 0);
         const dateTimestamp = normalizedDate.valueOf();
+        
+        // 12개월 제한 확인
+        if (dateTimestamp > twelveMonthsLaterTimestamp) {
+          return true;
+        }
         
         // 선택된 날짜 범위에 포함된 날짜는 비활성화하지 않음
         if (picked.length > 0) {
@@ -166,6 +185,11 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
         const normalizedDate = new Date(date);
         normalizedDate.setHours(0, 0, 0, 0);
         const dateTimestamp = normalizedDate.valueOf();
+        
+        // 12개월 제한 확인
+        if (dateTimestamp > twelveMonthsLaterTimestamp) {
+          return true;
+        }
         
         // 선택된 날짜 범위에 포함된 날짜는 비활성화하지 않음
         if (picked.length > 0) {
@@ -361,7 +385,12 @@ const Calendar = ({isContinuous, picked, setPicked, reserved}) => {
             tomorrow.setDate(tomorrow.getDate() + 1);
             return tomorrow;
           })()}
-          maxDate={maxDate}
+          maxDate={maxDate && maxDate.valueOf() ? maxDate : (() => {
+            const twelveMonthsLater = new Date();
+            twelveMonthsLater.setMonth(twelveMonthsLater.getMonth() + 12);
+            twelveMonthsLater.setDate(twelveMonthsLater.getDate() - 1); // 하루 전날까지
+            return twelveMonthsLater;
+          })()}
           tileDisabled={tileDisabled()}
           tileClassName={tileClassname()}
           selectRange={!!selected || !!picked.length}

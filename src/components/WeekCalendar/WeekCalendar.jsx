@@ -57,6 +57,21 @@ const WeekCalendar = ({picked, setPicked, reserved}) => {
     const endDate = new Date(selected);
     endDate.setDate(startDate.getDate() + days - 1);
 
+    // 오늘로부터 12개월 후 날짜 계산 (오늘 날짜에서 1년 후 같은 날짜의 전날까지)
+    const twelveMonthsLater = new Date();
+    twelveMonthsLater.setMonth(twelveMonthsLater.getMonth() + 12);
+    twelveMonthsLater.setDate(twelveMonthsLater.getDate() - 1); // 하루 전날까지
+    twelveMonthsLater.setHours(23, 59, 59, 999);
+
+    // 12개월 제한 확인
+    if (endDate > twelveMonthsLater) {
+      alert("예약 가능한 날짜는 오늘로부터 12개월 이내입니다.");
+      setPicked([]);
+      setSelected(null);
+      setShowModal(false);
+      return;
+    }
+
     const blocked = reserved.find(({ checkin_date, checkout_date }) => {
       const checkIn = new Date(checkin_date);
       const checkOut = new Date(checkout_date);
@@ -90,6 +105,17 @@ const WeekCalendar = ({picked, setPicked, reserved}) => {
       const normalizedDate = new Date(date);
       normalizedDate.setHours(0, 0, 0, 0);
       const dateTimestamp = normalizedDate.valueOf();
+      
+      // 오늘로부터 12개월 후 날짜 계산 (오늘 날짜에서 1년 후 같은 날짜의 전날까지)
+      const twelveMonthsLater = new Date();
+      twelveMonthsLater.setMonth(twelveMonthsLater.getMonth() + 12);
+      twelveMonthsLater.setDate(twelveMonthsLater.getDate() - 1); // 하루 전날까지
+      twelveMonthsLater.setHours(23, 59, 59, 999);
+      
+      // 12개월 제한 확인
+      if (dateTimestamp > twelveMonthsLater.valueOf()) {
+        return true;
+      }
       
       // 선택된 날짜 범위에 포함된 날짜는 비활성화하지 않음
       if (picked.length > 0) {
@@ -336,7 +362,12 @@ const WeekCalendar = ({picked, setPicked, reserved}) => {
             tomorrow.setDate(tomorrow.getDate() + 1);
             return tomorrow;
           })()}
-          maxDate={maxDate}
+          maxDate={maxDate || (() => {
+            const twelveMonthsLater = new Date();
+            twelveMonthsLater.setMonth(twelveMonthsLater.getMonth() + 12);
+            twelveMonthsLater.setDate(twelveMonthsLater.getDate() - 1); // 하루 전날까지
+            return twelveMonthsLater;
+          })()}
           tileDisabled={tileDisabled()}
           tileClassName={tileClassName}
           onClickDay={handleClickDay}

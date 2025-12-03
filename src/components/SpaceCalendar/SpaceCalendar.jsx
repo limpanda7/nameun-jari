@@ -242,6 +242,12 @@ const SpaceCalendar = () => {
                 next2Label={null}
                 formatDay={(localeDay, date) => date.getDate()}
                 minDate={new Date()}
+                maxDate={(() => {
+                  const twelveMonthsLater = new Date();
+                  twelveMonthsLater.setMonth(twelveMonthsLater.getMonth() + 12);
+                  twelveMonthsLater.setDate(twelveMonthsLater.getDate() - 1); // 하루 전날까지
+                  return twelveMonthsLater;
+                })()}
                 onClickDay={(value) => handleDateChange(value)}
               />
 
