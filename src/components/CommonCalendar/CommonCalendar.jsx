@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Calendar from '../Calendar/Calendar';
 import { getReservations, getIcalReservations } from '../../utils/firestore';
+import { FOREST_PRICE, BLON_PRICE } from '../../constants/price';
+import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDate, getBlonSpecialDatePrice } from '../../utils/date';
 import '../../styles/CommonPage.css';
 import './CommonCalendar.css';
 
@@ -13,6 +15,8 @@ const CommonCalendar = ({ propertyType, title, backPath, reservationPath }) => {
   const [reserved, setReserved] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [basePrice, setBasePrice] = useState(0);
+  const [days, setDays] = useState(0);
 
   // Firestore에서 예약 데이터 가져오기
   useEffect(() => {
@@ -59,6 +63,77 @@ const CommonCalendar = ({ propertyType, title, backPath, reservationPath }) => {
 
     fetchReservations();
   }, [propertyType]);
+
+  // 가격 계산
+  const priceConfig = useMemo(() => {
+    return propertyType === 'forest' ? FOREST_PRICE : BLON_PRICE;
+  }, [propertyType]);
+
+  useEffect(() => {
+    calcBasePrice();
+  }, [picked, propertyType, priceConfig]);
+
+  const calcBasePrice = () => {
+    if (picked.length < 2) {
+      setBasePrice(0);
+      setDays(0);
+      return;
+    }
+
+    // 체크인 날짜부터 체크아웃 전날까지의 모든 날짜 계산
+    const checkinDate = new Date(picked[0]);
+    const checkoutDate = new Date(picked[picked.length - 1]);
+    
+    let currentDate = new Date(checkinDate);
+    let calculatedDays = 0; // 실제 숙박 일수
+    let tempBasePrice = 0;
+    
+    while (currentDate < checkoutDate) {
+      const date = formatDate(currentDate);
+      let dayPrice = 0;
+
+      if (propertyType === 'blon') {
+        // 블로뉴숲: 특수일 가격 우선 적용
+        const specialPrice = getBlonSpecialDatePrice(date);
+        if (specialPrice !== null) {
+          dayPrice = specialPrice;
+        } else {
+          // 특수일이 아닌 경우 일반 가격 계산
+          const prices = isSummer(date) ? priceConfig.SUMMER : priceConfig.NORMAL;
+
+          if (isHoliday(date)) {
+            dayPrice = prices.HOLIDAY;
+          } else if (isWeekday(date)) {
+            dayPrice = prices.WEEKDAY;
+          } else if (isFriday(date)) {
+            dayPrice = prices.FRIDAY;
+          } else if (isSaturday(date)) {
+            dayPrice = prices.SATURDAY;
+          }
+        }
+      } else {
+        // 백년한옥별채 (forest): 평일/주말 구분만
+        const prices = isSummer(date) ? priceConfig.SUMMER : priceConfig.NORMAL;
+
+        if (isHoliday(date)) {
+          dayPrice = prices.HOLIDAY;
+        } else if (isWeekday(date)) {
+          dayPrice = prices.WEEKDAY;
+        } else {
+          dayPrice = prices.WEEKEND;
+        }
+      }
+
+      tempBasePrice += dayPrice;
+      calculatedDays++; // 숙박 일수 증가
+      
+      // 다음 날로 이동
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    setDays(calculatedDays);
+    setBasePrice(tempBasePrice);
+  };
 
   const handleReservation = () => {
     if (picked.length === 0) {
@@ -110,14 +185,25 @@ const CommonCalendar = ({ propertyType, title, backPath, reservationPath }) => {
           />
         )}
 
+        {/* 가격 및 예약하기 버튼 */}
         {!error && !isLoading && (
-          <button
-            className="reservation-btn"
-            onClick={handleReservation}
-            disabled={picked.length === 0}
-          >
-            예약하기
-          </button>
+          <div className="price-button-container">
+            {picked.length >= 2 && basePrice > 0 ? (
+              <div className="base-price-simple">
+                <span className="price-label">기본가격</span>
+                <span className="price-value">{basePrice.toLocaleString()}원</span>
+              </div>
+            ) : (
+              <div className="base-price-simple"></div>
+            )}
+            <button
+              className="reservation-btn"
+              onClick={handleReservation}
+              disabled={picked.length === 0}
+            >
+              예약하기
+            </button>
+          </div>
         )}
       </div>
     </div>
