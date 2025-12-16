@@ -401,7 +401,8 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
     barbecue,
     price,
     checkinDate,
-    checkoutDate
+    checkoutDate,
+    reservationNumber
   } = reservationData;
 
   // 전화번호 정규화 (하이픈 제거)
@@ -413,19 +414,19 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
   const picked = [checkinDate, checkoutDate]; // 날짜 배열 형식으로 변환
 
   if (propertyType === 'forest') {
-    mmsBody = forestMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price);
+    mmsBody = forestMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price, reservationNumber);
   } else if (propertyType === 'blon') {
-    mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price);
+    mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price, reservationNumber);
   } else if (propertyType === 'on_off') {
-    mmsBody = onOffMMS(picked, person, dog || 0, price);
+    mmsBody = onOffMMS(picked, person, dog || 0, price, reservationNumber);
   } else if (propertyType === 'mukho') {
-    mmsBody = mukhoMMS(picked, person, dog || 0, price);
+    mmsBody = mukhoMMS(picked, person, dog || 0, price, reservationNumber);
   } else if (propertyType === 'space') {
     // Space는 날짜와 시간 배열 사용
     const date = reservationData.date;
     const time = reservationData.time || [];
     const purpose = reservationData.purpose || '미입력';
-    mmsBody = spaceMMS(date, time, person, purpose, price);
+    mmsBody = spaceMMS(date, time, person, purpose, price, reservationNumber);
   } else {
     console.warn(`지원하지 않는 숙소 타입: ${propertyType}`);
     return;

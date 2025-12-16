@@ -95,6 +95,7 @@ const MukhoReservation = () => {
                 priceOption: 'refundable',
                 checkinDate,
                 checkoutDate,
+                reservationNumber,
                 createdAt: new Date().toISOString()
               }
             })

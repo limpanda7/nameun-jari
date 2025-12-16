@@ -206,6 +206,7 @@ const CommonReservation = ({
                 priceOption,
                 checkinDate,
                 checkoutDate,
+                reservationNumber,
                 createdAt: new Date().toISOString()
               }
             })

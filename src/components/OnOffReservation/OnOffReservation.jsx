@@ -95,6 +95,7 @@ const OnOffReservation = () => {
                 priceOption: 'refundable',
                 checkinDate,
                 checkoutDate,
+                reservationNumber,
                 createdAt: new Date().toISOString()
               }
             })

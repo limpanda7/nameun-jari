@@ -112,6 +112,7 @@ const SpaceReservation = () => {
                 time,
                 checkin_time: startTime,
                 checkout_time: endTime,
+                reservationNumber,
                 createdAt: new Date().toISOString()
               }
             })
