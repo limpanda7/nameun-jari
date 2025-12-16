@@ -58,7 +58,7 @@ const MukhoReservation = () => {
         const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
 
         // Firestore에 예약 저장
-        const reservationId = await saveReservationToFirestore('mukho', {
+        const result = await saveReservationToFirestore('mukho', {
           picked,
           name,
           phone,
@@ -70,6 +70,8 @@ const MukhoReservation = () => {
           price: totalPrice,
           priceOption: 'refundable'
         });
+
+        const reservationNumber = result.reservationNumber;
 
         // 텔레그램 알림 및 MMS 발송
         try {

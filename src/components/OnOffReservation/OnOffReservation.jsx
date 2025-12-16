@@ -58,7 +58,7 @@ const OnOffReservation = () => {
         const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
 
         // Firestore에 예약 저장
-        const reservationId = await saveReservationToFirestore('on_off', {
+        const result = await saveReservationToFirestore('on_off', {
           picked,
           name,
           phone,
@@ -70,6 +70,8 @@ const OnOffReservation = () => {
           price: totalPrice,
           priceOption: 'refundable' // on_off는 priceOption 필드가 없지만 호환성을 위해 설정
         });
+
+        const reservationNumber = result.reservationNumber;
 
         // 텔레그램 알림 및 MMS 발송
         try {

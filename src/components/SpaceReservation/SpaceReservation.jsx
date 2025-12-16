@@ -35,10 +35,10 @@ const SpaceReservation = () => {
 
     // 시간당 가격 결정
     const pricePerHour = isWeekend ? SPACE_PRICE.WEEKEND : SPACE_PRICE.WEEKDAY;
-    
+
     // 기본 가격 (2인 기준)
     let basePrice = pricePerHour * time.length;
-    
+
     // 2인 초과 시 추가 요금
     if (person > 2) {
       const additionalPersons = person - 2;
@@ -79,7 +79,7 @@ const SpaceReservation = () => {
         const endTime = Math.max(...time) + 1;
 
         // Firestore에 예약 저장
-        const reservationId = await saveSpaceReservation({
+        const result = await saveSpaceReservation({
           date,
           time,
           name,
@@ -90,6 +90,8 @@ const SpaceReservation = () => {
           checkin_time: startTime,
           checkout_time: endTime
         });
+
+        const reservationNumber = result.reservationNumber;
 
         // 텔레그램 알림 및 MMS 발송
         try {

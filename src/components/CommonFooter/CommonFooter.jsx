@@ -13,7 +13,14 @@ const CommonFooter = () => {
           <div style={{ marginTop: '1rem' }}>
             <button
               className="footer-link-button"
+              onClick={() => navigate('/lookup')}
+            >
+              예약 조회
+            </button>
+            <button
+              className="footer-link-button"
               onClick={() => navigate('/terms')}
+              style={{ marginTop: '0.5rem', display: 'block' }}
             >
               이용약관
             </button>

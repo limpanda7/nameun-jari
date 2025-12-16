@@ -31,6 +31,7 @@ import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
 import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
 import TermsPage from './components/TermsPage/TermsPage.jsx';
 import Admin from './components/Admin/Admin.jsx';
+import ReservationLookup from './components/ReservationLookup/ReservationLookup.jsx';
 import { FOREST_PRICE, BLON_PRICE, MUKHO_PRICE } from './constants/price';
 
 function App() {
@@ -153,6 +154,7 @@ function App() {
               <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
                 <button className="nav-btn-desktop" onClick={() => scrollToSection('spaces')}>공간들</button>
                 <button className="nav-btn-desktop" onClick={() => scrollToSection('host-message')}>호스트</button>
+                <button className="nav-btn-desktop" onClick={() => { navigate('/lookup'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>예약 조회</button>
 
                 {/* 모바일 메뉴 닫기 버튼 */}
                 <button className="mobile-menu-close" onClick={() => setIsMenuOpen(false)}>
@@ -163,6 +165,7 @@ function App() {
                 </button>
 
                 {/* 모바일 전용 메뉴 */}
+                <button className="nav-btn-mobile" onClick={() => { navigate('/lookup'); setIsMenuOpen(false); }}>예약 조회</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/forest'); setIsMenuOpen(false); }}>백년한옥별채</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/blon'); setIsMenuOpen(false); }}>블로뉴숲</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/on-off'); setIsMenuOpen(false); }}>온오프스테이</button>
@@ -496,6 +499,7 @@ function App() {
       <Route path="/mukho/reservation" element={<MukhoReservation />} />
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/lookup" element={<ReservationLookup />} />
     </Routes>
   );
 }

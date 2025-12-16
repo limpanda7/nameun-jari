@@ -55,10 +55,10 @@ const CommonReservation = ({
     // 체크인 날짜부터 체크아웃 전날까지의 모든 날짜 계산
     const checkinDate = new Date(picked[0]);
     const checkoutDate = new Date(picked[picked.length - 1]);
-    
+
     let currentDate = new Date(checkinDate);
     let calculatedDays = 0; // 실제 숙박 일수
-    
+
     while (currentDate < checkoutDate) {
       const date = formatDate(currentDate);
       let dayPrice = 0;
@@ -97,7 +97,7 @@ const CommonReservation = ({
 
       tempBasePrice += dayPrice;
       calculatedDays++; // 숙박 일수 증가
-      
+
       // 다음 날로 이동
       currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -170,7 +170,7 @@ const CommonReservation = ({
         const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
 
         // Firestore에 예약 저장
-        const reservationId = await saveReservationToFirestore(propertyType, {
+        const result = await saveReservationToFirestore(propertyType, {
           picked,
           name,
           phone,
@@ -182,6 +182,8 @@ const CommonReservation = ({
           price,
           priceOption
         });
+
+        const reservationNumber = result.reservationNumber;
 
         // 텔레그램 알림 전송
         try {

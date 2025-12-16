@@ -1,5 +1,23 @@
-import { collection, getDocs, query, orderBy, addDoc, serverTimestamp, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, addDoc, serverTimestamp, doc, deleteDoc, updateDoc, where, getDocs as getDocsQuery } from 'firebase/firestore';
 import { db } from '../firebase';
+
+/**
+ * 랜덤 예약번호를 생성합니다 (영문 대문자 + 숫자 조합, 하이픈 없음)
+ * @param {number} length - 예약번호 길이 (기본값: 5)
+ * @returns {string} 예약번호
+ */
+export const generateReservationNumber = (length = 5) => {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 혼동하기 쉬운 문자 제외 (I, O, 0, 1 제외)
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  
+  let reservationNumber = '';
+  for (let i = 0; i < length; i++) {
+    reservationNumber += chars[array[i] % chars.length];
+  }
+  
+  return reservationNumber;
+};
 
 /**
  * Firestore에서 숙소 예약 내역을 조회합니다.
@@ -130,6 +148,9 @@ export const saveReservation = async (propertyType, reservationData) => {
       ? new Date(reservationData.picked[reservationData.picked.length - 1]).toISOString().split('T')[0]
       : null;
     
+    // 예약번호 생성 (중복 체크 없이 생성, 충돌 확률이 매우 낮음)
+    let reservationNumber = generateReservationNumber(5);
+    
     // Firestore에 저장할 데이터 구성
     const dataToSave = {
       name: reservationData.name,
@@ -143,13 +164,14 @@ export const saveReservation = async (propertyType, reservationData) => {
       price_option: reservationData.priceOption || 'refundable',
       checkin_date: checkinDate,
       checkout_date: checkoutDate,
+      reservation_number: reservationNumber,
       createdAt: serverTimestamp()
     };
     
     const docRef = await addDoc(reservationsRef, dataToSave);
-    console.log(`${propertyType} 예약이 성공적으로 저장되었습니다. 문서 ID:`, docRef.id);
+    console.log(`${propertyType} 예약이 성공적으로 저장되었습니다. 문서 ID:`, docRef.id, '예약번호:', reservationNumber);
     
-    return docRef.id;
+    return { id: docRef.id, reservationNumber };
   } catch (error) {
     console.error(`Firestore에 ${propertyType} 예약 저장 실패:`, error);
     throw error;
@@ -166,6 +188,9 @@ export const saveSpaceReservation = async (reservationData) => {
     const collectionName = 'space_reservation';
     const reservationsRef = collection(db, collectionName);
     
+    // 예약번호 생성
+    const reservationNumber = generateReservationNumber(5);
+    
     // Firestore에 저장할 데이터 구성
     const dataToSave = {
       name: reservationData.name,
@@ -177,13 +202,14 @@ export const saveSpaceReservation = async (reservationData) => {
       time: reservationData.time, // 시간 배열 [9, 10, 11]
       checkin_time: reservationData.checkin_time, // 시작 시간 (숫자)
       checkout_time: reservationData.checkout_time, // 종료 시간 (숫자)
+      reservation_number: reservationNumber,
       createdAt: serverTimestamp()
     };
     
     const docRef = await addDoc(reservationsRef, dataToSave);
-    console.log('Space 예약이 성공적으로 저장되었습니다. 문서 ID:', docRef.id);
+    console.log('Space 예약이 성공적으로 저장되었습니다. 문서 ID:', docRef.id, '예약번호:', reservationNumber);
     
-    return docRef.id;
+    return { id: docRef.id, reservationNumber };
   } catch (error) {
     console.error('Firestore에 Space 예약 저장 실패:', error);
     throw error;
@@ -224,6 +250,99 @@ export const confirmReservation = async (propertyType, reservationId) => {
     console.log(`${propertyType} 예약이 성공적으로 확정되었습니다. 문서 ID:`, reservationId);
   } catch (error) {
     console.error(`Firestore에서 ${propertyType} 예약 확정 실패:`, error);
+    throw error;
+  }
+};
+
+/**
+ * 예약번호로만 예약을 조회합니다 (모든 숙소 타입에서 검색).
+ * @param {string} reservationNumber - 예약번호
+ * @returns {Promise<Object|null>} 예약 정보 또는 null
+ */
+export const getReservationByNumber = async (reservationNumber) => {
+  try {
+    const propertyTypes = ['forest', 'blon', 'on_off', 'mukho', 'space'];
+    const upperReservationNumber = reservationNumber.toUpperCase();
+    
+    // 모든 숙소 타입에서 예약번호로 검색
+    for (const propertyType of propertyTypes) {
+      try {
+        const collectionName = propertyType === 'space' ? 'space_reservation' : `${propertyType}_reservation`;
+        const reservationsRef = collection(db, collectionName);
+        
+        const q = query(
+          reservationsRef,
+          where('reservation_number', '==', upperReservationNumber)
+        );
+        
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+          // 첫 번째 매칭되는 예약 반환
+          const doc = querySnapshot.docs[0];
+          const data = doc.data();
+          
+          return {
+            id: doc.id,
+            propertyType,
+            ...data,
+            createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+            checkin_date: data.checkin_date || data.checkinDate || data.date,
+            checkout_date: data.checkout_date || data.checkoutDate,
+          };
+        }
+      } catch (error) {
+        // 특정 컬렉션에서 오류가 발생해도 다음 컬렉션 계속 검색
+        console.warn(`${propertyType} 컬렉션에서 예약 조회 중 오류:`, error);
+        continue;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('예약번호로 예약 조회 실패:', error);
+    throw error;
+  }
+};
+
+/**
+ * 전화번호로 모든 예약을 조회합니다 (여러 예약이 있을 수 있음).
+ * @param {string} propertyType - 숙소 타입 ('forest', 'blon', 'space' 등)
+ * @param {string} phone - 전화번호
+ * @returns {Promise<Array>} 예약 정보 배열
+ */
+export const getReservationsByPhone = async (propertyType, phone) => {
+  try {
+    const collectionName = propertyType === 'space' ? 'space_reservation' : `${propertyType}_reservation`;
+    const reservationsRef = collection(db, collectionName);
+    
+    // 전화번호로 조회
+    const q = query(reservationsRef, where('phone', '==', phone));
+    
+    const querySnapshot = await getDocs(q);
+    
+    const reservations = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      reservations.push({
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+        checkin_date: data.checkin_date || data.checkinDate || data.date,
+        checkout_date: data.checkout_date || data.checkoutDate,
+      });
+    });
+    
+    // 최신순으로 정렬
+    reservations.sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0);
+      const dateB = new Date(b.createdAt || 0);
+      return dateB - dateA;
+    });
+    
+    return reservations;
+  } catch (error) {
+    console.error(`전화번호로 ${propertyType} 예약 조회 실패:`, error);
     throw error;
   }
 };
