@@ -7,11 +7,11 @@ const forestMMS = (picked, person, baby, dog, barbecue, price, reservationNumber
     '(입금계좌: 카카오 79420205681 남은비)\n' +
     '\n' +
     '[예약정보]\n' +
-    `예약번호: ${reservationNumber || 'N/A'}\n` +
-    `체크인: ${picked[0]}\n` +
-    `체크아웃: ${picked[picked.length - 1]}\n` +
-    `인원: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리\n` +
-    `바베큐 이용여부: ${barbecue}\n` +
+    `-예약번호: ${reservationNumber || 'N/A'}\n` +
+    `-체크인: ${picked[0]}\n` +
+    `-체크아웃: ${picked[picked.length - 1]}\n` +
+    `-인원: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리\n` +
+    `-바베큐 이용여부: ${barbecue}\n` +
     '\n' +
     '아래는 숙소 안내사항입니다.\n' +
     '꼼꼼하게 읽어주시길 부탁드립니다!\n' +
@@ -57,9 +57,9 @@ const onOffMMS = (picked, person, dog, price, reservationNumber) => {
     '(입금계좌: 카카오 3333053810252 채민기)\n' +
     '\n' +
     '[계약정보]\n' +
-    `예약번호: ${reservationNumber || 'N/A'}\n` +
-    `기간: ${picked[0]} ~ ${picked[picked.length - 1]}\n` +
-    `인원: ${person}명, 반려견 ${dog}마리\n` +
+    `-예약번호: ${reservationNumber || 'N/A'}\n` +
+    `-기간: ${picked[0]} ~ ${picked[picked.length - 1]}\n` +
+    `-인원: ${person}명, 반려견 ${dog}마리\n` +
     '\n' +
     '-주소: 강원도 동해시 무릉1길 9-2\n' +
     '-주차: 무릉복지회관 측면 공용주차장 or 도로에 하시면 됩니다.\n' +
@@ -145,22 +145,22 @@ const blonMMS = (picked, person, baby, dog, barbecue, price, reservationNumber) 
     '(입금계좌: 카카오 79420661213 남은진)\n' +
     '\n' +
     '[예약정보]\n' +
-    `예약번호: ${reservationNumber || 'N/A'}\n` +
-    `체크인: ${picked[0]}\n` +
-    `체크아웃: ${picked[picked.length - 1]}\n` +
-    `인원: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리\n` +
-    `바베큐 이용여부: ${barbecue}`;
+    `-예약번호: ${reservationNumber || 'N/A'}\n` +
+    `-체크인: ${picked[0]}\n` +
+    `-체크아웃: ${picked[picked.length - 1]}\n` +
+    `-인원: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리\n` +
+    `-바베큐 이용여부: ${barbecue}`;
 }
 
 const spaceMMS = (date, time, person, purpose, price, reservationNumber) => {
   return '안녕하세요 온오프스페이스 입니다 :)\n' +
     '\n' +
     '[예약정보]\n' +
-    `예약번호: ${reservationNumber || 'N/A'}\n` +
-    `날짜: ${date}\n` +
-    `시간: ${time[0]}:00 ~ ${time[time.length - 1] + 1}:00\n` +
-    `인원: ${person}명\n` +
-    `사용목적: ${purpose}\n` +
+    `-예약번호: ${reservationNumber || 'N/A'}\n` +
+    `-날짜: ${date}\n` +
+    `-시간: ${time[0]}:00 ~ ${time[time.length - 1] + 1}:00\n` +
+    `-인원: ${person}명\n` +
+    `-사용목적: ${purpose}\n` +
     '\n' +
     '* 노트북 비번: 스페이스\n' +
     '\n' +
@@ -196,8 +196,8 @@ const appleMMS = (name, phone, fiveKg, tenKg, price, receiverName, receiverPhone
     '(입금계좌: 카카오 79420205681 남은비)\n' +
     '\n' +
     '[구매정보]\n' +
-    `5 kg: ${fiveKg}박스\n` +
-    `10 kg: ${tenKg}박스\n` +
+    `-5 kg: ${fiveKg}박스\n` +
+    `-10 kg: ${tenKg}박스\n` +
     '\n' +
     '[배송정보]\n' +
     `받으실 분 성함: ${receiverName}\n` +
@@ -214,9 +214,9 @@ const mukhoMMS = (picked, person, dog, price, reservationNumber) => {
     '(입금계좌: 카카오 79420205681 남은비)\n' +
     '\n' +
     '[계약정보]\n' +
-    `예약번호: ${reservationNumber || 'N/A'}\n` +
-    `기간: ${picked[0]} ~ ${picked[picked.length - 1]}\n` +
-    `인원: ${person}명, 반려견 ${dog}마리\n` +
+    `-예약번호: ${reservationNumber || 'N/A'}\n` +
+    `-기간: ${picked[0]} ~ ${picked[picked.length - 1]}\n` +
+    `-인원: ${person}명, 반려견 ${dog}마리\n` +
     '\n' +
     '-주소: 강원도 동해시 발한동 354-76 명영한어린이집 2층\n' +
     '\n' +
