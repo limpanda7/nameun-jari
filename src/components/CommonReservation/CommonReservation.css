@@ -64,7 +64,9 @@
 .barbecue-option-section,
 .price-option-section,
 .price-total-section,
-.deposit-section {
+.payment-method-section,
+.deposit-section,
+.reservation-button-section {
   background-color: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
@@ -73,7 +75,11 @@
   margin-bottom: 20px;
 }
 
-.deposit-section {
+.deposit-section.hidden {
+  display: none;
+}
+
+.reservation-button-section {
   margin-bottom: 0;
 }
 
@@ -82,6 +88,7 @@
 .barbecue-option-section h2,
 .price-option-section h2,
 .price-total-section h2,
+.payment-method-section h2,
 .deposit-section h2 {
   color: #2c3e50;
   margin-bottom: 15px;
@@ -260,8 +267,25 @@
 
 .price-option-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 10px;
+}
+
+.price-option-notice {
+  margin-top: 15px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.price-option-notice a {
+  color: #2c3e50;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.price-option-notice a:hover {
+  color: #34495e;
 }
 
 .radio-label {
@@ -326,7 +350,6 @@
 
 .deposit-section p {
   color: #666;
-  margin-bottom: 25px;
   line-height: 1.6;
 }
 
@@ -442,6 +465,10 @@
 
   .total-price {
     font-size: 2rem;
+  }
+
+  .price-option-group {
+    flex-direction: column;
   }
 }
 

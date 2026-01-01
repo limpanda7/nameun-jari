@@ -20,6 +20,14 @@
         "function": "confirmReservation"
       },
       {
+        "source": "/api/kakaopay/ready",
+        "function": "kakaoPayReady"
+      },
+      {
+        "source": "/api/kakaopay/approve",
+        "function": "kakaoPayApprove"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

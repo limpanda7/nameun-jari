@@ -1,11 +1,14 @@
-const forestMMS = (picked, person, baby, dog, barbecue, price, reservationNumber) => {
-  return '안녕하세요 백년한옥별채 입니다 :)\n' +
-    '예약해주셔서 감사합니다. 문의사항은 언제든 편하게 연락주세요 :D\n' +
-    '\n' +
+const forestMMS = (picked, person, baby, dog, barbecue, price, reservationNumber, paymentMethod) => {
+  const depositInfo = paymentMethod === 'kakaopay' ? '' :
     `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
     '3시간 내 입금 시 예약 확정됩니다.\n' +
     '(입금계좌: 카카오 79420205681 남은비)\n' +
+    '\n';
+
+  return '안녕하세요 백년한옥별채 입니다 :)\n' +
+    '예약해주셔서 감사합니다. 문의사항은 언제든 편하게 연락주세요 :D\n' +
     '\n' +
+    depositInfo +
     '[예약정보]\n' +
     `-예약번호: ${reservationNumber || 'N/A'}\n` +
     `-체크인: ${picked[0]}\n` +
@@ -51,11 +54,14 @@ const forestMMS = (picked, person, baby, dog, barbecue, price, reservationNumber
     '※ 문의는 카카오톡(eunbibi1001) 또는 DM(hanok.100)으로 부탁드립니다.\n';
 }
 
-const onOffMMS = (picked, person, dog, price, reservationNumber) => {
-  return '온오프스테이를 찾아주셔서 감사합니다 :)\n' +
+const onOffMMS = (picked, person, dog, price, reservationNumber, paymentMethod) => {
+  const depositInfo = paymentMethod === 'kakaopay' ? '' :
     `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
     '(입금계좌: 카카오 3333053810252 채민기)\n' +
-    '\n' +
+    '\n';
+
+  return '온오프스테이를 찾아주셔서 감사합니다 :)\n' +
+    depositInfo +
     '[계약정보]\n' +
     `-예약번호: ${reservationNumber || 'N/A'}\n` +
     `-기간: ${picked[0]} ~ ${picked[picked.length - 1]}\n` +
@@ -97,7 +103,13 @@ const onOffMMS = (picked, person, dog, price, reservationNumber) => {
     '※ 문의는 카카오톡(skfk1600) 또는 DM(on.offstay)으로 부탁드립니다.';
 }
 
-const blonMMS = (picked, person, baby, dog, barbecue, price, reservationNumber) => {
+const blonMMS = (picked, person, baby, dog, barbecue, price, reservationNumber, paymentMethod) => {
+  const depositInfo = paymentMethod === 'kakaopay' ? '' :
+    `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
+    '3시간 내 입금 시 예약 확정됩니다.\n' +
+    '(입금계좌: 카카오 79420661213 남은진)\n' +
+    '\n';
+
   return '안녕하세요 숲과 호수사이 블로뉴숲 입니다 :)\n' +
     '예약해주셔서 감사합니다. 문의사항은 언제든 편하게 연락주세요 :D\n' +
     '\n' +
@@ -140,10 +152,7 @@ const blonMMS = (picked, person, baby, dog, barbecue, price, reservationNumber) 
     '카카오 79420661213 남은진\n' +
     '-----\n' +
     '\n' +
-    `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
-    '3시간 내 입금 시 예약 확정됩니다.\n' +
-    '(입금계좌: 카카오 79420661213 남은진)\n' +
-    '\n' +
+    depositInfo +
     '[예약정보]\n' +
     `-예약번호: ${reservationNumber || 'N/A'}\n` +
     `-체크인: ${picked[0]}\n` +
@@ -152,7 +161,14 @@ const blonMMS = (picked, person, baby, dog, barbecue, price, reservationNumber) 
     `-바베큐 이용여부: ${barbecue}`;
 }
 
-const spaceMMS = (date, time, person, purpose, price, reservationNumber) => {
+const spaceMMS = (date, time, person, purpose, price, reservationNumber, paymentMethod) => {
+  const depositInfo = paymentMethod === 'kakaopay' ? '' :
+    '※ 아래 내용은 네이버페이 or 스페이스클라우드 예약의 경우 해당되지 않습니다.\n' +
+    `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
+    '3시간 내 입금 시 예약 확정됩니다.\n' +
+    '(입금계좌: 카카오 3333058451192 남은비)\n' +
+    '\n';
+
   return '안녕하세요 온오프스페이스 입니다 :)\n' +
     '\n' +
     '[예약정보]\n' +
@@ -180,11 +196,7 @@ const spaceMMS = (date, time, person, purpose, price, reservationNumber) => {
     '6. 보안 및 안전을 위한 실내 cctv 작동중입니다.\n'+
     '7. 실내화를 신어주세요.\n'+
     '\n' +
-    '※ 아래 내용은 네이버페이 or 스페이스클라우드 예약의 경우 해당되지 않습니다.\n' +
-    `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
-    '3시간 내 입금 시 예약 확정됩니다.\n' +
-    '(입금계좌: 카카오 3333058451192 남은비)\n' +
-    '\n' +
+    depositInfo +
     '※ 본 전화번호는 발신 전용입니다.\n' +
     '※ 문의는 카카오톡(eunbibi1001) 또는 DM(onoff_space_)으로 부탁드립니다.';
 }
@@ -208,11 +220,14 @@ const appleMMS = (name, phone, fiveKg, tenKg, price, receiverName, receiverPhone
     '※ 문의는 010-3024-1517로 부탁드립니다.';
 }
 
-const mukhoMMS = (picked, person, dog, price, reservationNumber) => {
-  return '묵호쉴래를 찾아주셔서 감사합니다 :)\n' +
+const mukhoMMS = (picked, person, dog, price, reservationNumber, paymentMethod) => {
+  const depositInfo = paymentMethod === 'kakaopay' ? '' :
     `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
     '(입금계좌: 카카오 79420205681 남은비)\n' +
-    '\n' +
+    '\n';
+
+  return '묵호쉴래를 찾아주셔서 감사합니다 :)\n' +
+    depositInfo +
     '[계약정보]\n' +
     `-예약번호: ${reservationNumber || 'N/A'}\n` +
     `-기간: ${picked[0]} ~ ${picked[picked.length - 1]}\n` +

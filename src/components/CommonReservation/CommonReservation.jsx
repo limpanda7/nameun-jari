@@ -5,6 +5,7 @@ import { FOREST_PRICE, BLON_PRICE } from '../../constants/price';
 import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDateWithDay, getBlonSpecialDatePrice, formatDate } from '../../utils/date';
 import { saveReservation as saveReservationToFirestore } from '../../utils/firestore';
 import LoadingOverlay from '../LoadingOverlay/LoadingOverlay';
+import kakaopayIcon from '../../assets/kakaopay/payment_icon_yellow_small.png';
 import './CommonReservation.css';
 
 const CommonReservation = ({
@@ -35,6 +36,7 @@ const CommonReservation = ({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('bank');
 
   let isRequested = false;
 
@@ -165,63 +167,156 @@ const CommonReservation = ({
         isRequested = true;
         setIsLoading(true);
 
-        // 날짜 형식 변환
-        const checkinDate = picked.length > 0 ? new Date(picked[0]).toISOString().split('T')[0] : null;
-        const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
+        // 카카오페이 결제인 경우
+        if (paymentMethod === 'kakaopay') {
+          const checkinDate = picked.length > 0 ? new Date(picked[0]).toISOString().split('T')[0] : null;
+          const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
+          const propertyName = propertyType === 'forest' ? '백년한옥별채' : propertyType === 'blon' ? '블로뉴숲' : propertyType;
+          const itemName = `${propertyName} 예약 (${checkinDate} ~ ${checkoutDate})`;
+          const vatAmount = Math.floor(price / 11);
+          const taxFreeAmount = 0;
 
-        // Firestore에 예약 저장
-        const result = await saveReservationToFirestore(propertyType, {
-          picked,
-          name,
-          phone,
-          person,
-          baby,
-          dog,
-          bedding,
-          barbecue,
-          price,
-          priceOption
-        });
+          const baseUrl = window.location.origin;
+          const approvalUrl = `${baseUrl}/payment/approval`;
+          const cancelUrl = `${baseUrl}/payment/cancel`;
+          const failUrl = `${baseUrl}/payment/fail`;
 
-        const reservationNumber = result.reservationNumber;
+          try {
+            // ready API와 approve API에서 동일한 partner_order_id 사용
+            const partnerOrderId = `order_${Date.now()}_${propertyType}`;
+            
+            const kakaoPayResponse = await fetch('/api/kakaopay/ready', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                cid: 'CT50278261',
+                partner_order_id: partnerOrderId,
+                partner_user_id: phone,
+                item_name: itemName,
+                quantity: '1',
+                total_amount: price.toString(),
+                vat_amount: vatAmount.toString(),
+                tax_free_amount: taxFreeAmount.toString(),
+                approval_url: approvalUrl,
+                cancel_url: cancelUrl,
+                fail_url: failUrl,
+              })
+            });
 
-        // 텔레그램 알림 전송
-        try {
-          const telegramResponse = await fetch('/api/telegram-webhook', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              reservationData: {
-                propertyType,
-                name,
-                phone,
-                person,
-                baby,
-                dog,
-                bedding,
-                barbecue,
-                price,
-                priceOption,
-                checkinDate,
-                checkoutDate,
-                reservationNumber,
-                createdAt: new Date().toISOString()
-              }
-            })
+            const kakaoPayResult = await kakaoPayResponse.json();
+            console.log('카카오페이 API 응답:', kakaoPayResult);
+
+            if (!kakaoPayResult.tid) {
+              throw new Error('카카오페이 결제 준비 실패: tid를 받을 수 없습니다.');
+            }
+
+            // 세션 스토리지에 예약 정보 저장 (결제 승인 후 사용)
+            const reservationData = {
+              propertyType,
+              name,
+              phone,
+              person,
+              baby,
+              dog,
+              bedding: person > 4 ? 1 : 0,
+              barbecue,
+              price,
+              priceOption,
+              picked,
+              tid: kakaoPayResult.tid,
+              partner_order_id: partnerOrderId,
+              partner_user_id: phone,
+            };
+            sessionStorage.setItem('kakaoPayReservation', JSON.stringify(reservationData));
+
+            // 모바일/PC 환경에 맞는 redirect URL 선택
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            let redirectUrl = null;
+
+            if (isMobile) {
+              // 모바일: 앱 URL 우선, 없으면 모바일 웹 URL
+              redirectUrl = kakaoPayResult.next_redirect_app_url || kakaoPayResult.next_redirect_mobile_url;
+            } else {
+              // PC: PC 웹 URL
+              redirectUrl = kakaoPayResult.next_redirect_pc_url;
+            }
+
+            if (redirectUrl) {
+              // 결제 페이지로 리다이렉트
+              window.location.href = redirectUrl;
+            } else {
+              throw new Error('카카오페이 결제 준비 실패: redirect URL을 찾을 수 없습니다.');
+            }
+          } catch (kakaoPayError) {
+            isRequested = false;
+            setIsLoading(false);
+            alert('카카오페이 결제 준비 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            console.error('카카오페이 결제 에러:', kakaoPayError);
+            return;
+          }
+        } else {
+          // 계좌이체인 경우 기존 로직
+          // 날짜 형식 변환
+          const checkinDate = picked.length > 0 ? new Date(picked[0]).toISOString().split('T')[0] : null;
+          const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
+
+          // Firestore에 예약 저장
+          const result = await saveReservationToFirestore(propertyType, {
+            picked,
+            name,
+            phone,
+            person,
+            baby,
+            dog,
+            bedding,
+            barbecue,
+            price,
+            priceOption
           });
 
-          if (!telegramResponse.ok) {
-            console.warn('텔레그램 알림 전송 실패:', await telegramResponse.text());
-          }
-        } catch (telegramError) {
-          // 텔레그램 알림 실패는 예약 저장을 막지 않음
-          console.warn('텔레그램 알림 전송 중 오류:', telegramError);
-        }
+          const reservationNumber = result.reservationNumber;
 
-        alert(`예약해주셔서 감사합니다! 입금하실 금액은 ${price.toLocaleString()}원입니다.`);
-        navigate(backPath);
+          // 텔레그램 알림 전송
+          try {
+            const telegramResponse = await fetch('/api/telegram-webhook', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                reservationData: {
+                  propertyType,
+                  name,
+                  phone,
+                  person,
+                  baby,
+                  dog,
+                  bedding,
+                  barbecue,
+                  price,
+                  priceOption,
+                  checkinDate,
+                  checkoutDate,
+                  reservationNumber,
+                  paymentMethod: 'bank',
+                  createdAt: new Date().toISOString()
+                }
+              })
+            });
+
+            if (!telegramResponse.ok) {
+              console.warn('텔레그램 알림 전송 실패:', await telegramResponse.text());
+            }
+          } catch (telegramError) {
+            // 텔레그램 알림 실패는 예약 저장을 막지 않음
+            console.warn('텔레그램 알림 전송 중 오류:', telegramError);
+          }
+
+          alert(`예약해주셔서 감사합니다! 입금하실 금액은 ${price.toLocaleString()}원입니다.`);
+          navigate(backPath);
+        }
       } catch (e) {
         isRequested = false;
         setIsLoading(false);
@@ -420,6 +515,11 @@ const CommonReservation = ({
               <span>환불 불가 (10% 할인)</span>
             </label>
           </div>
+          {priceOption === 'refundable' && (
+            <p className="price-option-notice">
+              환불 요청 시 <a href="/terms" target="_blank" rel="noopener noreferrer">이용약관</a> 기준에 따라 처리됩니다.
+            </p>
+          )}
         </section>
 
         {/* 총 요금 */}
@@ -450,18 +550,55 @@ const CommonReservation = ({
           </div>
         </section>
 
+        {/* 결제수단 선택 */}
+        <section className="payment-method-section">
+          <h2>결제수단 선택</h2>
+          <div className="price-option-group">
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="bank"
+                checked={paymentMethod === 'bank'}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <span>계좌이체</span>
+            </label>
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="kakaopay"
+                checked={paymentMethod === 'kakaopay'}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                카카오페이
+                <img 
+                  src={kakaopayIcon} 
+                  alt="카카오페이" 
+                  style={{ width: '50px' }}
+                />
+              </span>
+            </label>
+          </div>
+        </section>
+
         {/* 입금 정보 */}
-        <section className="deposit-section">
+        <section className={`deposit-section ${paymentMethod === 'kakaopay' ? 'hidden' : ''}`}>
           <h2>입금하기</h2>
           <div className="bank-account">{bankAccount}</div>
           <p>
             위 계좌로 <b>{price.toLocaleString()}원</b>을 입금해주세요.<br/>
             3시간 내에 입금 해 주셔야 예약이 확정됩니다.
           </p>
+        </section>
 
+        {/* 예약하기 버튼 */}
+        <section className="reservation-button-section">
           <div className="input-group">
             <label>
-              <span className="input-label">입금하실 분 성함:</span>
+              <span className="input-label">예약자 성함:</span>
               <input
                 type="text"
                 value={name}
@@ -494,7 +631,7 @@ const CommonReservation = ({
             onClick={saveReservation}
             disabled={isLoading || !name || !phone}
           >
-            {isLoading ? '예약 처리 중...' : '예약하기'}
+            {isLoading ? '예약 처리 중...' : paymentMethod === 'kakaopay' ? '결제하기' : '예약하기'}
           </button>
         </section>
 

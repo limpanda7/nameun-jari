@@ -22,7 +22,8 @@ const secrets = [
   'TELEGRAM_CHAT_ID_MUKHO',
   'MMS_APP_KEY',
   'MMS_SECRET_KEY',
-  'MMS_SEND_NO'
+  'MMS_SEND_NO',
+  'KAKAOPAY_SECRET_KEY'
 ];
 
 // 텔레그램 알림 함수
@@ -402,7 +403,8 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
     price,
     checkinDate,
     checkoutDate,
-    reservationNumber
+    reservationNumber,
+    paymentMethod
   } = reservationData;
 
   // 전화번호 정규화 (하이픈 제거)
@@ -414,19 +416,19 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
   const picked = [checkinDate, checkoutDate]; // 날짜 배열 형식으로 변환
 
   if (propertyType === 'forest') {
-    mmsBody = forestMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price, reservationNumber);
+    mmsBody = forestMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price, reservationNumber, paymentMethod);
   } else if (propertyType === 'blon') {
-    mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price, reservationNumber);
+    mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price, reservationNumber, paymentMethod);
   } else if (propertyType === 'on_off') {
-    mmsBody = onOffMMS(picked, person, dog || 0, price, reservationNumber);
+    mmsBody = onOffMMS(picked, person, dog || 0, price, reservationNumber, paymentMethod);
   } else if (propertyType === 'mukho') {
-    mmsBody = mukhoMMS(picked, person, dog || 0, price, reservationNumber);
+    mmsBody = mukhoMMS(picked, person, dog || 0, price, reservationNumber, paymentMethod);
   } else if (propertyType === 'space') {
     // Space는 날짜와 시간 배열 사용
     const date = reservationData.date;
     const time = reservationData.time || [];
     const purpose = reservationData.purpose || '미입력';
-    mmsBody = spaceMMS(date, time, person, purpose, price, reservationNumber);
+    mmsBody = spaceMMS(date, time, person, purpose, price, reservationNumber, paymentMethod);
   } else {
     console.warn(`지원하지 않는 숙소 타입: ${propertyType}`);
     return;
@@ -1003,3 +1005,87 @@ exports.syncIcal = functions.runWith({ secrets: syncIcalSecrets }).pubsub
       throw error;
     }
   });
+
+// 카카오페이 결제 준비 API 프록시
+exports.kakaoPayReady = functions.runWith({ secrets }).https.onRequest(async (req, res) => {
+  // CORS 설정
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const kakaoPaySecretKey = process.env.KAKAOPAY_SECRET_KEY || 'PRDF361A5294D837F7A68A43F96ED978333B725C';
+
+    const response = await fetch('https://open-api.kakaopay.com/online/v1/payment/ready', {
+      method: 'POST',
+      headers: {
+        'Authorization': `SECRET_KEY ${kakaoPaySecretKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req.body)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error('카카오페이 API 에러:', result);
+      return res.status(response.status).json(result);
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('카카오페이 결제 준비 중 오류:', error);
+    res.status(500).json({ error: '카카오페이 결제 준비 중 오류가 발생했습니다.', details: error.message });
+    }
+  });
+
+// 카카오페이 결제 승인 API 프록시
+exports.kakaoPayApprove = functions.runWith({ secrets }).https.onRequest(async (req, res) => {
+  // CORS 설정
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const kakaoPaySecretKey = process.env.KAKAOPAY_SECRET_KEY || 'PRDF361A5294D837F7A68A43F96ED978333B725C';
+
+    const response = await fetch('https://open-api.kakaopay.com/online/v1/payment/approve', {
+      method: 'POST',
+      headers: {
+        'Authorization': `SECRET_KEY ${kakaoPaySecretKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req.body)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error('카카오페이 승인 API 에러:', result);
+      return res.status(response.status).json(result);
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('카카오페이 결제 승인 중 오류:', error);
+    res.status(500).json({ error: '카카오페이 결제 승인 중 오류가 발생했습니다.', details: error.message });
+  }
+});

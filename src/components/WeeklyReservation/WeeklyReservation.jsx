@@ -1,74 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { SPACE_PRICE } from '../../constants/price';
 import { formatDateWithDay } from '../../utils/date';
-import { saveSpaceReservation } from '../../utils/firestore';
+import { saveReservation as saveReservationToFirestore } from '../../utils/firestore';
 import kakaopayIcon from '../../assets/kakaopay/payment_icon_yellow_small.png';
 import '../CommonReservation/CommonReservation.css';
 
-const SpaceReservation = () => {
+const WeeklyReservation = ({
+  propertyType,
+  priceConfig,
+  backPath,
+  calendarPath,
+  bankAccount
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { date, time } = location.state || {};
+  const picked = location.state?.picked || [];
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [person, setPerson] = useState(2);
-  const [purpose, setPurpose] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [weeks, setWeeks] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [usagePrice, setUsagePrice] = useState(0);
+  const [person, setPerson] = useState(2);
+  const [baby, setBaby] = useState(0);
+  const [dog, setDog] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState('bank');
 
   let isRequested = false;
 
   useEffect(() => {
-    if (date && time && time.length > 0) {
-      calculatePrice();
+    if (picked.length > 0) {
+      // 일주일 단위로 계산 (7일 = 1주)
+      const calculatedWeeks = Math.ceil(picked.length / 7);
+      setWeeks(calculatedWeeks);
+
+      // 가격 계산: (임대료 + 관리비) * 주수 + 청소비 + 보증금
+      const pricePerWeek = priceConfig.RENT_PER_WEEK + priceConfig.MANAGEMENT_PER_WEEK;
+      const calculatedUsagePrice = pricePerWeek * calculatedWeeks + priceConfig.CLEANING_FEE;
+      const calculatedTotal = calculatedUsagePrice + priceConfig.DEPOSIT;
+      setUsagePrice(calculatedUsagePrice);
+      setTotalPrice(calculatedTotal);
     }
-  }, [date, time, person]);
-
-  const calculatePrice = () => {
-    if (!date || !time || time.length === 0) return;
-
-    const selectedDate = new Date(date);
-    const dayOfWeek = selectedDate.getDay(); // 0 = 일요일, 6 = 토요일
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6; // 일, 금, 토
-
-    // 시간당 가격 결정
-    const pricePerHour = isWeekend ? SPACE_PRICE.WEEKEND : SPACE_PRICE.WEEKDAY;
-
-    // 기본 가격 (2인 기준)
-    let basePrice = pricePerHour * time.length;
-
-    // 2인 초과 시 추가 요금
-    if (person > 2) {
-      const additionalPersons = person - 2;
-      const additionalPrice = SPACE_PRICE.OVER_TWO * additionalPersons * time.length;
-      basePrice += additionalPrice;
-    }
-
-    setTotalPrice(basePrice);
-  };
+  }, [picked, priceConfig]);
 
   const saveReservation = async () => {
     if (isRequested) {
       return;
     }
 
-    if (!date || !time || time.length === 0) {
-      alert('날짜와 시간을 선택해주세요.');
-      navigate('/space/calendar');
-      return;
-    }
-
     if (name === '' || phone === '') {
       alert('정보를 모두 입력해주세요.');
-      return;
-    }
-
-    if (purpose === '') {
-      alert('사용 목적을 입력해주세요.');
       return;
     }
 
@@ -79,8 +62,9 @@ const SpaceReservation = () => {
 
         // 카카오페이 결제인 경우
         if (paymentMethod === 'kakaopay') {
-          const timeRange = `${Math.min(...time)}:00 ~ ${Math.max(...time) + 1}:00`;
-          const itemName = `스페이스 예약 (${formatDateWithDay(date)} ${timeRange})`;
+          const checkinDate = picked.length > 0 ? new Date(picked[0]).toISOString().split('T')[0] : null;
+          const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
+          const itemName = `${propertyType === 'mukho' ? '묵호' : '온오프'} 예약 (${checkinDate} ~ ${checkoutDate})`;
           const vatAmount = Math.floor(totalPrice / 11);
           const taxFreeAmount = 0;
 
@@ -91,7 +75,7 @@ const SpaceReservation = () => {
           
           try {
             // ready API와 approve API에서 동일한 partner_order_id 사용
-            const partnerOrderId = `order_${Date.now()}_space`;
+            const partnerOrderId = `order_${Date.now()}_${propertyType}`;
             
             const kakaoPayResponse = await fetch('/api/kakaopay/ready', {
               method: 'POST',
@@ -122,16 +106,17 @@ const SpaceReservation = () => {
 
             // 세션 스토리지에 예약 정보 저장 (결제 승인 후 사용)
             const reservationData = {
-              propertyType: 'space',
+              propertyType,
               name,
               phone,
               person,
-              purpose,
+              baby: 0,
+              dog,
+              bedding: 0,
+              barbecue: 'N',
               price: totalPrice,
-              date,
-              time,
-              checkin_time: Math.min(...time),
-              checkout_time: Math.max(...time) + 1,
+              priceOption: 'refundable',
+              picked,
               tid: kakaoPayResult.tid,
               partner_order_id: partnerOrderId,
               partner_user_id: phone,
@@ -165,20 +150,22 @@ const SpaceReservation = () => {
           }
         } else {
           // 계좌이체인 경우 기존 로직
-          const startTime = Math.min(...time);
-          const endTime = Math.max(...time) + 1;
+          // 날짜 형식 변환
+          const checkinDate = picked.length > 0 ? new Date(picked[0]).toISOString().split('T')[0] : null;
+          const checkoutDate = picked.length > 1 ? new Date(picked[picked.length - 1]).toISOString().split('T')[0] : null;
 
           // Firestore에 예약 저장
-          const result = await saveSpaceReservation({
-            date,
-            time,
+          const result = await saveReservationToFirestore(propertyType, {
+            picked,
             name,
             phone,
             person,
-            purpose: purpose,
+            baby: 0,
+            dog,
+            bedding: 0,
+            barbecue: 'N',
             price: totalPrice,
-            checkin_time: startTime,
-            checkout_time: endTime
+            priceOption: 'refundable'
           });
 
           const reservationNumber = result.reservationNumber;
@@ -192,16 +179,18 @@ const SpaceReservation = () => {
               },
               body: JSON.stringify({
                 reservationData: {
-                  propertyType: 'space',
+                  propertyType,
                   name,
                   phone,
                   person,
-                  purpose: purpose,
+                  baby: 0,
+                  dog,
+                  bedding: 0,
+                  barbecue: 'N',
                   price: totalPrice,
-                  date,
-                  time,
-                  checkin_time: startTime,
-                  checkout_time: endTime,
+                  priceOption: 'refundable',
+                  checkinDate,
+                  checkoutDate,
                   reservationNumber,
                   paymentMethod: 'bank',
                   createdAt: new Date().toISOString()
@@ -221,7 +210,7 @@ const SpaceReservation = () => {
           }
 
           alert(`예약해주셔서 감사합니다! 입금하실 금액은 ${totalPrice.toLocaleString()}원입니다.`);
-          navigate('/space');
+          navigate(backPath);
         }
       } catch (e) {
         isRequested = false;
@@ -232,24 +221,24 @@ const SpaceReservation = () => {
     }
   };
 
-  if (!date || !time || time.length === 0) {
+  if (picked.length === 0) {
     return (
       <div className="common-reservation">
         <div className="common-reservation-header">
           <button
             className="back-button"
-            onClick={() => navigate('/space/calendar')}
+            onClick={() => navigate(calendarPath)}
           >
             <ArrowLeft size={20} />
             돌아가기
           </button>
         </div>
         <div className="no-dates-selected">
-          <h2>날짜와 시간을 선택해주세요</h2>
-          <p>예약하려면 먼저 날짜와 시간을 선택해주세요.</p>
+          <h2>날짜를 선택해주세요</h2>
+          <p>예약하려면 먼저 체크인과 체크아웃 날짜를 선택해주세요.</p>
           <button
             className="select-dates-btn"
-            onClick={() => navigate('/space/calendar')}
+            onClick={() => navigate(calendarPath)}
           >
             날짜 선택하기
           </button>
@@ -258,17 +247,13 @@ const SpaceReservation = () => {
     );
   }
 
-  const timeRange = `${Math.min(...time)}:00 ~ ${Math.max(...time) + 1}:00`;
-  const selectedDate = new Date(date);
-  const dayOfWeek = selectedDate.getDay();
-  const isWeekend = dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6;
-  const pricePerHour = isWeekend ? SPACE_PRICE.WEEKEND : SPACE_PRICE.WEEKDAY;
+  const pricePerWeek = priceConfig.RENT_PER_WEEK + priceConfig.MANAGEMENT_PER_WEEK;
 
   return (
     <div className="common-reservation">
       <button
         className="back-button"
-        onClick={() => navigate('/space/calendar')}
+        onClick={() => navigate(calendarPath)}
       >
         <ArrowLeft size={20} />
         돌아가기
@@ -279,23 +264,23 @@ const SpaceReservation = () => {
         <h2>예약 정보</h2>
         <div className="info-grid">
           <div className="info-item">
-            <span className="label">날짜</span>
-            <span className="value">{formatDateWithDay(date)}</span>
+            <span className="label">체크인</span>
+            <span className="value">{formatDateWithDay(picked[0])}</span>
           </div>
           <div className="info-item">
-            <span className="label">시간</span>
-            <span className="value">{timeRange}</span>
+            <span className="label">체크아웃</span>
+            <span className="value">{formatDateWithDay(picked[picked.length - 1])}</span>
           </div>
           <div className="info-item">
-            <span className="label">이용 시간</span>
-            <span className="value">{time.length}시간</span>
+            <span className="label">이용 기간</span>
+            <span className="value">{weeks}주 ({picked.length - 1}박)</span>
           </div>
         </div>
       </section>
 
-      {/* 인원 및 목적 선택 */}
+      {/* 인원 및 옵션 선택 */}
       <section className="guest-options-section">
-        <h2>인원수 선택</h2>
+        <h2>인원수 선택 (최대 6인)</h2>
 
         <div className="option-group">
           <div className="option-header">
@@ -313,7 +298,8 @@ const SpaceReservation = () => {
               <button
                 type="button"
                 className="counter-btn"
-                onClick={() => setPerson(person + 1)}
+                onClick={() => setPerson(Math.min(6, person + 1))}
+                disabled={person >= 6}
               >
                 +
               </button>
@@ -321,38 +307,67 @@ const SpaceReservation = () => {
           </div>
         </div>
 
-        <div className="input-group" style={{ marginTop: '20px' }}>
-          <label>
-            <span className="input-label">사용 목적 <span style={{ color: '#e53e3e' }}>*</span></span>
-            <input
-              type="text"
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-              placeholder="예: 회의, 스터디, 작업 등"
-            />
-          </label>
+        <div className="option-group">
+          <div className="option-header">
+            <span className="option-title">영유아(36개월 미만)</span>
+            <div className="counter-container">
+              <button
+                type="button"
+                className="counter-btn"
+                onClick={() => setBaby(Math.max(0, baby - 1))}
+                disabled={baby <= 0}
+              >
+                -
+              </button>
+              <span className="counter-value">{baby}</span>
+              <button
+                type="button"
+                className="counter-btn"
+                onClick={() => setBaby(baby + 1)}
+              >
+                +
+              </button>
+            </div>
+          </div>
         </div>
+
+        <div className="option-group">
+          <div className="option-header">
+            <span className="option-title">반려견</span>
+            <div className="counter-container">
+              <button
+                type="button"
+                className="counter-btn"
+                onClick={() => setDog(Math.max(0, dog - 1))}
+                disabled={dog <= 0}
+              >
+                -
+              </button>
+              <span className="counter-value">{dog}</span>
+              <button
+                type="button"
+                className="counter-btn"
+                onClick={() => setDog(dog + 1)}
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       {/* 총 요금 */}
       <section className="price-total-section">
         <h2>요금 정보</h2>
         <div className="price-detail">
-          <p style={{fontSize: '15px'}}>
-            <b>시간당 요금:</b> {pricePerHour.toLocaleString()}원 ({isWeekend ? '금~일' : '월~목'})
-          </p>
-          <p style={{fontSize: '15px'}}>
-            <b>기본 요금:</b> {pricePerHour.toLocaleString()}원 x {time.length}시간 = {(pricePerHour * time.length).toLocaleString()}원
-          </p>
-          {person > 2 && (
-            <p style={{fontSize: '15px'}}>
-              <b>추가 인원 요금:</b> {SPACE_PRICE.OVER_TWO.toLocaleString()}원 x {person - 2}명 x {time.length}시간 = {(SPACE_PRICE.OVER_TWO * (person - 2) * time.length).toLocaleString()}원
-            </p>
-          )}
+          <p style={{fontSize: '15px'}}><b>임대료:</b> {priceConfig.RENT_PER_WEEK.toLocaleString()}원 x {weeks}주 = {(priceConfig.RENT_PER_WEEK * weeks).toLocaleString()}원</p>
+          <p style={{fontSize: '15px'}}><b>관리비:</b> {priceConfig.MANAGEMENT_PER_WEEK.toLocaleString()}원 x {weeks}주 = {(priceConfig.MANAGEMENT_PER_WEEK * weeks).toLocaleString()}원</p>
+          <p style={{fontSize: '15px'}}><b>청소비:</b> {priceConfig.CLEANING_FEE.toLocaleString()}원</p>
           <div style={{marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #eee'}}>
-            <p style={{fontSize: '20px', fontWeight: 'bold', marginTop: '12px', color: '#2c3e50'}}>
-              <b>총 입금액:</b> {totalPrice.toLocaleString()}원
-            </p>
+            <p style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px'}}><b>실제 이용요금:</b> {usagePrice.toLocaleString()}원</p>
+            <p style={{fontSize: '15px', color: '#666', marginBottom: '8px'}}><b>보증금:</b> {priceConfig.DEPOSIT.toLocaleString()}원</p>
+            <p style={{fontSize: '20px', fontWeight: 'bold', marginTop: '12px', color: '#2c3e50'}}><b>총 입금액:</b> {totalPrice.toLocaleString()}원</p>
           </div>
         </div>
       </section>
@@ -394,7 +409,7 @@ const SpaceReservation = () => {
       {/* 입금 정보 */}
       <section className={`deposit-section ${paymentMethod === 'kakaopay' ? 'hidden' : ''}`}>
         <h2>입금하기</h2>
-        <div className="bank-account">카카오 3333058451192 남은비</div>
+        <div className="bank-account">{bankAccount}</div>
         <p>
           위 계좌로 <b>{totalPrice.toLocaleString()}원</b>을 입금해주세요.<br/>
           3시간 내에 입금 해 주셔야 예약이 확정됩니다.
@@ -445,5 +460,5 @@ const SpaceReservation = () => {
   );
 };
 
-export default SpaceReservation;
+export default WeeklyReservation;
 

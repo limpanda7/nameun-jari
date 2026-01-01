@@ -32,6 +32,9 @@ import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
 import TermsPage from './components/TermsPage/TermsPage.jsx';
 import Admin from './components/Admin/Admin.jsx';
 import ReservationLookup from './components/ReservationLookup/ReservationLookup.jsx';
+import PaymentApproval from './components/PaymentApproval/PaymentApproval.jsx';
+import PaymentCancel from './components/PaymentCancel/PaymentCancel.jsx';
+import PaymentFail from './components/PaymentFail/PaymentFail.jsx';
 import { FOREST_PRICE, BLON_PRICE, MUKHO_PRICE } from './constants/price';
 
 function App() {
@@ -500,6 +503,9 @@ function App() {
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/lookup" element={<ReservationLookup />} />
+      <Route path="/payment/approval" element={<PaymentApproval />} />
+      <Route path="/payment/cancel" element={<PaymentCancel />} />
+      <Route path="/payment/fail" element={<PaymentFail />} />
     </Routes>
   );
 }
