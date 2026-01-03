@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Home, Wifi, Car, Coffee, Users, Bed, Bath, UtensilsCrossed, Dog, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
+import { MUKHO_PRICE } from '../../constants/price';
 import '../../styles/CommonPage.css';
 
 // Import mukho images
@@ -442,19 +443,19 @@ const MukhoPage = () => {
                 <tbody>
                 <tr>
                   <td>임대료</td>
-                  <td>200,000원 / 1주</td>
+                  <td>{MUKHO_PRICE.RENT_PER_WEEK.toLocaleString()}원 / 1주</td>
                 </tr>
                 <tr>
                   <td>관리비</td>
-                  <td>70,000원 / 1주</td>
+                  <td>{MUKHO_PRICE.MANAGEMENT_PER_WEEK.toLocaleString()}원 / 1주</td>
                 </tr>
                 <tr>
                   <td>청소비</td>
-                  <td>70,000원</td>
+                  <td>{MUKHO_PRICE.CLEANING_FEE.toLocaleString()}원</td>
                 </tr>
                 <tr>
                   <td>보증금</td>
-                  <td>330,000원</td>
+                  <td>{MUKHO_PRICE.DEPOSIT.toLocaleString()}원</td>
                 </tr>
                 </tbody>
               </table>

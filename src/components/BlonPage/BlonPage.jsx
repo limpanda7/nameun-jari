@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
+import { BLON_PRICE } from '../../constants/price';
 import '../../styles/CommonPage.css';
 
 // Import blon images
@@ -437,17 +438,17 @@ const BlonPage = () => {
                     <td>
                       성수기<br/><span className="peak-season-period">(7/20-8/20)</span>
                     </td>
-                    <td>250,000원</td>
-                    <td>300,000원</td>
-                    <td>300,000원</td>
+                    <td>{BLON_PRICE.SUMMER.WEEKDAY.toLocaleString()}원</td>
+                    <td>{BLON_PRICE.SUMMER.FRIDAY.toLocaleString()}원</td>
+                    <td>{BLON_PRICE.SUMMER.SATURDAY.toLocaleString()}원</td>
                   </tr>
                   <tr>
                     <td>
                       비성수기
                     </td>
-                    <td>160,000원</td>
-                    <td>200,000원</td>
-                    <td>250,000원</td>
+                    <td>{BLON_PRICE.NORMAL.WEEKDAY.toLocaleString()}원</td>
+                    <td>{BLON_PRICE.NORMAL.FRIDAY.toLocaleString()}원</td>
+                    <td>{BLON_PRICE.NORMAL.SATURDAY.toLocaleString()}원</td>
                   </tr>
                 </tbody>
               </table>
@@ -459,15 +460,15 @@ const BlonPage = () => {
               <div className="charges-grid">
                 <div className="charge-item">
                   <span className="charge-label">4인 초과 시 1인당</span>
-                  <span className="charge-price">1박 15,000원</span>
+                  <span className="charge-price">1박 {BLON_PRICE.OVER_FOUR.toLocaleString()}원</span>
                 </div>
                 <div className="charge-item">
                   <span className="charge-label">반려견 1마리당</span>
-                  <span className="charge-price">1박 30,000원</span>
+                  <span className="charge-price">1박 {BLON_PRICE.DOG.toLocaleString()}원</span>
                 </div>
                 <div className="charge-item">
                   <span className="charge-label">바베큐 이용요금</span>
-                  <span className="charge-price">20,000원</span>
+                  <span className="charge-price">{BLON_PRICE.BARBECUE.toLocaleString()}원</span>
                 </div>
               </div>
             </div>

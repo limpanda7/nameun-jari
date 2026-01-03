@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
+import { FOREST_PRICE } from '../../constants/price';
 import '../../styles/CommonPage.css';
 
 // Import forest images
@@ -501,13 +502,13 @@ const ForestPage = () => {
                 <tbody>
                   <tr>
                     <td>성수기(7-8월)</td>
-                    <td>300,000원</td>
-                    <td>300,000원</td>
+                    <td>{FOREST_PRICE.SUMMER.WEEKDAY.toLocaleString()}원</td>
+                    <td>{FOREST_PRICE.SUMMER.WEEKEND.toLocaleString()}원</td>
                   </tr>
                   <tr>
                     <td>비성수기</td>
-                    <td>200,000원</td>
-                    <td>300,000원</td>
+                    <td>{FOREST_PRICE.NORMAL.WEEKDAY.toLocaleString()}원</td>
+                    <td>{FOREST_PRICE.NORMAL.WEEKEND.toLocaleString()}원</td>
                   </tr>
                 </tbody>
               </table>
@@ -519,17 +520,17 @@ const ForestPage = () => {
               <div className="charges-grid four-items">
                 <div className="charge-item">
                   <span className="charge-label">2인 초과 시</span>
-                  <span className="charge-price">1인당 20,000원/박</span>
+                  <span className="charge-price">1인당 {FOREST_PRICE.OVER_TWO.toLocaleString()}원/박</span>
                   <span className="charge-note">(추가침구 제공)</span>
                 </div>
                 <div className="charge-item">
                   <span className="charge-label">반려견</span>
-                  <span className="charge-price">1마리당 30,000원/박</span>
+                  <span className="charge-price">1마리당 {FOREST_PRICE.DOG.toLocaleString()}원/박</span>
                   <span className="charge-note">(털날림이 적은 견종만)</span>
                 </div>
                 <div className="charge-item">
                   <span className="charge-label">바베큐 이용</span>
-                  <span className="charge-price">30,000원</span>
+                  <span className="charge-price">{FOREST_PRICE.BARBECUE.toLocaleString()}원</span>
                   <span className="charge-note">(화로, 토치, 숯, 집게 제공)</span>
                 </div>
               </div>

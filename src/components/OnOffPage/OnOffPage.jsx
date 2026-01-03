@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
+import { ON_OFF_PRICE } from '../../constants/price';
 import '../../styles/CommonPage.css';
 
 // Import on-off images
@@ -397,19 +398,19 @@ const OnOffPage = () => {
                 <tbody>
                 <tr>
                   <td>임대료</td>
-                  <td>350,000원 / 1주</td>
+                  <td>{ON_OFF_PRICE.RENT_PER_WEEK.toLocaleString()}원 / 1주</td>
                 </tr>
                 <tr>
                   <td>관리비</td>
-                  <td>50,000원 / 1주</td>
+                  <td>{ON_OFF_PRICE.MANAGEMENT_PER_WEEK.toLocaleString()}원 / 1주</td>
                 </tr>
                 <tr>
                   <td>청소비</td>
-                  <td>60,000원</td>
+                  <td>{ON_OFF_PRICE.CLEANING_FEE.toLocaleString()}원</td>
                 </tr>
                 <tr>
                   <td>보증금</td>
-                  <td>330,000원</td>
+                  <td>{ON_OFF_PRICE.DEPOSIT.toLocaleString()}원</td>
                 </tr>
                 </tbody>
               </table>

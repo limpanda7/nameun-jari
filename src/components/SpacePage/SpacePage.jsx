@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
+import { SPACE_PRICE } from '../../constants/price';
 import '../../styles/CommonPage.css';
 
 // Import space images
@@ -482,11 +483,11 @@ const SpacePage = () => {
                 <tbody>
                   <tr>
                     <td>월~목</td>
-                    <td>4,000원/시간</td>
+                    <td>{SPACE_PRICE.WEEKDAY.toLocaleString()}원/시간</td>
                   </tr>
                   <tr>
                     <td>금~일 및 공휴일</td>
-                    <td>6,000원/시간</td>
+                    <td>{SPACE_PRICE.WEEKEND.toLocaleString()}원/시간</td>
                   </tr>
                 </tbody>
               </table>
@@ -498,7 +499,7 @@ const SpacePage = () => {
               <div className="charges-grid">
                 <div className="charge-item">
                   <span className="charge-label">2인 초과 시 1인당</span>
-                  <span className="charge-price">3,000원/시간</span>
+                  <span className="charge-price">{SPACE_PRICE.OVER_TWO.toLocaleString()}원/시간</span>
                 </div>
               </div>
             </div>

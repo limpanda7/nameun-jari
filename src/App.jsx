@@ -35,7 +35,7 @@ import ReservationLookup from './components/ReservationLookup/ReservationLookup.
 import PaymentApproval from './components/PaymentApproval/PaymentApproval.jsx';
 import PaymentCancel from './components/PaymentCancel/PaymentCancel.jsx';
 import PaymentFail from './components/PaymentFail/PaymentFail.jsx';
-import { FOREST_PRICE, BLON_PRICE, MUKHO_PRICE } from './constants/price';
+import { FOREST_PRICE, BLON_PRICE, MUKHO_PRICE, ON_OFF_PRICE, SPACE_PRICE } from './constants/price';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -78,7 +78,7 @@ function App() {
       image: forestImg,
       description: "백년의 역사를 품은 전통 한옥의 별채",
       url: "https://forest100.herokuapp.com/forest",
-      priceRange: "200,000원 ~ 300,000원"
+      priceRange: `${FOREST_PRICE.NORMAL.WEEKDAY.toLocaleString()}원 ~ ${FOREST_PRICE.NORMAL.WEEKEND.toLocaleString()}원`
     },
     {
       id: 2,
@@ -88,7 +88,7 @@ function App() {
       image: blonImg,
       description: "깊은 숲속에서 누리는 평화로운 휴식",
       url: "https://forest100.herokuapp.com/boulogne",
-      priceRange: "160,000원 ~ 300,000원"
+      priceRange: `${BLON_PRICE.NORMAL.WEEKDAY.toLocaleString()}원 ~ ${BLON_PRICE.NORMAL.HOLIDAY.toLocaleString()}원`
     },
     {
       id: 3,
@@ -98,7 +98,7 @@ function App() {
       image: onoffImg,
       description: "한적한 시골 풍경과 함께하는 단기 임대",
       url: "https://forest100.herokuapp.com/on-off",
-      priceRange: "350,000원/1주"
+      priceRange: `${ON_OFF_PRICE.RENT_PER_WEEK.toLocaleString()}원/1주`
     },
     {
       id: 4,
@@ -108,7 +108,7 @@ function App() {
       image: spaceImg,
       description: "서울 중심에서 누리는 편리한 공간 대여",
       url: "https://forest100.herokuapp.com/on-off-space",
-      priceRange: "4,000원 ~ 6,000원/시간"
+      priceRange: `${SPACE_PRICE.WEEKDAY.toLocaleString()}원 ~ ${SPACE_PRICE.WEEKEND.toLocaleString()}원/시간`
     },
     {
       id: 5,
@@ -118,7 +118,7 @@ function App() {
       image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
       description: "묵호의 아름다움을 담은 새로운 공간",
       url: "/mukho",
-      priceRange: "200,000원/1주"
+      priceRange: `${MUKHO_PRICE.RENT_PER_WEEK.toLocaleString()}원/1주`
     }
   ];
 
