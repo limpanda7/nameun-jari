@@ -291,7 +291,8 @@ function createReservationMessage(reservationData) {
     price,
     priceOption,
     checkinDate,
-    checkoutDate
+    checkoutDate,
+    paymentMethod
   } = reservationData;
 
   // 숙소 이름 매핑
@@ -344,6 +345,9 @@ function createReservationMessage(reservationData) {
   // 환불 옵션 텍스트
   const refundOption = priceOption === 'refundable' ? '환불가능' : '환불불가';
 
+  // 결제수단 텍스트
+  const paymentMethodText = paymentMethod === 'kakaopay' ? '카카오페이' : '계좌이체';
+
   // 금액 포맷팅 (천 단위 구분)
   const formattedPrice = price ? price.toLocaleString() : '0';
 
@@ -361,7 +365,9 @@ function createReservationMessage(reservationData) {
 
 인원수: ${person}명, 반려견 ${dog}마리
 
-이용금액: ${formattedPrice}`;
+이용금액: ${formattedPrice}
+
+결제수단: ${paymentMethodText}`;
   } else if (propertyType === 'space') {
     // Space는 person, purpose만 표시
     const purpose = reservationData.purpose || '미입력';
@@ -371,7 +377,9 @@ function createReservationMessage(reservationData) {
 
 사용목적: ${purpose}
 
-이용금액: ${formattedPrice}`;
+이용금액: ${formattedPrice}
+
+결제수단: ${paymentMethodText}`;
   } else {
     message += `
 
@@ -383,7 +391,9 @@ function createReservationMessage(reservationData) {
 
 이용금액: ${formattedPrice}
 
-환불옵션: ${refundOption}`;
+환불옵션: ${refundOption}
+
+결제수단: ${paymentMethodText}`;
   }
 
   return message;
@@ -648,7 +658,7 @@ exports.onOffReservation = functions.runWith({ secrets: onOffSecrets }).https.on
       res.status(200).json(reservations);
     } else if (req.method === 'POST') {
       // POST: 예약 저장 및 알림 발송
-      const { picked, name, phone, person, dog, price } = req.body;
+      const { picked, name, phone, person, dog, price, paymentMethod = 'bank' } = req.body;
 
       if (!picked || !Array.isArray(picked) || picked.length === 0) {
         return res.status(400).json({ error: '날짜를 선택해주세요.' });
@@ -682,6 +692,7 @@ exports.onOffReservation = functions.runWith({ secrets: onOffSecrets }).https.on
       const baseUrl = `https://api.telegram.org/bot${token}`;
 
       if (token && chatId) {
+        const paymentMethodText = paymentMethod === 'kakaopay' ? '카카오페이' : '계좌이체';
         const telegramMessage = `온오프스테이 신규 계약이 들어왔습니다.\n` +
           `\n` +
           `기간: ${checkinDate} ~ ${checkoutDate}\n` +
@@ -692,7 +703,9 @@ exports.onOffReservation = functions.runWith({ secrets: onOffSecrets }).https.on
           `\n` +
           `인원수: ${person || 2}명, 반려견 ${dog || 0}마리\n` +
           `\n` +
-          `이용금액: ${(price || 0).toLocaleString()}\n`;
+          `이용금액: ${(price || 0).toLocaleString()}\n` +
+          `\n` +
+          `결제수단: ${paymentMethodText}\n`;
 
         try {
           await fetch(`${baseUrl}/sendMessage`, {
