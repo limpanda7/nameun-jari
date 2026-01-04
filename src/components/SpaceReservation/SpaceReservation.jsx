@@ -357,8 +357,8 @@ const SpaceReservation = () => {
         </div>
       </section>
 
-      {/* 결제수단 선택 */}
-      <section className="payment-method-section">
+      {/* 결제수단 선택 - 당분간 숨김 */}
+      <section className="payment-method-section" style={{ display: 'none' }}>
         <h2>결제수단 선택</h2>
         <div className="price-option-group">
           <label className="radio-label">
