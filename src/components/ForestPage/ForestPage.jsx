@@ -522,8 +522,8 @@ const ForestPage = () => {
               <h3>추가 요금</h3>
               <div className="charges-grid four-items">
                 <div className="charge-item">
-                  <span className="charge-label">2인 초과 시</span>
-                  <span className="charge-price">1인당 {FOREST_PRICE.OVER_TWO.toLocaleString()}원/박</span>
+                  <span className="charge-label">4인 초과 시</span>
+                  <span className="charge-price">1인당 {FOREST_PRICE.OVER_FOUR.toLocaleString()}원/박</span>
                   <span className="charge-note">(추가침구 제공)</span>
                 </div>
                 <div className="charge-item">
@@ -544,7 +544,7 @@ const ForestPage = () => {
           <div className="pricing-info">
             <div className="info-item">
               <span className="info-label">기준인원</span>
-              <span className="info-value">2인 (최대 6인 + 반려견 2마리)</span>
+              <span className="info-value">4인 (최대 6인 + 반려견 2마리)</span>
             </div>
             <div className="info-item">
               <span className="info-label">체크인/아웃</span>

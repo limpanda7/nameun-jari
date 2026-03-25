@@ -464,7 +464,7 @@ function App() {
           maxPerson={6}
           maxBaby={4}
           maxDog={2}
-          basePerson={2}
+          basePerson={4}
           bankAccount="카카오 79420205681 남은비"
         />
       } />

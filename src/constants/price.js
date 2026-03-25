@@ -11,7 +11,7 @@ export const FOREST_PRICE = {
     WEEKEND: 250000,
     HOLIDAY: 250000,
   },
-  OVER_TWO: 20000,
+  OVER_FOUR: 20000,
   DOG: 30000,
   BARBECUE: 30000,
 };

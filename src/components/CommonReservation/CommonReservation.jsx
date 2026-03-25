@@ -122,9 +122,9 @@ const CommonReservation = ({
         totalPrice += dogPrice;
       }
     } else {
-      // 백년한옥별채: 2인 초과 기준
-      if (person > 2) {
-        const overPersonPrice = priceConfig.OVER_TWO * (person - 2) * calculatedDays;
+      // 백년한옥별채: 4인 초과 기준
+      if (person > 4) {
+        const overPersonPrice = priceConfig.OVER_FOUR * (person - 4) * calculatedDays;
         totalPrice += overPersonPrice;
       }
 
@@ -354,8 +354,8 @@ const CommonReservation = ({
     );
   }
 
-  const overPersonKey = propertyType === 'forest' ? 'OVER_TWO' : 'OVER_FOUR';
-  const overPersonThreshold = propertyType === 'forest' ? 2 : 4;
+  const overPersonKey = propertyType === 'forest' ? 'OVER_FOUR' : 'OVER_FOUR';
+  const overPersonThreshold = propertyType === 'forest' ? 4 : 4;
 
   return (
     <div className="common-reservation">
@@ -537,8 +537,8 @@ const CommonReservation = ({
                 <p><b>인원초과:</b> {priceConfig.OVER_FOUR.toLocaleString()}원 x {overPerson}명 x {days}박</p>
               );
             })()}
-            {propertyType === 'forest' && person > 2 && (
-              <p><b>인원초과:</b> {priceConfig.OVER_TWO.toLocaleString()}원 x {person - 2}명 x {days}박</p>
+            {propertyType === 'forest' && person > 4 && (
+              <p><b>인원초과:</b> {priceConfig.OVER_FOUR.toLocaleString()}원 x {person - 4}명 x {days}박</p>
             )}
             {dog > 0 && (
               <p><b>반려견:</b> {priceConfig.DOG.toLocaleString()}원 x {dog}마리 x {days}박</p>
