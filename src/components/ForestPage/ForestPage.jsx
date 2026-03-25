@@ -495,19 +495,22 @@ const ForestPage = () => {
                 <thead>
                   <tr>
                     <th>구분</th>
-                    <th>평일</th>
-                    <th>주말, 공휴일</th>
+                    <th>일~목</th>
+                    <th>금</th>
+                    <th>토, 공휴일</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>성수기(7-8월)</td>
                     <td>{FOREST_PRICE.SUMMER.WEEKDAY.toLocaleString()}원</td>
+                    <td>{FOREST_PRICE.SUMMER.FRIDAY.toLocaleString()}원</td>
                     <td>{FOREST_PRICE.SUMMER.WEEKEND.toLocaleString()}원</td>
                   </tr>
                   <tr>
                     <td>비성수기</td>
                     <td>{FOREST_PRICE.NORMAL.WEEKDAY.toLocaleString()}원</td>
+                    <td>{FOREST_PRICE.NORMAL.FRIDAY.toLocaleString()}원</td>
                     <td>{FOREST_PRICE.NORMAL.WEEKEND.toLocaleString()}원</td>
                   </tr>
                 </tbody>

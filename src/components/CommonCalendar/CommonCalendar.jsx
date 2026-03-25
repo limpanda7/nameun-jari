@@ -112,13 +112,15 @@ const CommonCalendar = ({ propertyType, title, backPath, reservationPath }) => {
           }
         }
       } else {
-        // 백년한옥별채 (forest): 평일/주말 구분만
+        // 백년한옥별채 (forest): 비성수기 금요일 요금 분리
         const prices = isSummer(date) ? priceConfig.SUMMER : priceConfig.NORMAL;
 
         if (isHoliday(date)) {
           dayPrice = prices.HOLIDAY;
         } else if (isWeekday(date)) {
           dayPrice = prices.WEEKDAY;
+        } else if (isFriday(date)) {
+          dayPrice = prices.FRIDAY;
         } else {
           dayPrice = prices.WEEKEND;
         }
