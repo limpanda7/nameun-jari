@@ -255,7 +255,9 @@ body {
   margin-bottom: 1.5rem;
   font-style: italic;
   position: relative;
+  text-align: center;
   padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .quote-text::before {
@@ -269,10 +271,22 @@ body {
   line-height: 1;
 }
 
+.quote-text::after {
+  content: '"';
+  position: absolute;
+  right: 0;
+  top: -0.5rem;
+  font-size: 3rem;
+  color: #d4a574;
+  font-family: serif;
+  line-height: 1;
+}
+
 .host-signature {
   border-top: 2px solid #d4a574;
   padding-top: 1.5rem;
   margin-top: 2rem;
+  text-align: center;
 }
 
 .host-name {
@@ -408,9 +422,13 @@ body {
 
 .spaces-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2rem;
-  justify-items: center;
+  justify-items: stretch;
+  width: 100%;
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .space-card {
@@ -530,6 +548,7 @@ body {
   margin-bottom: 0.5rem;
   line-height: 1.5;
   flex: 1;
+  white-space: pre-line;
 }
 
 .space-meta {
@@ -556,6 +575,36 @@ body {
   font-size: 1.2rem;
   font-weight: 700;
   color: #d4a574;
+}
+
+/* 메인 랜딩만: 넓은 화면에서 숙소 카드 좌우 배치 (2×2 그리드는 .spaces-grid) */
+@media (min-width: 769px) {
+  .spaces .spaces-grid .space-card {
+    flex-direction: row;
+    align-items: stretch;
+    max-width: none;
+    min-height: 220px;
+  }
+
+  .spaces .spaces-grid .space-image {
+    flex: 0 0 42%;
+    width: 42%;
+    max-width: none;
+    min-width: 0;
+    height: auto;
+    align-self: stretch;
+  }
+
+  .spaces .spaces-grid .space-image img {
+    height: 100%;
+    min-height: 220px;
+  }
+
+  .spaces .spaces-grid .space-info {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
 }
 
 .coming-soon-badge {
@@ -828,6 +877,7 @@ body {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     justify-items: center;
+    max-width: none;
   }
 
   .space-card {
@@ -838,6 +888,24 @@ body {
   .space-image {
     height: 200px;
     width: 100%;
+  }
+
+  /* 메인: 모바일은 이미지 위·텍스트 아래 유지 */
+  .spaces .spaces-grid .space-card {
+    flex-direction: column;
+  }
+
+  .spaces .spaces-grid .space-image {
+    flex: none;
+    width: 100%;
+    height: 200px;
+    min-height: unset;
+    align-self: auto;
+  }
+
+  .spaces .spaces-grid .space-image img {
+    min-height: unset;
+    height: 100%;
   }
 
   .features,
@@ -867,6 +935,33 @@ body {
     text-align: center;
   }
 
+  /* 인용문을 서명·프로필 이미지 아래로 배치 */
+  .host-message-text {
+    display: contents;
+  }
+
+  .host-message-text > h2 {
+    order: 1;
+  }
+
+  .host-message-text > .host-signature {
+    order: 2;
+    margin-top: 0;
+  }
+
+  .host-message-image {
+    order: 3;
+  }
+
+  .host-message-text > .message-quote {
+    order: 4;
+    margin-bottom: 0;
+  }
+
+  .host-message-text > .message-quote .quote-text {
+    margin-bottom: 0;
+  }
+
   .host-message-text h2 {
     text-align: center;
     font-size: 2rem;
@@ -875,6 +970,12 @@ body {
   .quote-text {
     font-size: 1rem;
     padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .quote-text::before,
+  .quote-text::after {
+    font-size: 2.25rem;
   }
 
   .host-image {
@@ -983,6 +1084,7 @@ body {
     grid-template-columns: 1fr;
     gap: 1rem;
     justify-items: center;
+    max-width: none;
   }
 
   .space-card {
@@ -993,6 +1095,10 @@ body {
   .space-image {
     height: 180px;
     width: 100%;
+  }
+
+  .spaces .spaces-grid .space-image {
+    height: 180px;
   }
 
   .space-info {
@@ -1050,7 +1156,13 @@ body {
   .quote-text {
     font-size: 0.95rem;
     padding-left: 1rem;
+    padding-right: 1rem;
     line-height: 1.6;
+  }
+
+  .quote-text::before,
+  .quote-text::after {
+    font-size: 2rem;
   }
 
   .host-image {

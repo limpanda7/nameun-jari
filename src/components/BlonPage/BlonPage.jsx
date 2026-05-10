@@ -457,7 +457,7 @@ const BlonPage = () => {
             {/* Additional Charges */}
             <div className="additional-charges">
               <h3>추가 요금</h3>
-              <div className="charges-grid">
+              <div className="charges-grid blon-charges-grid">
                 <div className="charge-item">
                   <span className="charge-label">4인 초과 시 1인당</span>
                   <span className="charge-price">1박 {BLON_PRICE.OVER_FOUR.toLocaleString()}원</span>
@@ -469,6 +469,11 @@ const BlonPage = () => {
                 <div className="charge-item">
                   <span className="charge-label">바베큐 이용요금</span>
                   <span className="charge-price">{BLON_PRICE.BARBECUE.toLocaleString()}원</span>
+                </div>
+                <div className="charge-item">
+                  <span className="charge-label">불멍</span>
+                  <span className="charge-price">{BLON_PRICE.FIRE_PIT.toLocaleString()}원</span>
+                  <span className="charge-note">(예약 시 신청)</span>
                 </div>
               </div>
             </div>

@@ -519,7 +519,9 @@
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
+  border: 2px solid #b8a99a;
+  border-collapse: collapse;
+  border-spacing: 0;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   table-layout: fixed;
 }
@@ -528,7 +530,8 @@
 .pricing-table td {
   padding: 1rem;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #9a8b7a;
+  box-sizing: border-box;
 }
 
 .pricing-table th {
@@ -542,6 +545,15 @@
   font-size: 1.1rem;
   font-weight: 500;
   color: #333;
+}
+
+/* 헤더와 본문 사이 한 줄 더 진하게 */
+.pricing-table thead th {
+  border-bottom: 2px solid #7d6f62;
+}
+
+.pricing-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .peak-season-period {
@@ -575,6 +587,12 @@
   margin: 0 auto;
 }
 
+.forest-page .forest-charges-grid,
+.blon-page .blon-charges-grid {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  max-width: 960px;
+}
+
 .charge-item {
   background: white;
   border-radius: 12px;
@@ -600,7 +618,7 @@
 
 .charge-price {
   display: block;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: #d4a574;

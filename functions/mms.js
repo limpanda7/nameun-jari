@@ -1,4 +1,4 @@
-const forestMMS = (picked, person, baby, dog, barbecue, price, reservationNumber, paymentMethod) => {
+const forestMMS = (picked, person, baby, dog, barbecue, firePit, price, reservationNumber, paymentMethod) => {
   const depositInfo = paymentMethod === 'kakaopay' ? '' :
     `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
     '3시간 내 입금 시 예약 확정됩니다.\n' +
@@ -15,6 +15,7 @@ const forestMMS = (picked, person, baby, dog, barbecue, price, reservationNumber
     `-체크아웃: ${picked[picked.length - 1]}\n` +
     `-인원: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리\n` +
     `-바베큐 이용여부: ${barbecue}\n` +
+    `-불멍 이용여부: ${firePit === 'Y' ? 'Y' : 'N'}\n` +
     '\n' +
     '아래는 숙소 안내사항입니다.\n' +
     '꼼꼼하게 읽어주시길 부탁드립니다!\n' +
@@ -103,7 +104,7 @@ const onOffMMS = (picked, person, dog, price, reservationNumber, paymentMethod) 
     '※ 문의는 카카오톡(skfk1600) 또는 DM(on.offstay)으로 부탁드립니다.';
 }
 
-const blonMMS = (picked, person, baby, dog, barbecue, price, reservationNumber, paymentMethod) => {
+const blonMMS = (picked, person, baby, dog, barbecue, firePit, price, reservationNumber, paymentMethod) => {
   const depositInfo = paymentMethod === 'kakaopay' ? '' :
     `입금하실 금액은 ${price.toLocaleString()}원 입니다.\n` +
     '3시간 내 입금 시 예약 확정됩니다.\n' +
@@ -158,7 +159,8 @@ const blonMMS = (picked, person, baby, dog, barbecue, price, reservationNumber, 
     `-체크인: ${picked[0]}\n` +
     `-체크아웃: ${picked[picked.length - 1]}\n` +
     `-인원: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리\n` +
-    `-바베큐 이용여부: ${barbecue}`;
+    `-바베큐 이용여부: ${barbecue}\n` +
+    `-불멍 이용여부: ${firePit === 'Y' ? 'Y' : 'N'}`;
 }
 
 const spaceMMS = (date, time, person, purpose, price, reservationNumber, paymentMethod) => {

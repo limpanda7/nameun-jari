@@ -59,7 +59,7 @@ const TermsPage = () => {
             </ol>
           </div>
 
-          <div className="terms-section">
+          <div className="terms-section" id="refund-policy">
             <h2>제4조 (취소 및 환불규정)</h2>
             <ol>
               <li>
@@ -67,7 +67,7 @@ const TermsPage = () => {
               </li>
               <li>
                 환불 기준은 다음과 같습니다.
-                <ul>
+                <ul className="terms-refund-criteria">
                   <li>체크인 30일 이상 전 취소: 전액 환불</li>
                   <li>체크인 7~30일 전 취소: 숙박요금의 50% 환불</li>
                   <li>체크인 7일 미만 전 취소: 환불 불가</li>
@@ -110,9 +110,9 @@ const TermsPage = () => {
               <li>숙소 비품을 무단 이동·훼손하거나 외부로 반출한 경우</li>
               <li>숙소 시설을 상업적 촬영·행사·파티 등 사전 승인되지 않은 용도로 사용하는 경우</li>
             </ol>
-            <div className="terms-note">
+            <p>
               ※ 위 사유로 퇴실 조치되는 경우, 환불은 불가하며 손해배상이 청구될 수 있습니다.
-            </div>
+            </p>
           </div>
 
           <div className="terms-section">

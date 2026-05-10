@@ -361,6 +361,11 @@ const Admin = () => {
               </div>
               <div style={modalStyle.info}>추가침구: {selected.bedding || 0}개</div>
               <div style={modalStyle.info}>바베큐 이용여부: {selected.barbecue === 'Y' ? '예' : '아니오'}</div>
+              {(target === 'forest' || target === 'blon') && (
+                <div style={modalStyle.info}>
+                  불멍 이용여부: {selected.fire_pit === 'Y' ? '예' : '아니오'}
+                </div>
+              )}
               <div style={modalStyle.info}>
                 이용금액: {selected.price ? selected.price.toLocaleString() : 0}원
               </div>

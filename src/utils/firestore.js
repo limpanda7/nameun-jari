@@ -160,6 +160,7 @@ export const saveReservation = async (propertyType, reservationData) => {
       dog: reservationData.dog || 0,
       bedding: reservationData.bedding || 0,
       barbecue: reservationData.barbecue || 'N',
+      fire_pit: reservationData.fire_pit || reservationData.firePit || 'N',
       price: reservationData.price || 0,
       price_option: reservationData.priceOption || 'refundable',
       checkin_date: checkinDate,

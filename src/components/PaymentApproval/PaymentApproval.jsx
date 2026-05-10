@@ -111,6 +111,7 @@ const PaymentApproval = () => {
             dog: reservationData.dog,
             bedding: reservationData.bedding || 0,
             barbecue: reservationData.barbecue || 'N',
+            fire_pit: reservationData.fire_pit || 'N',
             price: reservationData.price,
             priceOption: reservationData.priceOption || 'refundable'
           });
@@ -133,6 +134,7 @@ const PaymentApproval = () => {
                   dog: reservationData.dog,
                   bedding: reservationData.bedding || 0,
                   barbecue: reservationData.barbecue || 'N',
+                  fire_pit: reservationData.fire_pit || 'N',
                   price: reservationData.price,
                   priceOption: reservationData.priceOption || 'refundable',
                   checkinDate,

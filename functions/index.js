@@ -288,6 +288,7 @@ function createReservationMessage(reservationData) {
     dog,
     bedding,
     barbecue,
+    fire_pit,
     price,
     priceOption,
     checkinDate,
@@ -387,7 +388,9 @@ function createReservationMessage(reservationData) {
 
 추가침구: ${bedding}개
 
-바베큐 이용여부: ${barbecue === 'Y' ? 'Y' : 'N'}
+바베큐 이용여부: ${barbecue === 'Y' ? 'Y' : 'N'}${propertyType === 'forest' || propertyType === 'blon' ? `
+
+불멍 이용여부: ${fire_pit === 'Y' ? 'Y' : 'N'}` : ''}
 
 이용금액: ${formattedPrice}
 
@@ -410,6 +413,7 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
     dog,
     bedding,
     barbecue,
+    fire_pit,
     price,
     checkinDate,
     checkoutDate,
@@ -426,9 +430,9 @@ async function sendMMS(reservationData, chatId, token, baseUrl) {
   const picked = [checkinDate, checkoutDate]; // 날짜 배열 형식으로 변환
 
   if (propertyType === 'forest') {
-    mmsBody = forestMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price, reservationNumber, paymentMethod);
+    mmsBody = forestMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', fire_pit || 'N', price, reservationNumber, paymentMethod);
   } else if (propertyType === 'blon') {
-    mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', price, reservationNumber, paymentMethod);
+    mmsBody = blonMMS(picked, person, baby || 0, dog || 0, barbecue || 'N', fire_pit || 'N', price, reservationNumber, paymentMethod);
   } else if (propertyType === 'on_off') {
     mmsBody = onOffMMS(picked, person, dog || 0, price, reservationNumber, paymentMethod);
   } else if (propertyType === 'mukho') {
@@ -875,14 +879,18 @@ exports.confirmReservation = functions.runWith({ secrets }).https.onRequest(asyn
     const baby = reservationData.baby || 0;
     const dog = reservationData.dog || 0;
     const barbecue = reservationData.barbecue || 'N';
+    const fire_pit = reservationData.fire_pit || 'N';
 
     // 확정 메시지 생성
+    const firePitConfirmLine = propertyType === 'forest' || propertyType === 'blon' ? `\n불멍 이용여부: ${fire_pit}` : '';
+
     const confirmMessage = '입금 확인되어 예약이 확정되었습니다.\n\n' +
       '[예약정보]\n' +
       `체크인: ${checkinDate}\n` +
       `체크아웃: ${checkoutDate}\n` +
       `인원: ${person}명, 영유아 ${baby}명, 반려견 ${dog}마리\n` +
-      `바베큐 이용여부: ${barbecue}`;
+      `바베큐 이용여부: ${barbecue}` +
+      firePitConfirmLine;
 
     // 전화번호 정규화 (하이픈 제거)
     const normalizedPhone = phone.replace(/[^0-9]/g, '');

@@ -40,6 +40,25 @@ export const isHoliday = (date) => {
   return HOLIDAYS.includes(date);
 }
 
+/** 백년한옥별채 1박 요금 (YYYY-MM-DD) */
+export const getForestDayPrice = (forestPrice, dateStr) => {
+  const month = dateStr.slice(5, 7);
+  const day = parseInt(dateStr.slice(8, 10), 10);
+
+  if ((month === '07' && day >= 26) || (month === '08' && day <= 8)) {
+    return forestPrice.SUPER_PEAK_FLAT;
+  }
+  if (month === '07' || month === '08') {
+    return forestPrice.SUMMER_FLAT;
+  }
+
+  const n = forestPrice.NORMAL;
+  if (isHoliday(dateStr)) return n.HOLIDAY;
+  if (isWeekday(dateStr)) return n.WEEKDAY;
+  if (isFriday(dateStr)) return n.FRIDAY;
+  return n.WEEKEND;
+};
+
 export const getBlonSpecialDatePrice = (date) => {
   return BLON_SPECIAL_DATES[date] || null;
 }

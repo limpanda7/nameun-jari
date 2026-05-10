@@ -1,19 +1,18 @@
 export const FOREST_PRICE = {
   NORMAL: {
-    WEEKDAY: 140000,
-    FRIDAY: 180000,
+    WEEKDAY: 150000,
+    FRIDAY: 200000,
     WEEKEND: 250000,
     HOLIDAY: 250000,
   },
-  SUMMER: {
-    WEEKDAY: 250000,
-    FRIDAY: 250000,
-    WEEKEND: 250000,
-    HOLIDAY: 250000,
-  },
-  OVER_FOUR: 20000,
+  /** 7~8월 성수기(극성수기 구간 제외) — 요일 무관 1박 요금 */
+  SUMMER_FLAT: 250000,
+  /** 매년 7/26 ~ 8/8 극성수기 — 요일 무관 1박 요금 */
+  SUPER_PEAK_FLAT: 300000,
+  OVER_FOUR: 30000,
   DOG: 30000,
   BARBECUE: 30000,
+  FIRE_PIT: 15000,
 };
 
 export const ON_OFF_PRICE = {
@@ -39,6 +38,7 @@ export const BLON_PRICE = {
   OVER_FOUR: 15000,
   DOG: 30000,
   BARBECUE: 20000,
+  FIRE_PIT: 15000,
 };
 
 // 블로뉴숲 특수일 가격

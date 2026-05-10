@@ -9,7 +9,7 @@ import logoImg from './assets/landing/logo.png';
 import forestImg from './assets/landing/forest.webp';
 import blonImg from './assets/landing/blon.png';
 import onoffImg from './assets/landing/onoff.png';
-import spaceImg from './assets/landing/space.png';
+// import spaceImg from './assets/landing/space.png';
 import eunjinImg from './assets/landing/eunjin.jpeg';
 import jebokImg from './assets/landing/jebok.jpeg';
 import appleBackgroundImg from './assets/apple/background.jpg';
@@ -22,20 +22,20 @@ import OnOffPage from './components/OnOffPage/OnOffPage.jsx';
 import OnOffCalendar from './components/OnOffCalendar/OnOffCalendar.jsx';
 import MukhoCalendar from './components/MukhoCalendar/MukhoCalendar.jsx';
 import OnOffReservation from './components/OnOffReservation/OnOffReservation.jsx';
-import SpacePage from './components/SpacePage/SpacePage.jsx';
-import SpaceCalendar from './components/SpaceCalendar/SpaceCalendar.jsx';
-import SpaceReservation from './components/SpaceReservation/SpaceReservation.jsx';
+// import SpacePage from './components/SpacePage/SpacePage.jsx';
+// import SpaceCalendar from './components/SpaceCalendar/SpaceCalendar.jsx';
+// import SpaceReservation from './components/SpaceReservation/SpaceReservation.jsx';
 import MukhoPage from './components/MukhoPage/MukhoPage.jsx';
 import MukhoReservation from './components/MukhoReservation/MukhoReservation.jsx';
 import CommonFooter from './components/CommonFooter/CommonFooter.jsx';
-import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
+// import NPSSurvey from './components/NPSSurvey/NPSSurvey.jsx';
 import TermsPage from './components/TermsPage/TermsPage.jsx';
 import Admin from './components/Admin/Admin.jsx';
 import ReservationLookup from './components/ReservationLookup/ReservationLookup.jsx';
 import PaymentApproval from './components/PaymentApproval/PaymentApproval.jsx';
 import PaymentCancel from './components/PaymentCancel/PaymentCancel.jsx';
 import PaymentFail from './components/PaymentFail/PaymentFail.jsx';
-import { FOREST_PRICE, BLON_PRICE, MUKHO_PRICE, ON_OFF_PRICE, SPACE_PRICE } from './constants/price';
+import { FOREST_PRICE, BLON_PRICE, MUKHO_PRICE, ON_OFF_PRICE } from './constants/price';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -76,9 +76,9 @@ function App() {
       location: "동해",
       type: "숙소",
       image: forestImg,
-      description: "백년의 역사를 품은 전통 한옥의 별채",
+      description: "백년의 역사를 품은\n전통 한옥의 별채",
       url: "https://forest100.herokuapp.com/forest",
-      priceRange: `${FOREST_PRICE.NORMAL.WEEKDAY.toLocaleString()}원 ~ ${FOREST_PRICE.NORMAL.WEEKEND.toLocaleString()}원`
+      priceRange: `${FOREST_PRICE.NORMAL.WEEKDAY.toLocaleString()}원 ~ ${FOREST_PRICE.SUPER_PEAK_FLAT.toLocaleString()}원`
     },
     {
       id: 2,
@@ -86,7 +86,7 @@ function App() {
       location: "포천",
       type: "숙소",
       image: blonImg,
-      description: "깊은 숲속에서 누리는 평화로운 휴식",
+      description: "깊은 숲속에서 누리는\n평화로운 휴식",
       url: "https://forest100.herokuapp.com/boulogne",
       priceRange: `${BLON_PRICE.NORMAL.WEEKDAY.toLocaleString()}원 ~ ${BLON_PRICE.NORMAL.HOLIDAY.toLocaleString()}원`
     },
@@ -96,27 +96,27 @@ function App() {
       location: "동해",
       type: "단기임대",
       image: onoffImg,
-      description: "한적한 시골 풍경과 함께하는 단기 임대",
+      description: "시골 풍경과 함께하는\n한적한 공간",
       url: "https://forest100.herokuapp.com/on-off",
       priceRange: `${ON_OFF_PRICE.RENT_PER_WEEK.toLocaleString()}원/1주`
     },
-    {
-      id: 4,
-      name: "온오프스페이스",
-      location: "서울",
-      type: "공간대여",
-      image: spaceImg,
-      description: "서울 중심에서 누리는 편리한 공간 대여",
-      url: "https://forest100.herokuapp.com/on-off-space",
-      priceRange: `${SPACE_PRICE.WEEKDAY.toLocaleString()}원 ~ ${SPACE_PRICE.WEEKEND.toLocaleString()}원/시간`
-    },
+    // {
+    //   id: 4,
+    //   name: "온오프스페이스",
+    //   location: "서울",
+    //   type: "공간대여",
+    //   image: spaceImg,
+    //   description: "서울 중심에서 누리는 편리한 공간 대여",
+    //   url: "https://forest100.herokuapp.com/on-off-space",
+    //   priceRange: `${SPACE_PRICE.WEEKDAY.toLocaleString()}원 ~ ${SPACE_PRICE.WEEKEND.toLocaleString()}원/시간`
+    // },
     {
       id: 5,
       name: "묵호쉴래",
       location: "동해",
       type: "숙소",
       image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-      description: "묵호의 아름다움을 담은 새로운 공간",
+      description: "묵호의 아름다움을\n만날 수 있는 공간",
       url: "/mukho",
       priceRange: `${MUKHO_PRICE.RENT_PER_WEEK.toLocaleString()}원/1주`
     }
@@ -172,7 +172,7 @@ function App() {
                 <button className="nav-btn-mobile" onClick={() => { navigate('/forest'); setIsMenuOpen(false); }}>백년한옥별채</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/blon'); setIsMenuOpen(false); }}>블로뉴숲</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/on-off'); setIsMenuOpen(false); }}>온오프스테이</button>
-                <button className="nav-btn-mobile" onClick={() => { navigate('/space'); setIsMenuOpen(false); }}>온오프스페이스</button>
+                {/* <button className="nav-btn-mobile" onClick={() => { navigate('/space'); setIsMenuOpen(false); }}>온오프스페이스</button> */}
                 <button className="nav-btn-mobile" onClick={() => { navigate('/mukho'); setIsMenuOpen(false); }}>묵호쉴래</button>
               </nav>
 
@@ -272,8 +272,6 @@ function App() {
                         navigate('/blon');
                       } else if (space.id === 3) {
                         navigate('/on-off');
-                      } else if (space.id === 4) {
-                        navigate('/space');
                       } else if (space.id === 5) {
                         navigate('/mukho');
                       } else if (space.url) {
@@ -404,12 +402,6 @@ function App() {
                       단순한 숙박이나 이용을 넘어서,
                       각 공간에서 휴식하거나 생산적인 활동을 하면서
                       그 공간만의 고유한 가치를 발견할 수 있도록 돕고 싶습니다.
-                    </p>
-                    <p className="quote-text">
-                      백년 한옥에서의 평화로운 휴식, 숲속에서의 창작 활동,
-                      도시 한가운데서의 집중된 작업 시간까지.
-                      각 공간마다 고유한 이야기와 정성이 담겨있어
-                      여러분이 그 공간의 진정한 가치를 찾아낼 수 있도록 합니다.
                       당신을 위해 남은 자리에서, 특별한 순간을 만들어가세요.
                     </p>
                   </div>
@@ -493,10 +485,10 @@ function App() {
       <Route path="/on-off" element={<OnOffPage />} />
       <Route path="/on-off/calendar" element={<OnOffCalendar />} />
       <Route path="/on-off/reservation" element={<OnOffReservation />} />
-      <Route path="/space" element={<SpacePage />} />
-      <Route path="/space/calendar" element={<SpaceCalendar />} />
-      <Route path="/space/reservation" element={<SpaceReservation />} />
-      <Route path="/space/survey" element={<NPSSurvey />} />
+      {/* <Route path="/space" element={<SpacePage />} /> */}
+      {/* <Route path="/space/calendar" element={<SpaceCalendar />} /> */}
+      {/* <Route path="/space/reservation" element={<SpaceReservation />} /> */}
+      {/* <Route path="/space/survey" element={<NPSSurvey />} /> */}
       <Route path="/mukho" element={<MukhoPage />} />
       <Route path="/mukho/calendar" element={<MukhoCalendar />} />
       <Route path="/mukho/reservation" element={<MukhoReservation />} />

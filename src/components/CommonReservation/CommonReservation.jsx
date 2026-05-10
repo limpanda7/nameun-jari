@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { FOREST_PRICE, BLON_PRICE } from '../../constants/price';
-import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDateWithDay, getBlonSpecialDatePrice, formatDate } from '../../utils/date';
+import { isFriday, isHoliday, isSummer, isWeekday, isSaturday, formatDateWithDay, getBlonSpecialDatePrice, formatDate, getForestDayPrice } from '../../utils/date';
 import { saveReservation as saveReservationToFirestore } from '../../utils/firestore';
 import LoadingOverlay from '../LoadingOverlay/LoadingOverlay';
 import kakaopayIcon from '../../assets/kakaopay/payment_icon_yellow_small.png';
@@ -28,6 +28,7 @@ const CommonReservation = ({
   const [baby, setBaby] = useState(0);
   const [dog, setDog] = useState(0);
   const [barbecue, setBarbecue] = useState('N');
+  const [firePit, setFirePit] = useState('N');
   const [basePrice, setBasePrice] = useState(0);
   const [price, setPrice] = useState(0);
   const [priceOption, setPriceOption] = useState('refundable');
@@ -42,7 +43,7 @@ const CommonReservation = ({
 
   useEffect(() => {
     calcPrice();
-  }, [person, dog, barbecue, priceOption, picked]);
+  }, [person, dog, barbecue, firePit, priceOption, picked, propertyType]);
 
   const calcPrice = () => {
     let tempBasePrice = 0;
@@ -85,18 +86,7 @@ const CommonReservation = ({
           }
         }
       } else {
-        // 백년한옥별채 (forest): 비성수기 금요일 요금 분리
-        const prices = isSummer(date) ? priceConfig.SUMMER : priceConfig.NORMAL;
-
-        if (isHoliday(date)) {
-          dayPrice = prices.HOLIDAY;
-        } else if (isWeekday(date)) {
-          dayPrice = prices.WEEKDAY;
-        } else if (isFriday(date)) {
-          dayPrice = prices.FRIDAY;
-        } else {
-          dayPrice = prices.WEEKEND;
-        }
+        dayPrice = getForestDayPrice(priceConfig, date);
       }
 
       tempBasePrice += dayPrice;
@@ -138,6 +128,10 @@ const CommonReservation = ({
     // 바베큐 요금
     if (barbecue === 'Y') {
       totalPrice += priceConfig.BARBECUE;
+    }
+
+    if ((propertyType === 'forest' || propertyType === 'blon') && firePit === 'Y' && priceConfig.FIRE_PIT) {
+      totalPrice += priceConfig.FIRE_PIT;
     }
 
     // 환불불가 할인
@@ -186,7 +180,7 @@ const CommonReservation = ({
           try {
             // ready API와 approve API에서 동일한 partner_order_id 사용
             const partnerOrderId = `order_${Date.now()}_${propertyType}`;
-            
+
             const kakaoPayResponse = await fetch('/api/kakaopay/ready', {
               method: 'POST',
               headers: {
@@ -224,6 +218,7 @@ const CommonReservation = ({
               dog,
               bedding: person > 4 ? 1 : 0,
               barbecue,
+              fire_pit: propertyType === 'forest' || propertyType === 'blon' ? firePit : 'N',
               price,
               priceOption,
               picked,
@@ -274,6 +269,7 @@ const CommonReservation = ({
             dog,
             bedding,
             barbecue,
+            fire_pit: propertyType === 'forest' || propertyType === 'blon' ? firePit : 'N',
             price,
             priceOption
           });
@@ -297,6 +293,7 @@ const CommonReservation = ({
                   dog,
                   bedding,
                   barbecue,
+                  fire_pit: propertyType === 'forest' || propertyType === 'blon' ? firePit : 'N',
                   price,
                   priceOption,
                   checkinDate,
@@ -465,9 +462,9 @@ const CommonReservation = ({
 
         </section>
 
-        {/* 바베큐 선택 */}
+        {/* 바베큐 이용여부 */}
         <section className="barbecue-option-section">
-          <h2>바베큐 선택</h2>
+          <h2>바베큐 이용여부</h2>
           <div className="price-option-group">
             <label className="radio-label">
               <input
@@ -491,6 +488,34 @@ const CommonReservation = ({
             </label>
           </div>
         </section>
+
+        {(propertyType === 'forest' || propertyType === 'blon') && (
+          <section className="barbecue-option-section">
+            <h2>불멍 이용여부</h2>
+            <div className="price-option-group">
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="firePit"
+                  value="Y"
+                  checked={firePit === 'Y'}
+                  onChange={(e) => setFirePit(e.target.value)}
+                />
+                <span>예</span>
+              </label>
+              <label className="radio-label">
+                <input
+                  type="radio"
+                  name="firePit"
+                  value="N"
+                  checked={firePit === 'N'}
+                  onChange={(e) => setFirePit(e.target.value)}
+                />
+                <span>아니오</span>
+              </label>
+            </div>
+          </section>
+        )}
 
         {/* 가격 옵션 */}
         <section className="price-option-section">
@@ -519,7 +544,7 @@ const CommonReservation = ({
           </div>
           {priceOption === 'refundable' && (
             <p className="price-option-notice">
-              환불 요청 시 <a href="/terms" target="_blank" rel="noopener noreferrer">이용약관</a> 기준에 따라 처리됩니다.
+              환불 요청 시 <a href="/terms#refund-policy" target="_blank" rel="noopener noreferrer">이용약관</a> 기준에 따라 처리됩니다.
             </p>
           )}
         </section>
@@ -545,6 +570,9 @@ const CommonReservation = ({
             )}
             {barbecue === 'Y' && (
               <p><b>바베큐:</b> {priceConfig.BARBECUE.toLocaleString()}원</p>
+            )}
+            {(propertyType === 'forest' || propertyType === 'blon') && firePit === 'Y' && priceConfig.FIRE_PIT != null && (
+              <p><b>불멍:</b> {priceConfig.FIRE_PIT.toLocaleString()}원</p>
             )}
             {discount > 0 && (
               <p><b>환불불가 할인:</b> -{Math.floor(discount).toLocaleString()}원</p>
@@ -576,9 +604,9 @@ const CommonReservation = ({
               />
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 카카오페이
-                <img 
-                  src={kakaopayIcon} 
-                  alt="카카오페이" 
+                <img
+                  src={kakaopayIcon}
+                  alt="카카오페이"
                   style={{ width: '50px' }}
                 />
               </span>

@@ -58,7 +58,7 @@ const ForestPage = () => {
   useEffect(() => {
     // Vite에서 import한 이미지는 빌드 시 절대 경로로 변환되므로, 이미 절대 경로인지 확인
     const ogImageUrl = forest1.startsWith('http') ? forest1 : new URL(forest1, window.location.origin).href;
-    
+
     // OG 이미지 메타 태그 업데이트
     let ogImageMeta = document.querySelector('meta[property="og:image"]');
     if (!ogImageMeta) {
@@ -208,7 +208,7 @@ const ForestPage = () => {
 
       {/* Hero Section */}
       <section className="forest-hero">
-        <div 
+        <div
           className="forest-hero-background"
           style={{ backgroundImage: `url(${forest1})` }}
         ></div>
@@ -502,16 +502,18 @@ const ForestPage = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>성수기(7-8월)</td>
-                    <td>{FOREST_PRICE.SUMMER.WEEKDAY.toLocaleString()}원</td>
-                    <td>{FOREST_PRICE.SUMMER.FRIDAY.toLocaleString()}원</td>
-                    <td>{FOREST_PRICE.SUMMER.WEEKEND.toLocaleString()}원</td>
+                    <td>비수기</td>
+                    <td>{FOREST_PRICE.NORMAL.WEEKDAY.toLocaleString()}</td>
+                    <td>{FOREST_PRICE.NORMAL.FRIDAY.toLocaleString()}</td>
+                    <td>{FOREST_PRICE.NORMAL.WEEKEND.toLocaleString()}</td>
                   </tr>
                   <tr>
-                    <td>비성수기</td>
-                    <td>{FOREST_PRICE.NORMAL.WEEKDAY.toLocaleString()}원</td>
-                    <td>{FOREST_PRICE.NORMAL.FRIDAY.toLocaleString()}원</td>
-                    <td>{FOREST_PRICE.NORMAL.WEEKEND.toLocaleString()}원</td>
+                    <td>성수기(7~8월)</td>
+                    <td colSpan={3}>{FOREST_PRICE.SUMMER_FLAT.toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td>극성수기(7/26~8/8)</td>
+                    <td colSpan={3}>{FOREST_PRICE.SUPER_PEAK_FLAT.toLocaleString()}</td>
                   </tr>
                 </tbody>
               </table>
@@ -520,7 +522,7 @@ const ForestPage = () => {
             {/* Additional Charges */}
             <div className="additional-charges">
               <h3>추가 요금</h3>
-              <div className="charges-grid four-items">
+              <div className="charges-grid forest-charges-grid">
                 <div className="charge-item">
                   <span className="charge-label">4인 초과 시</span>
                   <span className="charge-price">1인당 {FOREST_PRICE.OVER_FOUR.toLocaleString()}원/박</span>
@@ -535,6 +537,10 @@ const ForestPage = () => {
                   <span className="charge-label">바베큐 이용</span>
                   <span className="charge-price">{FOREST_PRICE.BARBECUE.toLocaleString()}원</span>
                   <span className="charge-note">(화로, 토치, 숯, 집게 제공)</span>
+                </div>
+                <div className="charge-item">
+                  <span className="charge-label">불멍</span>
+                  <span className="charge-price">{FOREST_PRICE.FIRE_PIT.toLocaleString()}원</span>
                 </div>
               </div>
             </div>
