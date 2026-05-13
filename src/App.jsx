@@ -114,7 +114,7 @@ function App() {
       id: 5,
       name: "묵호쉴래",
       location: "동해",
-      type: "숙소",
+      type: "단기임대",
       image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
       description: "묵호의 아름다움을\n만날 수 있는 공간",
       url: "/mukho",
