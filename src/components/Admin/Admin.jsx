@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactModal from 'react-modal';
-import { getReservations, getIcalReservations, deleteReservation, confirmReservation } from '../../utils/firestore';
+import { getReservations, getIcalReservations, deleteReservation } from '../../utils/firestore';
 import { formatDate } from '../../utils/date';
 import LoadingOverlay from '../LoadingOverlay/LoadingOverlay';
 import './Admin.css';
@@ -138,49 +138,6 @@ const Admin = () => {
     }
   };
 
-  const handleConfirmClick = async (reservation) => {
-    if (!reservation.id || !reservation.phone) {
-      alert('예약 정보가 올바르지 않습니다.');
-      return;
-    }
-
-    if (!window.confirm('예약을 확정하고 고객에게 문자를 보내시겠습니까?')) {
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      setLoadingMessage('확정 문자를 발송하고 있습니다');
-
-      // 확정 문자 전송 (성공 시 Firestore 업데이트도 함께 처리)
-      const response = await fetch('/api/confirm-reservation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: reservation.phone,
-          propertyType: target,
-          reservationId: reservation.id
-        })
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        alert('예약이 확정되었고 고객에게 문자를 발송했습니다.');
-        await init(); // 목록 새로고침
-      } else {
-        throw new Error(result.error || '확정 문자 발송 실패');
-      }
-    } catch (error) {
-      console.error('예약 확정 실패:', error);
-      alert('예약 확정 중 오류가 발생했습니다: ' + error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleGoBack = () => {
     if (target) {
       setPassword('');
@@ -279,8 +236,7 @@ const Admin = () => {
                     <th style={{ width: '100px' }}>체크인</th>
                     <th style={{ width: '100px' }}>체크아웃</th>
                     <th style={{ width: '80px' }}>구분</th>
-                    <th>이름/전화번호</th>
-                    <th style={{ width: '80px' }}></th>
+                    <th style={{ width: '180px' }}>이름/전화번호</th>
                     <th style={{ width: '80px' }}></th>
                     <th style={{ width: '80px' }}></th>
                   </tr>
@@ -288,7 +244,7 @@ const Admin = () => {
                 <tbody>
                   {reserved.length === 0 ? (
                     <tr>
-                      <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
+                      <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
                         예약 내역이 없습니다.
                       </td>
                     </tr>
@@ -300,7 +256,9 @@ const Admin = () => {
                         <td className={row.type === 'homepage' ? 'homepage-cell' : 'airbnb-cell'}>
                           {row.type === 'homepage' ? '홈' : '에'}
                         </td>
-                        <td>{row.name || row.phone_last_digits || '(막았음)'}</td>
+                        <td className="admin-contact-cell" title={row.name || row.phone_last_digits || '(막았음)'}>
+                          {row.name || row.phone_last_digits || '(막았음)'}
+                        </td>
                         <td>
                           {(row.name || row.reservation_id) && (
                             <button
@@ -308,17 +266,6 @@ const Admin = () => {
                               onClick={() => showDetail(row)}
                             >
                               상세
-                            </button>
-                          )}
-                        </td>
-                        <td>
-                          {row.name && row.type === 'homepage' && (
-                            <button
-                              className="admin-confirm-btn"
-                              onClick={() => handleConfirmClick(row)}
-                              disabled={row.confirmed === 'Y' || isLoading}
-                            >
-                              {row.confirmed === 'Y' ? '확정됨' : '확정'}
                             </button>
                           )}
                         </td>

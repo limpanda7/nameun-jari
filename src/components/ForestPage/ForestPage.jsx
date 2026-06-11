@@ -394,7 +394,7 @@ const ForestPage = () => {
                 <span className="amenity-item">에어프라이기/토스트기/에어컨</span>
                 <span className="amenity-item">4인테이블/식기/컵/냄비/프라이팬</span>
                 <span className="amenity-item">수저/가위/칼/집게/와인잔/와인오프너</span>
-                <span className="amenity-item">전기포트/드립백</span>
+                <span className="amenity-item">정수기/전기포트/드립백</span>
               </div>
             </motion.div>
 
@@ -425,7 +425,7 @@ const ForestPage = () => {
                 <span className="amenity-item">더블사이즈 침대/침구</span>
                 <span className="amenity-item">화장대/의자</span>
                 <span className="amenity-item">미니책장/서적</span>
-                <span className="amenity-item">헤어드라이기/빗/고데기</span>
+                <span className="amenity-item">헤어드라이기/빗</span>
               </div>
             </motion.div>
 
@@ -509,7 +509,9 @@ const ForestPage = () => {
                   </tr>
                   <tr>
                     <td>성수기(7~8월)</td>
-                    <td colSpan={3}>{FOREST_PRICE.SUMMER_FLAT.toLocaleString()}</td>
+                    <td>{FOREST_PRICE.SUMMER.WEEKDAY.toLocaleString()}</td>
+                    <td>{FOREST_PRICE.SUMMER.FRIDAY.toLocaleString()}</td>
+                    <td>{FOREST_PRICE.SUMMER.SATURDAY.toLocaleString()}</td>
                   </tr>
                   <tr>
                     <td>극성수기(7/26~8/8)</td>

@@ -1,12 +1,17 @@
 export const FOREST_PRICE = {
   NORMAL: {
-    WEEKDAY: 150000,
-    FRIDAY: 200000,
+    WEEKDAY: 130000,
+    FRIDAY: 180000,
     WEEKEND: 250000,
     HOLIDAY: 250000,
   },
-  /** 7~8월 성수기(극성수기 구간 제외) — 요일 무관 1박 요금 */
-  SUMMER_FLAT: 250000,
+  /** 7~8월 성수기(극성수기 구간 제외) */
+  SUMMER: {
+    WEEKDAY: 180000,
+    FRIDAY: 180000,
+    SATURDAY: 250000,
+    HOLIDAY: 250000,
+  },
   /** 매년 7/26 ~ 8/8 극성수기 — 요일 무관 1박 요금 */
   SUPER_PEAK_FLAT: 300000,
   OVER_FOUR: 30000,

@@ -49,7 +49,11 @@ export const getForestDayPrice = (forestPrice, dateStr) => {
     return forestPrice.SUPER_PEAK_FLAT;
   }
   if (month === '07' || month === '08') {
-    return forestPrice.SUMMER_FLAT;
+    const s = forestPrice.SUMMER;
+    if (isHoliday(dateStr)) return s.HOLIDAY;
+    if (isWeekday(dateStr)) return s.WEEKDAY;
+    if (isFriday(dateStr)) return s.FRIDAY;
+    return s.SATURDAY;
   }
 
   const n = forestPrice.NORMAL;
