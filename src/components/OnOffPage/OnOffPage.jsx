@@ -28,6 +28,12 @@ import reviewImg from '../../assets/on-off/review.jpg';
 
 const OnOffPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    alert('현재 운영 준비 중입니다.');
+    navigate('/');
+  }, [navigate]);
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentImageArray, setCurrentImageArray] = useState(null);

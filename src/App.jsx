@@ -90,16 +90,16 @@ function App() {
       url: "https://forest100.herokuapp.com/boulogne",
       priceRange: `${BLON_PRICE.NORMAL.WEEKDAY.toLocaleString()}원 ~ ${BLON_PRICE.NORMAL.HOLIDAY.toLocaleString()}원`
     },
-    {
-      id: 3,
-      name: "온오프스테이",
-      location: "동해",
-      type: "단기임대",
-      image: onoffImg,
-      description: "시골 풍경과 함께하는\n한적한 공간",
-      url: "https://forest100.herokuapp.com/on-off",
-      priceRange: `${ON_OFF_PRICE.RENT_PER_WEEK.toLocaleString()}원/1주`
-    },
+    // {
+    //   id: 3,
+    //   name: "온오프스테이",
+    //   location: "동해",
+    //   type: "단기임대",
+    //   image: onoffImg,
+    //   description: "시골 풍경과 함께하는\n한적한 공간",
+    //   url: "https://forest100.herokuapp.com/on-off",
+    //   priceRange: `${ON_OFF_PRICE.RENT_PER_WEEK.toLocaleString()}원/1주`
+    // },
     // {
     //   id: 4,
     //   name: "온오프스페이스",

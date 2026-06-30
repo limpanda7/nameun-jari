@@ -391,7 +391,7 @@ const ForestPage = () => {
               <h3>🍳 Kitchen & Living Room</h3>
               <div className="amenity-list">
                 <span className="amenity-item">냉장고/인덕션/전자레인지</span>
-                <span className="amenity-item">에어프라이기/토스트기/에어컨</span>
+                <span className="amenity-item">에어프라이기/에어컨</span>
                 <span className="amenity-item">4인테이블/식기/컵/냄비/프라이팬</span>
                 <span className="amenity-item">수저/가위/칼/집게/와인잔/와인오프너</span>
                 <span className="amenity-item">정수기/전기포트/드립백</span>
@@ -440,7 +440,7 @@ const ForestPage = () => {
               <div className="amenity-list">
                 <span className="amenity-item">샴푸/컨디셔너/바디워시</span>
                 <span className="amenity-item">칫솔/치약/핸드워시</span>
-                <span className="amenity-item">종량제봉투/수건/비데</span>
+                <span className="amenity-item">수건/비데</span>
               </div>
             </motion.div>
 
