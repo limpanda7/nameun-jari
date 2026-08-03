@@ -397,6 +397,25 @@
   line-height: 1.6;
 }
 
+.pet-notice {
+  margin-top: 2rem;
+  padding: 1.5rem 2rem;
+  background: #fff8ec;
+  border: 1px solid #d4a574;
+  border-radius: 12px;
+  text-align: center;
+  color: #5c4a33;
+  line-height: 1.7;
+}
+
+.pet-notice p {
+  margin: 0;
+}
+
+.pet-notice p + p {
+  margin-top: 0.3rem;
+}
+
 /* Space & Amenities Section */
 .space-amenities-section {
   padding: 4rem 0;

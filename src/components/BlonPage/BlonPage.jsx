@@ -51,7 +51,7 @@ const BlonPage = () => {
   useEffect(() => {
     // Vite에서 import한 이미지는 빌드 시 절대 경로로 변환되므로, 이미 절대 경로인지 확인
     const ogImageUrl = blon1.startsWith('http') ? blon1 : new URL(blon1, window.location.origin).href;
-    
+
     // OG 이미지 메타 태그 업데이트
     let ogImageMeta = document.querySelector('meta[property="og:image"]');
     if (!ogImageMeta) {
@@ -193,7 +193,7 @@ const BlonPage = () => {
 
       {/* Hero Section */}
       <section className="forest-hero blon-hero">
-        <div 
+        <div
           className="blon-hero-background"
           style={{ backgroundImage: `url(${blon1})` }}
         ></div>
@@ -384,11 +384,10 @@ const BlonPage = () => {
                 <li className="amenity-item">4인 책상/의자 2</li>
                 <li className="amenity-item">400여권의 서적</li>
                 <li className="amenity-item">블루투스 오디오/감성라디오</li>
-                <li className="amenity-item">통기타</li>
-                <li className="amenity-item">루미큐브/스케치북/색연필</li>
-                <li className="amenity-item">필사도구</li>
+                <li className="amenity-item">통기타/루미큐브</li>
+                <li className="amenity-item">스케치북/색연필/필사도구</li>
                 <li className="amenity-item">WI-FI/4way냉난방기</li>
-                <li className="amenity-item">시네마빔/노트북<br/>(*별도의 TV는 비치되어 있지 않습니다.)</li>
+                <li className="amenity-item">시네마빔/노트북<br/>(*TV는 비치되어 있지 않습니다.)</li>
               </ul>
             </motion.div>
 

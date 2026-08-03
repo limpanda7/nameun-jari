@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
 import { FOREST_PRICE } from '../../constants/price';
@@ -135,11 +135,8 @@ const ForestPage = () => {
   };
 
   const features = [
-    { icon: <Home size={24} />, title: "100년 한옥", description: "100년 된 전통 한옥의 별채에서 특별한 경험" },
-    { icon: <TreePine size={24} />, title: "피톤치드 산책로", description: "주변에 피톤치드 가득한 산책로와 다양한 꽃과 나무" },
-    { icon: <Mountain size={24} />, title: "텃밭 체험", description: "텃밭에서 나는 채소들을 직접 재배하여 요리 가능" },
+    { icon: <TreePine size={24} />, title: "피톤치드 산책로", description: "다양한 꽃과 나무가 가득한 산책로" },
     { icon: <Car size={24} />, title: "넓은 마당", description: "차량 3대 이상 주차 가능한 넓은 마당" },
-    { icon: <Coffee size={24} />, title: "바베큐 시설", description: "야외 바베큐 시설 (화로, 토치, 숯, 집게 제공)" },
     { icon: <Users size={24} />, title: "반려견 동반", description: "털날림이 적은 견종만 가능 (최대 2마리)" }
   ];
 
@@ -364,6 +361,16 @@ const ForestPage = () => {
               </motion.div>
             ))}
           </div>
+
+          <motion.div
+            className="pet-notice"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <p>🐾 반려견 동반 시, 강아지에 대한 잠자리만 제공되니 필요한 것은 가지고 와주세요!</p>
+          </motion.div>
         </div>
       </section>
 
@@ -394,7 +401,7 @@ const ForestPage = () => {
                 <span className="amenity-item">에어프라이기/에어컨</span>
                 <span className="amenity-item">4인테이블/식기/컵/냄비/프라이팬</span>
                 <span className="amenity-item">수저/가위/칼/집게/와인잔/와인오프너</span>
-                <span className="amenity-item">정수기/전기포트/드립백</span>
+                <span className="amenity-item">정수기/전기포트</span>
               </div>
             </motion.div>
 
@@ -533,7 +540,7 @@ const ForestPage = () => {
                 <div className="charge-item">
                   <span className="charge-label">반려견</span>
                   <span className="charge-price">1마리당 {FOREST_PRICE.DOG.toLocaleString()}원/박</span>
-                  <span className="charge-note">(털날림이 적은 견종만)</span>
+                  <span className="charge-note">(털날림이 적은 견종만 / 잠자리만 제공되니 필요한 것은 가지고 와주세요!)</span>
                 </div>
                 <div className="charge-item">
                   <span className="charge-label">바베큐 이용</span>
@@ -560,7 +567,7 @@ const ForestPage = () => {
             </div>
             <div className="info-item">
               <span className="info-label">주차</span>
-              <span className="info-value">무료 (차량 3대 이상 가능)</span>
+              <span className="info-value">무료 (3대 이상 가능)</span>
             </div>
           </div>
         </div>

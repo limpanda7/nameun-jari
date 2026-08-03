@@ -110,16 +110,16 @@ function App() {
     //   url: "https://forest100.herokuapp.com/on-off-space",
     //   priceRange: `${SPACE_PRICE.WEEKDAY.toLocaleString()}원 ~ ${SPACE_PRICE.WEEKEND.toLocaleString()}원/시간`
     // },
-    {
-      id: 5,
-      name: "묵호쉴래",
-      location: "동해",
-      type: "단기임대",
-      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-      description: "묵호의 아름다움을\n만날 수 있는 공간",
-      url: "/mukho",
-      priceRange: `${MUKHO_PRICE.RENT_PER_WEEK.toLocaleString()}원/1주`
-    }
+    // {
+    //   id: 5,
+    //   name: "묵호쉴래",
+    //   location: "동해",
+    //   type: "단기임대",
+    //   image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    //   description: "묵호의 아름다움을\n만날 수 있는 공간",
+    //   url: "/mukho",
+    //   priceRange: `${MUKHO_PRICE.RENT_PER_WEEK.toLocaleString()}원/1주`
+    // }
   ];
 
   const scrollToSection = (sectionId) => {
@@ -171,9 +171,9 @@ function App() {
                 <button className="nav-btn-mobile" onClick={() => { navigate('/lookup'); setIsMenuOpen(false); }}>예약조회</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/forest'); setIsMenuOpen(false); }}>백년한옥별채</button>
                 <button className="nav-btn-mobile" onClick={() => { navigate('/blon'); setIsMenuOpen(false); }}>블로뉴숲</button>
-                <button className="nav-btn-mobile" onClick={() => { navigate('/on-off'); setIsMenuOpen(false); }}>온오프스테이</button>
+                {/* <button className="nav-btn-mobile" onClick={() => { navigate('/on-off'); setIsMenuOpen(false); }}>온오프스테이</button> */}
                 {/* <button className="nav-btn-mobile" onClick={() => { navigate('/space'); setIsMenuOpen(false); }}>온오프스페이스</button> */}
-                <button className="nav-btn-mobile" onClick={() => { navigate('/mukho'); setIsMenuOpen(false); }}>묵호쉴래</button>
+                {/* <button className="nav-btn-mobile" onClick={() => { navigate('/mukho'); setIsMenuOpen(false); }}>묵호쉴래</button> */}
               </nav>
 
               <button
@@ -237,27 +237,6 @@ function App() {
           {/* Spaces Section */}
           <section id="spaces" className="spaces">
             <div className="container">
-              <motion.h2
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-                className="section-title"
-              >
-                " 당신을 위해 남은 자리 "
-              </motion.h2>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-                className="spaces-intro"
-              >
-                <p>
-                  나믄자리는 공간 운영에 특화된 호스트가 직접 관리하는 다양한 공간들의 집합입니다.<br/>
-                  각 공간마다 고유한 이야기와 정성이 담겨 있어, 단순한 이용을 넘어선 특별한 경험을 선사합니다.
-                </p>
-              </motion.div>
               <div className="spaces-grid">
                 {spaces.map((space, index) => (
                   <div
