@@ -431,7 +431,6 @@ const ForestPage = () => {
               <div className="amenity-list">
                 <span className="amenity-item">더블사이즈 침대/침구</span>
                 <span className="amenity-item">화장대/의자</span>
-                <span className="amenity-item">미니책장/서적</span>
                 <span className="amenity-item">헤어드라이기/빗</span>
               </div>
             </motion.div>

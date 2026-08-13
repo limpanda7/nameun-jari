@@ -19,6 +19,9 @@ const Admin = () => {
   const [isInfoModal, setIsInfoModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('처리 중입니다');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [toast, setToast] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,6 +46,11 @@ const Admin = () => {
       init();
     }
   }, [target]);
+
+  const showToast = (message) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const init = async () => {
     setIsLoading(true);
@@ -104,7 +112,7 @@ const Admin = () => {
       setReserved(tempReserved);
     } catch (error) {
       console.error('예약 조회 실패:', error);
-      alert('예약 조회 중 오류가 발생했습니다.');
+      showToast('예약 조회 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -120,21 +128,29 @@ const Admin = () => {
     }
   };
 
-  const handleDeleteClick = async (reservationId) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) {
-      return;
-    }
+  const handleDeleteClick = (row) => {
+    setDeleteTarget(row);
+  };
+
+  const cancelDelete = () => {
+    if (isDeleting) return;
+    setDeleteTarget(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
 
     try {
-      setIsLoading(true);
-      await deleteReservation(target, reservationId);
-      alert('예약이 삭제되었습니다.');
+      setIsDeleting(true);
+      await deleteReservation(target, deleteTarget.id);
+      setDeleteTarget(null);
+      showToast('예약이 삭제되었습니다.');
       await init(); // 목록 새로고침
     } catch (error) {
       console.error('예약 삭제 실패:', error);
-      alert('예약 삭제 중 오류가 발생했습니다.');
+      showToast('예약 삭제 중 오류가 발생했습니다.');
     } finally {
-      setIsLoading(false);
+      setIsDeleting(false);
     }
   };
 
@@ -273,7 +289,7 @@ const Admin = () => {
                           {row.name && row.type === 'homepage' && (
                             <button
                               className="admin-delete-btn"
-                              onClick={() => handleDeleteClick(row.id)}
+                              onClick={() => handleDeleteClick(row)}
                             >
                               삭제
                             </button>
@@ -329,6 +345,38 @@ const Admin = () => {
           X
         </button>
       </ReactModal>
+
+      <ReactModal
+        isOpen={!!deleteTarget}
+        onRequestClose={cancelDelete}
+        style={modalStyle}
+        ariaHideApp={false}
+      >
+        <div className="delete-modal-content">
+          <p>
+            {formatDateDisplay(deleteTarget?.checkin_date)} ~ {formatDateDisplay(deleteTarget?.checkout_date)}{' '}
+            {deleteTarget?.name} 예약을 삭제하시겠습니까?
+          </p>
+          <div className="admin-modal-buttons">
+            <button
+              className="admin-modal-btn admin-modal-btn-cancel"
+              onClick={cancelDelete}
+              disabled={isDeleting}
+            >
+              취소
+            </button>
+            <button
+              className="admin-modal-btn admin-modal-btn-delete"
+              onClick={confirmDelete}
+              disabled={isDeleting}
+            >
+              삭제
+            </button>
+          </div>
+        </div>
+      </ReactModal>
+
+      {toast && <div className="admin-toast">{toast}</div>}
 
       {/* 로딩 오버레이 */}
       {isLoading && (

@@ -38,6 +38,7 @@ const forestMMS = (picked, person, baby, dog, barbecue, firePit, price, reservat
     '\n' +
     '4. 사용하신 식기류는 설거지 부탁드립니다.\n' +
     '\n' +
+    (dog > 0 ? '5. 반려견 동반 시, 강아지에 대한 잠자리만 제공되니 필요한 것은 가지고 와주세요!\n\n' : '') +
     '*인근해변\n' +
     '-추암 촛대바위/해수욕장\n' +
     '버스 :북평국가산업단지 정류장 >161 or 162번\n' +
