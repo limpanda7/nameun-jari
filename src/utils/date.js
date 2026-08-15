@@ -1,4 +1,4 @@
-import { HOLIDAYS, BLON_SPECIAL_DATES } from '../constants/price';
+import { HOLIDAYS, BLON_SPECIAL_DATES, FOREST_NORMAL_PRICE_CHANGE_DATE } from '../constants/price';
 
 export const formatDate = (date) => {
   if (!date) return '';
@@ -56,7 +56,9 @@ export const getForestDayPrice = (forestPrice, dateStr) => {
     return s.SATURDAY;
   }
 
-  const n = forestPrice.NORMAL;
+  const n = dateStr >= FOREST_NORMAL_PRICE_CHANGE_DATE && forestPrice.NORMAL_FROM_202611
+    ? forestPrice.NORMAL_FROM_202611
+    : forestPrice.NORMAL;
   if (isHoliday(dateStr)) return n.HOLIDAY;
   if (isWeekday(dateStr)) return n.WEEKDAY;
   if (isFriday(dateStr)) return n.FRIDAY;

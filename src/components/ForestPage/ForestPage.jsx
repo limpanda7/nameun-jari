@@ -514,17 +514,22 @@ const ForestPage = () => {
                     <td>{FOREST_PRICE.NORMAL.WEEKEND.toLocaleString()}</td>
                   </tr>
                   <tr>
-                    <td>성수기(7~8월)</td>
+                    <td>성수기<span className="pricing-table-date">(7~8월)</span></td>
                     <td>{FOREST_PRICE.SUMMER.WEEKDAY.toLocaleString()}</td>
                     <td>{FOREST_PRICE.SUMMER.FRIDAY.toLocaleString()}</td>
                     <td>{FOREST_PRICE.SUMMER.SATURDAY.toLocaleString()}</td>
                   </tr>
                   <tr>
-                    <td>극성수기(7/26~8/8)</td>
+                    <td>극성수기<span className="pricing-table-date">(7/26~8/8)</span></td>
                     <td colSpan={3}>{FOREST_PRICE.SUPER_PEAK_FLAT.toLocaleString()}</td>
                   </tr>
                 </tbody>
               </table>
+              <p className="price-change-notice">
+                ※ 2026년 11월 예약분(숙박일 기준)부터 비수기 요금이 일~목{' '}
+                {FOREST_PRICE.NORMAL_FROM_202611.WEEKDAY.toLocaleString()}원, 금{' '}
+                {FOREST_PRICE.NORMAL_FROM_202611.FRIDAY.toLocaleString()}원으로 인상됩니다.
+              </p>
             </div>
 
             {/* Additional Charges */}

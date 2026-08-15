@@ -1,7 +1,17 @@
+/** 2026-11-01 숙박일부터 적용되는 비수기 요금 */
+export const FOREST_NORMAL_PRICE_CHANGE_DATE = '2026-11-01';
+
 export const FOREST_PRICE = {
   NORMAL: {
     WEEKDAY: 130000,
     FRIDAY: 180000,
+    WEEKEND: 250000,
+    HOLIDAY: 250000,
+  },
+  /** 2026-11-01 숙박일부터 적용 */
+  NORMAL_FROM_202611: {
+    WEEKDAY: 140000,
+    FRIDAY: 190000,
     WEEKEND: 250000,
     HOLIDAY: 250000,
   },
