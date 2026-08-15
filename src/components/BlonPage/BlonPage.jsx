@@ -3,8 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, Mountain, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
+import QuickNav from '../QuickNav/QuickNav';
 import { BLON_PRICE } from '../../constants/price';
 import '../../styles/CommonPage.css';
+
+const QUICK_NAV_ITEMS = [
+  { id: 'gallery', label: '사진' },
+  { id: 'amenities', label: '편의시설' },
+  { id: 'pricing', label: '요금' },
+  { id: 'contact', label: '문의' },
+];
 
 // Import blon images
 import blon1 from '../../assets/blon/1.jpg';
@@ -180,7 +188,6 @@ const BlonPage = () => {
             onClick={() => navigate('/#spaces')}
           >
             <ArrowLeft size={20} />
-            돌아가기
           </button>
           <button
             className="header-booking-button"
@@ -208,16 +215,13 @@ const BlonPage = () => {
             <p className="forest-subtitle">
               산정호수 근처 자연 속에서의 특별한 휴식
             </p>
-            <div className="forest-location">
-              <MapPin size={20} />
-              <span>경기 포천시 영북면 산정호수로322번길 38</span>
-            </div>
+            <QuickNav items={QUICK_NAV_ITEMS} />
           </motion.div>
         </div>
       </section>
 
       {/* Image Gallery */}
-      <section className="image-gallery">
+      <section className="image-gallery" id="gallery">
         <div className="container">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -228,6 +232,16 @@ const BlonPage = () => {
           >
             공간 둘러보기
           </motion.h2>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="gallery-location"
+          >
+            <MapPin size={18} />
+            <span>경기 포천시 영북면 산정호수로322번길 38</span>
+          </motion.div>
           <div className="gallery-grid">
             {getDisplayImages().map((image, index) => (
               <motion.div
@@ -299,7 +313,7 @@ const BlonPage = () => {
       </section>
 
       {/* Space & Amenities Section */}
-      <section className="space-amenities-section">
+      <section className="space-amenities-section" id="amenities">
         <div className="container">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -308,7 +322,7 @@ const BlonPage = () => {
             viewport={{ once: true }}
             className="section-title"
           >
-            공간 구성 & 어메니티
+            공간 & 어메니티
           </motion.h2>
           <div className="space-amenities-grid">
             <motion.div
@@ -410,7 +424,7 @@ const BlonPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="pricing-section">
+      <section className="pricing-section" id="pricing">
         <div className="container">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -493,7 +507,7 @@ const BlonPage = () => {
       </section>
 
       {/* Booking Section */}
-      <section className="booking-section">
+      <section className="booking-section" id="booking">
         <div className="container">
           <motion.div
             className="booking-content"
@@ -519,7 +533,7 @@ const BlonPage = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="contact-section">
+      <section className="contact-section" id="contact">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

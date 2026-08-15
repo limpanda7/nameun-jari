@@ -3,8 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
+import QuickNav from '../QuickNav/QuickNav';
 import { FOREST_PRICE } from '../../constants/price';
 import '../../styles/CommonPage.css';
+
+const QUICK_NAV_ITEMS = [
+  { id: 'gallery', label: '사진' },
+  { id: 'amenities', label: '편의시설' },
+  { id: 'pricing', label: '요금' },
+  { id: 'contact', label: '문의' },
+];
 
 // Import forest images
 import forest1 from '../../assets/forest/1.webp';
@@ -192,7 +200,6 @@ const ForestPage = () => {
             onClick={() => navigate('/#spaces')}
           >
             <ArrowLeft size={20} />
-            돌아가기
           </button>
           <button
             className="header-booking-button"
@@ -231,16 +238,14 @@ const ForestPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="forest-location"
           >
-            <MapPin size={20} />
-            <span>강원도 동해시 구미실길 96-1</span>
+            <QuickNav items={QUICK_NAV_ITEMS} />
           </motion.div>
         </div>
       </section>
 
       {/* Image Gallery */}
-      <section className="image-gallery">
+      <section className="image-gallery" id="gallery">
         <div className="container">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -251,6 +256,16 @@ const ForestPage = () => {
           >
             공간 둘러보기
           </motion.h2>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="gallery-location"
+          >
+            <MapPin size={18} />
+            <span>강원도 동해시 구미실길 96-1</span>
+          </motion.div>
           <div className="gallery-grid">
             {images.map((image, index) => (
               <motion.div
@@ -375,7 +390,7 @@ const ForestPage = () => {
       </section>
 
       {/* Space & Amenities Section */}
-      <section className="space-amenities-section">
+      <section className="space-amenities-section" id="amenities">
         <div className="container">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -484,7 +499,7 @@ const ForestPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="pricing-section">
+      <section className="pricing-section" id="pricing">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -578,7 +593,7 @@ const ForestPage = () => {
       </section>
 
       {/* Booking Section */}
-      <section className="booking-section">
+      <section className="booking-section" id="booking">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -604,7 +619,7 @@ const ForestPage = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="contact-section">
+      <section className="contact-section" id="contact">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

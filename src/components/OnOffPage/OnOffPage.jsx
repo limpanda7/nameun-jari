@@ -64,7 +64,7 @@ const OnOffPage = () => {
   useEffect(() => {
     // Vite에서 import한 이미지는 빌드 시 절대 경로로 변환되므로, 이미 절대 경로인지 확인
     const ogImageUrl = onoff1.startsWith('http') ? onoff1 : new URL(onoff1, window.location.origin).href;
-    
+
     // OG 이미지 메타 태그 업데이트
     let ogImageMeta = document.querySelector('meta[property="og:image"]');
     if (!ogImageMeta) {
@@ -185,7 +185,6 @@ const OnOffPage = () => {
             onClick={() => navigate('/#spaces')}
           >
             <ArrowLeft size={20} />
-            돌아가기
           </button>
           <button
             onClick={() => navigate('/on-off/calendar')}
@@ -198,7 +197,7 @@ const OnOffPage = () => {
 
       {/* Hero Section */}
       <section className="forest-hero onoff-hero">
-        <div 
+        <div
           className="onoff-hero-background"
           style={{ backgroundImage: `url(${onoff1})` }}
         ></div>
@@ -312,7 +311,7 @@ const OnOffPage = () => {
             viewport={{ once: true }}
             className="section-title"
           >
-            공간 구성 & 어메니티
+            공간 & 어메니티
           </motion.h2>
           <div className="space-amenities-grid">
             <motion.div

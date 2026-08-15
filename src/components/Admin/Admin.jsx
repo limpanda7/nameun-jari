@@ -220,7 +220,7 @@ const Admin = () => {
     <div className="admin-container">
       <div className="admin-header">
         <button className="admin-back-button" onClick={handleGoBack}>
-          ← 돌아가기
+          ←
         </button>
         <h1 className="admin-title">
           {targetKo ? `관리자 페이지 - ${targetKo}` : '관리자 페이지'}

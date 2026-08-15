@@ -334,7 +334,6 @@ const CommonReservation = ({
             onClick={() => navigate(calendarPath)}
           >
             <ArrowLeft size={20} />
-            돌아가기
           </button>
         </div>
         <div className="no-dates-selected">
@@ -361,7 +360,6 @@ const CommonReservation = ({
         onClick={() => navigate(calendarPath)}
       >
         <ArrowLeft size={20} />
-        돌아가기
       </button>
 
       {/* 예약 정보 */}

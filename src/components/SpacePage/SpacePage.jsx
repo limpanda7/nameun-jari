@@ -45,7 +45,7 @@ const SpacePage = () => {
   useEffect(() => {
     // Vite에서 import한 이미지는 빌드 시 절대 경로로 변환되므로, 이미 절대 경로인지 확인
     const ogImageUrl = space1.startsWith('http') ? space1 : new URL(space1, window.location.origin).href;
-    
+
     // OG 이미지 메타 태그 업데이트
     let ogImageMeta = document.querySelector('meta[property="og:image"]');
     if (!ogImageMeta) {
@@ -174,7 +174,6 @@ const SpacePage = () => {
             onClick={() => navigate('/#spaces')}
           >
             <ArrowLeft size={20} />
-            돌아가기
           </button>
           <button
             onClick={() => navigate('/space/calendar')}
@@ -187,7 +186,7 @@ const SpacePage = () => {
 
       {/* Hero Section */}
       <section className="forest-hero space-hero">
-        <div 
+        <div
           className="space-hero-background"
           style={{ backgroundImage: `url(${space1})` }}
         ></div>

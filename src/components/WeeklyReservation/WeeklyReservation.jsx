@@ -72,11 +72,11 @@ const WeeklyReservation = ({
           const approvalUrl = `${baseUrl}/payment/approval`;
           const cancelUrl = `${baseUrl}/payment/cancel`;
           const failUrl = `${baseUrl}/payment/fail`;
-          
+
           try {
             // ready API와 approve API에서 동일한 partner_order_id 사용
             const partnerOrderId = `order_${Date.now()}_${propertyType}`;
-            
+
             const kakaoPayResponse = await fetch('/api/kakaopay/ready', {
               method: 'POST',
               headers: {
@@ -230,7 +230,6 @@ const WeeklyReservation = ({
             onClick={() => navigate(calendarPath)}
           >
             <ArrowLeft size={20} />
-            돌아가기
           </button>
         </div>
         <div className="no-dates-selected">
@@ -256,7 +255,6 @@ const WeeklyReservation = ({
         onClick={() => navigate(calendarPath)}
       >
         <ArrowLeft size={20} />
-        돌아가기
       </button>
 
       {/* 예약 정보 */}
@@ -396,9 +394,9 @@ const WeeklyReservation = ({
             />
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               카카오페이
-              <img 
-                src={kakaopayIcon} 
-                alt="카카오페이" 
+              <img
+                src={kakaopayIcon}
+                alt="카카오페이"
                 style={{ width: '50px' }}
               />
             </span>

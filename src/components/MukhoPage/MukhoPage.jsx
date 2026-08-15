@@ -58,7 +58,7 @@ const MukhoPage = () => {
   // OG 이미지 설정
   useEffect(() => {
     const heroImageUrl = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';
-    
+
     // OG 이미지 메타 태그 업데이트
     let ogImageMeta = document.querySelector('meta[property="og:image"]');
     if (!ogImageMeta) {
@@ -190,7 +190,6 @@ const MukhoPage = () => {
             onClick={() => navigate('/#spaces')}
           >
             <ArrowLeft size={20} />
-            돌아가기
           </button>
           <button
             className="header-booking-button"

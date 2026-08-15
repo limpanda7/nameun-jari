@@ -59,7 +59,6 @@ const ReservationLookup = () => {
         onClick={() => navigate('/')}
       >
         <ArrowLeft size={20} />
-        홈으로
       </button>
 
       <div className="lookup-container">

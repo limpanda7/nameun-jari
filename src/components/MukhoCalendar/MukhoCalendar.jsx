@@ -80,7 +80,6 @@ const MukhoCalendar = () => {
           onClick={() => navigate('/mukho')}
         >
           <ArrowLeft size={20} />
-          돌아가기
         </button>
       </div>
 

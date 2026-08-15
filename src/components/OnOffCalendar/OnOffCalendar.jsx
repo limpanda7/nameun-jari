@@ -80,7 +80,6 @@ const OnOffCalendar = () => {
           onClick={() => navigate('/on-off')}
         >
           <ArrowLeft size={20} />
-          돌아가기
         </button>
       </div>
 

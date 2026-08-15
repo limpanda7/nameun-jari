@@ -137,19 +137,6 @@
 .blon-page .section-title {
   color: #2c2c2c;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.blon-page .section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(135deg, #000 0%, #333 100%);
-  border-radius: 2px;
 }
 
 /* BlonPage contact 스타일 - ForestPage와 동일하게 */
@@ -205,6 +192,62 @@
   gap: 0.5rem;
   font-size: 1.1rem;
   font-weight: 500;
+}
+
+/* Quick Nav (hero) */
+.quick-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.quick-nav-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.25s ease, transform 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.quick-nav-item:hover {
+  background: rgba(255, 255, 255, 0.32);
+  transform: translateY(-2px);
+  color: inherit;
+  text-decoration: none;
+}
+
+.blon-hero .quick-nav-item {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.blon-hero .quick-nav-item:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Address, relocated to just above the gallery grid */
+.gallery-location {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #8b6f47;
+  margin: -1rem 0 2rem;
+}
+
+.blon-page .gallery-location {
+  color: #555;
 }
 
 /* Container */

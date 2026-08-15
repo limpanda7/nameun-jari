@@ -105,7 +105,7 @@ const SpaceCalendar = () => {
             disabled={isBlocked}
             onChange={() => handleTimeChange(hour)}
           />
-          <label 
+          <label
             htmlFor={`time-${hour}`}
             className={`${isChecked ? 'checked' : ''} ${isBlocked ? 'disabled' : ''}`}
           >
@@ -159,7 +159,6 @@ const SpaceCalendar = () => {
           onClick={() => navigate('/space')}
         >
           <ArrowLeft size={20} />
-          돌아가기
         </button>
       </div>
 
@@ -214,8 +213,8 @@ const SpaceCalendar = () => {
                 예약 내역을 불러오지 못했습니다.
               </p>
               <div style={{ marginTop: "20px", textAlign: "center" }}>
-                <button 
-                  className="large-btn" 
+                <button
+                  className="large-btn"
                   onClick={manualRetry}
                   style={{ marginBottom: "15px" }}
                 >
