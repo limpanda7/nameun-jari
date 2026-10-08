@@ -12,7 +12,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-Serverless-FFCA28?style=flat-square&logo=firebase&logoColor=black)
 ![Node](https://img.shields.io/badge/Functions-Node%2020-339933?style=flat-square&logo=nodedotjs&logoColor=white)
 
-[🌐 사이트 바로가기](https://nameun-jari.web.app/) · [🔎 예약 조회](https://nameun-jari.web.app/lookup)
+[🌐 사이트 바로가기](https://nameun-jari.web.app/)
 
 </div>
 
