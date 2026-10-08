@@ -6,7 +6,6 @@
 
 오래된 공간을 새로운 가치로 다시 쓰는 숙소, 나믄자리의 예약 웹 애플리케이션입니다.
 
-[![Website](https://img.shields.io/badge/Website-nameun--jari.web.app-2E7D32?style=flat-square&logo=googlechrome&logoColor=white)](https://nameun-jari.web.app/)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-4-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-Serverless-FFCA28?style=flat-square&logo=firebase&logoColor=black)
