@@ -456,6 +456,11 @@ const CommonReservation = ({
                 </button>
               </div>
             </div>
+            {propertyType === 'forest' && dog > 0 && (
+              <p className="price-option-notice">
+                반려견 사진과 몸무게를 보내주셔야 합니다(010-3346-8757)
+              </p>
+            )}
           </div>
 
         </section>

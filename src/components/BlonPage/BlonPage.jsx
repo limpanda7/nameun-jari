@@ -205,18 +205,15 @@ const BlonPage = () => {
           style={{ backgroundImage: `url(${blon1})` }}
         ></div>
         <div className="container">
-          <motion.div
+          <div
             className="hero-content"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
           >
             <h1 className="forest-title">블로뉴숲</h1>
             <p className="forest-subtitle">
               산정호수 근처 자연 속에서의 특별한 휴식
             </p>
             <QuickNav items={QUICK_NAV_ITEMS} />
-          </motion.div>
+          </div>
         </div>
       </section>
 

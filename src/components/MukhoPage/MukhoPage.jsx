@@ -207,31 +207,22 @@ const MukhoPage = () => {
           style={{ backgroundImage: `url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80)` }}
         ></div>
         <div className="hero-content">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+          <h1
             className="forest-title"
           >
             묵호쉴래
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+          </h1>
+          <p
             className="forest-subtitle"
           >
             모던하고 깔끔한 인테리어의 묵호 단기임대
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+          </p>
+          <div
             className="forest-location"
           >
             <MapPin size={20} />
             <span>강원특별자치도 동해시 발한동 354-76 명영한어린이집 2층</span>
-          </motion.div>
+          </div>
         </div>
       </section>
 

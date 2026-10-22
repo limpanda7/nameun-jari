@@ -191,11 +191,8 @@ const SpacePage = () => {
           style={{ backgroundImage: `url(${space1})` }}
         ></div>
         <div className="container">
-          <motion.div
+          <div
             className="hero-content"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
           >
             <h1 className="forest-title">온오프 스페이스</h1>
             <p className="forest-subtitle">
@@ -206,7 +203,7 @@ const SpacePage = () => {
               <MapPin size={20} />
               <span>서울 성북구 정릉로40길 11 1층</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

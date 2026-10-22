@@ -202,11 +202,8 @@ const OnOffPage = () => {
           style={{ backgroundImage: `url(${onoff1})` }}
         ></div>
         <div className="container">
-          <motion.div
+          <div
             className="hero-content"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
           >
             <h1 className="forest-title">온오프스테이</h1>
             <p className="forest-subtitle">
@@ -216,7 +213,7 @@ const OnOffPage = () => {
               <MapPin size={20} />
               <span>강원도 동해시 무릉1길 9-2</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

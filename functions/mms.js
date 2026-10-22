@@ -17,6 +17,7 @@ const forestMMS = (picked, person, baby, dog, barbecue, firePit, price, reservat
     `-바베큐 이용여부: ${barbecue}\n` +
     `-불멍 이용여부: ${firePit === 'Y' ? 'Y' : 'N'}\n` +
     '\n' +
+    (dog > 0 ? '[반려견 동반 안내]\n반려견 사진과 몸무게를 010-3346-8757로 보내주세요.\n\n' : '') +
     '아래는 숙소 안내사항입니다.\n' +
     '꼼꼼하게 읽어주시길 부탁드립니다!\n' +
     '\n' +

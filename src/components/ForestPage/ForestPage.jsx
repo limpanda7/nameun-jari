@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, MapPin, Star, Calendar, Users, Wifi, Car, Coffee, Home, TreePine, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, MapPin, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CommonFooter from '../CommonFooter/CommonFooter';
 import QuickNav from '../QuickNav/QuickNav';
@@ -142,11 +142,6 @@ const ForestPage = () => {
     return false; // PC에서는 더보기 버튼 숨김
   };
 
-  const features = [
-    { icon: <TreePine size={24} />, title: "피톤치드 산책로", description: "다양한 꽃과 나무가 가득한 산책로" },
-    { icon: <Car size={24} />, title: "넓은 마당", description: "차량 3대 이상 주차 가능한 넓은 마당" },
-    { icon: <Users size={24} />, title: "반려견 동반", description: "털날림이 적은 견종만 가능 (최대 2마리)" }
-  ];
 
 
   const openModal = (image, index, imageArray) => {
@@ -217,30 +212,21 @@ const ForestPage = () => {
           style={{ backgroundImage: `url(${forest1})` }}
         ></div>
         <div className="hero-content">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+          <h1
             className="forest-title"
           >
             백년한옥별채
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+          </h1>
+          <p
             className="forest-subtitle"
           >
             100년 된 한옥의 별채에서<br />
             피톤치드 가득한 자연 속 휴식을 경험해보세요
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+          </p>
+          <div
           >
             <QuickNav items={QUICK_NAV_ITEMS} />
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -345,47 +331,6 @@ const ForestPage = () => {
               </button>
             </motion.div>
           )}
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="container">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="section-title"
-          >
-            특별한 경험
-          </motion.h2>
-          <div className="features-grid">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                className="feature-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="feature-icon">{feature.icon}</div>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div
-            className="pet-notice"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <p>🐾 반려견 동반 시, 강아지에 대한 잠자리만 제공되니 필요한 것은 가지고 와주세요!</p>
-          </motion.div>
         </div>
       </section>
 
@@ -541,9 +486,8 @@ const ForestPage = () => {
                 </tbody>
               </table>
               <p className="price-change-notice">
-                ※ 2026년 11월 예약분(숙박일 기준)부터 비수기 요금이 일~목{' '}
-                {FOREST_PRICE.NORMAL_FROM_202611.WEEKDAY.toLocaleString()}원, 금{' '}
-                {FOREST_PRICE.NORMAL_FROM_202611.FRIDAY.toLocaleString()}원으로 인상됩니다.
+                ※ 2026년 12월 1일 숙박분부터 비수기 일~목 요금이{' '}
+                {FOREST_PRICE.WEEKDAY_FROM_202612.toLocaleString()}원으로 인상됩니다.
               </p>
             </div>
 
@@ -559,7 +503,9 @@ const ForestPage = () => {
                 <div className="charge-item">
                   <span className="charge-label">반려견</span>
                   <span className="charge-price">1마리당 {FOREST_PRICE.DOG.toLocaleString()}원/박</span>
-                  <span className="charge-note">(털날림이 적은 견종만 / 잠자리만 제공되니 필요한 것은 가지고 와주세요!)</span>
+                  <span className="charge-note">* 반려견 사진과 몸무게를 미리 보내주세요.</span>
+                  <span className="charge-note">* 털날림이 적은 견종만 가능합니다.</span>
+                  <span className="charge-note">* 잠자리만 제공되니 필요한 것은 가지고 와주세요!</span>
                 </div>
                 <div className="charge-item">
                   <span className="charge-label">바베큐 이용</span>
